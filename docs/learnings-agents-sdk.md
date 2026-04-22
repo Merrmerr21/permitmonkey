@@ -1,6 +1,6 @@
 # Learnings: Contractors Agent SDK Build
 
-What we learned building `agents-crossbeam/` — the Agent SDK backend for the corrections pipeline. Use this as a reference when building the next Agent SDK integration (city flow, or any multi-skill pipeline).
+What we learned building `agents-permitmonkey/` — the Agent SDK backend for the corrections pipeline. Use this as a reference when building the next Agent SDK integration (city flow, or any multi-skill pipeline).
 
 ## The Winning Config Pattern
 
@@ -207,8 +207,8 @@ Skill 1 cost is dominated by the research subagents, especially city research.
 ## How to Invoke the Backend
 
 ```bash
-# Run from the agents-crossbeam directory
-cd agents-crossbeam
+# Run from the agents-permitmonkey directory
+cd agents-permitmonkey
 
 # Individual test levels
 node --env-file .env.local --experimental-strip-types ./src/tests/test-l0-smoke.ts
@@ -245,17 +245,17 @@ const response = await runResponseGeneration({
 
 ## City Flow Learnings (Added Feb 13)
 
-We built the city plan review flow into the same `agents-crossbeam/` directory. Here's what we learned beyond the contractor flow:
+We built the city plan review flow into the same `agents-permitmonkey/` directory. Here's what we learned beyond the contractor flow:
 
 ### 5. systemPromptAppend Works Great for Multi-Flow Projects
 
-The contractor flow doesn't use `systemPromptAppend` — it relies on the base `CROSSBEAM_PROMPT` alone. The city flow adds a role-specific append:
+The contractor flow doesn't use `systemPromptAppend` — it relies on the base `PERMITMONKEY_PROMPT` alone. The city flow adds a role-specific append:
 
 ```typescript
 const CITY_SYSTEM_PROMPT = `You are reviewing an ADU plan submittal from the city's perspective...`;
 
 createQueryOptions({
-  systemPromptAppend: CITY_SYSTEM_PROMPT,  // Concatenated after CROSSBEAM_PROMPT
+  systemPromptAppend: CITY_SYSTEM_PROMPT,  // Concatenated after PERMITMONKEY_PROMPT
 });
 ```
 
@@ -373,28 +373,28 @@ When building the next Agent SDK integration:
 ### Shared Utilities
 | File | Purpose |
 |------|---------|
-| `agents-crossbeam/src/utils/config.ts` | Shared config factory (systemPromptAppend, tools, model) |
-| `agents-crossbeam/src/utils/session.ts` | Session dirs + file path helpers (both flows) |
-| `agents-crossbeam/src/utils/progress.ts` | Progress logging + SubagentTracker |
-| `agents-crossbeam/src/utils/verify.ts` | File verification + phase detection (both flows) |
+| `agents-permitmonkey/src/utils/config.ts` | Shared config factory (systemPromptAppend, tools, model) |
+| `agents-permitmonkey/src/utils/session.ts` | Session dirs + file path helpers (both flows) |
+| `agents-permitmonkey/src/utils/progress.ts` | Progress logging + SubagentTracker |
+| `agents-permitmonkey/src/utils/verify.ts` | File verification + phase detection (both flows) |
 
 ### Contractor Flow (Corrections Interpreter)
 | File | Purpose |
 |------|---------|
-| `agents-crossbeam/src/flows/corrections-analysis.ts` | Skill 1 flow wrapper |
-| `agents-crossbeam/src/flows/corrections-response.ts` | Skill 2 flow wrapper (restricted tools) |
-| `agents-crossbeam/src/tests/test-l0-smoke.ts` through `test-l4-full-pipeline.ts` | 6 test levels |
+| `agents-permitmonkey/src/flows/corrections-analysis.ts` | Skill 1 flow wrapper |
+| `agents-permitmonkey/src/flows/corrections-response.ts` | Skill 2 flow wrapper (restricted tools) |
+| `agents-permitmonkey/src/tests/test-l0-smoke.ts` through `test-l4-full-pipeline.ts` | 6 test levels |
 | `plan-contractors-agents-sdk.md` | Architecture spec |
 | `testing-agents-sdk.md` | Testing strategy |
 
 ### City Flow (Plan Review)
 | File | Purpose |
 |------|---------|
-| `agents-crossbeam/src/flows/plan-review.ts` | Single query() flow wrapper |
-| `agents-crossbeam/src/tests/test-l0c-smoke-city.ts` | Smoke test — 9 skills |
-| `agents-crossbeam/src/tests/test-l1c-skill-read.ts` | Skill read + subagent file access |
-| `agents-crossbeam/src/tests/test-l3c-admin-review.ts` | Admin review (cover sheet, pre-populated) |
-| `agents-crossbeam/src/tests/test-l3d-pdf-generation.ts` | PDF generation (isolated Phase 5) |
-| `agents-crossbeam/src/tests/test-l4c-full-review.ts` | Full pipeline acceptance |
+| `agents-permitmonkey/src/flows/plan-review.ts` | Single query() flow wrapper |
+| `agents-permitmonkey/src/tests/test-l0c-smoke-city.ts` | Smoke test — 9 skills |
+| `agents-permitmonkey/src/tests/test-l1c-skill-read.ts` | Skill read + subagent file access |
+| `agents-permitmonkey/src/tests/test-l3c-admin-review.ts` | Admin review (cover sheet, pre-populated) |
+| `agents-permitmonkey/src/tests/test-l3d-pdf-generation.ts` | PDF generation (isolated Phase 5) |
+| `agents-permitmonkey/src/tests/test-l4c-full-review.ts` | Full pipeline acceptance |
 | `plan-city-agents-sdk.md` | Architecture spec |
 | `testing-agents-sdk-city.md` | Testing strategy |

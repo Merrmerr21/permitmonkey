@@ -1,6 +1,6 @@
 ---
 name: adu-plan-review
-description: "City-side ADU plan review — the flip side of adu-corrections-flow. Takes a plan binder PDF + city name, reviews each sheet against code-grounded checklists, checks state and city compliance, and generates a draft corrections letter with confidence flags and reviewer blanks. Coordinates three sub-skills (california-adu for state law, adu-city-research OR a dedicated city skill for city rules, adu-targeted-page-viewer for plan extraction). Triggers when a city plan checker uploads a plan binder for AI-assisted review."
+description: "City-side ADU plan review — the flip side of adu-corrections-flow. Takes a plan binder PDF + city name, reviews each sheet against code-grounded checklists, checks state and city compliance, and generates a draft corrections letter with confidence flags and reviewer blanks. Coordinates three sub-skills (massachusetts-adu for state law, ma-city-research OR a dedicated city skill for city rules, adu-targeted-page-viewer for plan extraction). Triggers when a city plan checker uploads a plan binder for AI-assisted review."
 ---
 
 # ADU Plan Review — City Corrections Generator
@@ -21,8 +21,8 @@ Same domain knowledge, opposite direction.
 | Skill | Role | When |
 |-------|------|------|
 | `adu-targeted-page-viewer` | Extract PDF → PNGs + sheet manifest | Phase 1 |
-| `california-adu` | State-level code compliance (28 reference files, offline) | Phase 3A |
-| City-specific skill **OR** `adu-city-research` | City rules — see City Routing below | Phase 3B |
+| `massachusetts-adu` | State-level code compliance (28 reference files, offline) | Phase 3A |
+| City-specific skill **OR** `ma-city-research` | City rules — see City Routing below | Phase 3B |
 
 ## City Routing
 
@@ -34,7 +34,7 @@ Input: city_name
 IF dedicated city skill exists (e.g., placentia-adu/):
   → Tier 3: Load city skill reference files (offline, fast, ~30 sec)
 ELSE:
-  → Tier 2: Run adu-city-research
+  → Tier 2: Run ma-city-research
     → Mode 1 (Discovery): WebSearch for city URLs (~30 sec)
     → Mode 2 (Extraction): WebFetch discovered URLs (~60-90 sec)
     → Mode 3 (Browser Fallback): Only if extraction has gaps (~2-3 min)
@@ -42,7 +42,7 @@ ELSE:
 
 **How to detect onboarded cities:** Check for a city skill directory at `skill/{city-slug}-adu/SKILL.md`. If it exists, the city is onboarded. If not, fall back to web research.
 
-**Tier 1 (state law only)** is always available — it's the `california-adu` skill. Even without any city knowledge, state law catches ~70% of common corrections.
+**Tier 1 (state law only)** is always available — it's the `massachusetts-adu` skill. Even without any city knowledge, state law catches ~70% of common corrections.
 
 ## Inputs
 
@@ -131,13 +131,13 @@ After Phase 2 completes, launch two concurrent subagents to verify findings agai
 
 #### 3A: State Law Verification
 
-- **Skill:** `california-adu`
+- **Skill:** `massachusetts-adu`
 - **Input:** Read all `findings-*.json` files from the output directory. Focus on `FAIL` and `UNCLEAR` findings.
-- **Task:** For each finding, look up the cited code section in the california-adu reference files. Verify: Is this actually required by state law? What are the exact thresholds? Are there ADU-specific exceptions?
+- **Task:** For each finding, look up the cited code section in the massachusetts-adu reference files. Verify: Is this actually required by state law? What are the exact thresholds? Are there ADU-specific exceptions?
 - **Output:** Write `output/state_compliance.json` — per-finding code verification with exact citations
 - **Return:** Short summary only (e.g., "Done, verified 18 findings against state law, wrote state_compliance.json")
 
-Why this matters: The checklist reference files cite code sections, but the `california-adu` skill has the detailed rules with exceptions and thresholds. Phase 3A catches false positives — e.g., the checklist flags a 3-foot setback, but the ADU is a conversion and conversions have no setback requirement.
+Why this matters: The checklist reference files cite code sections, but the `massachusetts-adu` skill has the detailed rules with exceptions and thresholds. Phase 3A catches false positives — e.g., the checklist flags a 3-foot setback, but the ADU is a conversion and conversions have no setback requirement.
 
 #### 3B: City Rules
 
@@ -151,7 +151,7 @@ Route based on City Routing decision (see above).
 
 **If web research (Tier 2):**
 - Read all `findings-*.json` files from the output directory
-- Run `adu-city-research` Mode 1 → Mode 2 → optional Mode 3
+- Run `ma-city-research` Mode 1 → Mode 2 → optional Mode 3
 - Check findings against discovered city requirements
 - Slower — ~90 sec to 3 min
 
@@ -243,8 +243,8 @@ See `references/output-schemas.md` for full JSON schema.
 
 | Skill | Role | Reference |
 |-------|------|-----------|
-| `california-adu` | State law (Phase 3A) | `california-adu/AGENTS.md` — 28 reference files |
-| `adu-city-research` | City rules via web (Phase 3B Tier 2) | Modes 1/2/3 in its SKILL.md |
+| `massachusetts-adu` | State law (Phase 3A) | `massachusetts-adu/AGENTS.md` — 28 reference files |
+| `ma-city-research` | City rules via web (Phase 3B Tier 2) | Modes 1/2/3 in its SKILL.md |
 | `adu-targeted-page-viewer` | Plan extraction (Phase 1) | Sheet manifest workflow in its SKILL.md |
 
 ## Important Notes
@@ -252,5 +252,5 @@ See `references/output-schemas.md` for full JSON schema.
 - **No false positives.** A city tool that generates incorrect corrections destroys trust. Phase 4's filter is designed to DROP findings that lack code basis rather than include them with low confidence. Err on the side of missing something (the human reviewer catches it) rather than flagging something incorrectly.
 - **Reviewer blanks > AI guesses.** For structural, engineering, and judgment-call items, insert `[REVIEWER: describe what needs human assessment]` rather than attempting an assessment. The AI's job is the repeatable 60%, not the expert 40%.
 - **Objective standards only.** Per Gov. Code § 66314(b)(1), ADUs can only be subject to objective (measurable, verifiable) standards. If a potential finding requires subjective judgment ("design doesn't match neighborhood character"), do NOT include it. This is the law.
-- **State preemption.** State law sets minimum ADU rights. If city rules are MORE restrictive than state law, flag the conflict — the state law prevails. The `california-adu` skill is the authority on state requirements.
+- **State preemption.** State law sets minimum ADU rights. If city rules are MORE restrictive than state law, flag the conflict — the state law prevails. The `massachusetts-adu` skill is the authority on state requirements.
 - **Two confidence dimensions.** Every finding has both code confidence (is this legally required?) and visual confidence (am I right about what I see?). Both must be reported. A reviewer needs to know "the law is clear but I'm not sure what I see" vs. "I can clearly see this but I'm not sure it's required."

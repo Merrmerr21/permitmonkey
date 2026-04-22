@@ -1,10 +1,10 @@
-# Plan: Supabase Realtime for CrossBeam
+# Plan: Supabase Realtime for PermitMonkey
 
 ## Status: READY TO IMPLEMENT (not yet started)
 
 ## Why
 
-CrossBeam currently uses **polling** (2-3 second intervals) to detect status changes and new messages. This works but:
+PermitMonkey currently uses **polling** (2-3 second intervals) to detect status changes and new messages. This works but:
 - Burns database queries every 2-3 seconds per active user
 - Adds 5-7 seconds of latency to detect completion
 - Feels sluggish compared to Mako (which uses Realtime and feels instant)
@@ -32,7 +32,7 @@ useEffect(() => {
 
   const interval = setInterval(async () => {
     const { data } = await supabase
-      .schema('crossbeam')
+      .schema('permitmonkey')
       .from('projects')
       .select('status, error_message')
       .eq('id', project.id)
@@ -53,7 +53,7 @@ useEffect(() => {
 useEffect(() => {
   const interval = setInterval(async () => {
     const { data } = await supabase
-      .schema('crossbeam')
+      .schema('permitmonkey')
       .from('messages')
       .select('*')
       .eq('project_id', projectId)
@@ -85,7 +85,7 @@ useEffect(() => {
       'postgres_changes',
       {
         event: 'UPDATE',
-        schema: 'crossbeam',
+        schema: 'permitmonkey',
         table: 'projects',
         filter: `id=eq.${project.id}`,
       },
@@ -107,12 +107,12 @@ useEffect(() => {
 ```
 
 **Key differences from Mako:**
-- Schema is `crossbeam` not `mako`
+- Schema is `permitmonkey` not `mako`
 - We update local state directly (Mako calls `router.refresh()`)
 - We handle more statuses: `processing`, `processing-phase1`, `processing-phase2`, `awaiting-answers`, `completed`, `failed`
 - We read `error_message` from the payload too
 
-**Why update state instead of `router.refresh()`?** CrossBeam's project page is a single client component that conditionally renders based on `project.status`. Updating state triggers a re-render instantly. Mako's page is a server component that needs a full refresh. Both approaches work — we match our architecture.
+**Why update state instead of `router.refresh()`?** PermitMonkey's project page is a single client component that conditionally renders based on `project.status`. Updating state triggers a re-render instantly. Mako's page is a server component that needs a full refresh. Both approaches work — we match our architecture.
 
 ### 2. Messages Subscription (live activity stream + BACKUP completion trigger)
 
@@ -127,7 +127,7 @@ useEffect(() => {
       'postgres_changes',
       {
         event: 'INSERT',
-        schema: 'crossbeam',
+        schema: 'permitmonkey',
         table: 'messages',
         filter: `project_id=eq.${projectId}`,
       },
@@ -176,25 +176,25 @@ useEffect(() => {
 **CRITICAL FIRST STEP.** Without this, no Realtime events fire.
 
 ```sql
--- Enable Realtime on CrossBeam tables
-ALTER PUBLICATION supabase_realtime ADD TABLE crossbeam.projects;
-ALTER PUBLICATION supabase_realtime ADD TABLE crossbeam.messages;
+-- Enable Realtime on PermitMonkey tables
+ALTER PUBLICATION supabase_realtime ADD TABLE permitmonkey.projects;
+ALTER PUBLICATION supabase_realtime ADD TABLE permitmonkey.messages;
 ```
 
-**Verification:** Currently the publication only includes `mako.projects` and `mako.messages` (confirmed via query). CrossBeam tables are not in the publication.
+**Verification:** Currently the publication only includes `mako.projects` and `mako.messages` (confirmed via query). PermitMonkey tables are not in the publication.
 
 Run via Supabase MCP `apply_migration` or directly in SQL editor.
 
 ### RLS Consideration
 
-Supabase Realtime respects Row Level Security. The `crossbeam.projects` and `crossbeam.messages` tables already have RLS policies that allow authenticated users to read their own data. Since the frontend Supabase client uses the anon key + user JWT, Realtime will only push events for rows the user can see. No changes needed.
+Supabase Realtime respects Row Level Security. The `permitmonkey.projects` and `permitmonkey.messages` tables already have RLS policies that allow authenticated users to read their own data. Since the frontend Supabase client uses the anon key + user JWT, Realtime will only push events for rows the user can see. No changes needed.
 
 **However:** Verify that the existing SELECT policies on both tables work with Realtime. The agent script in the sandbox uses the `service_role` key to INSERT messages and UPDATE project status — those writes bypass RLS. The Realtime subscription on the frontend uses the anon key — it needs SELECT permission. Check:
 
 ```sql
 -- Verify SELECT policies exist
 SELECT * FROM pg_policies
-WHERE schemaname = 'crossbeam'
+WHERE schemaname = 'permitmonkey'
 AND tablename IN ('projects', 'messages')
 AND cmd = 'SELECT';
 ```
@@ -203,12 +203,12 @@ If no SELECT policy exists for the `authenticated` role, add one:
 
 ```sql
 -- Only if missing:
-CREATE POLICY "Users can read own projects" ON crossbeam.projects
+CREATE POLICY "Users can read own projects" ON permitmonkey.projects
   FOR SELECT USING (auth.uid() = user_id);
 
-CREATE POLICY "Users can read own project messages" ON crossbeam.messages
+CREATE POLICY "Users can read own project messages" ON permitmonkey.messages
   FOR SELECT USING (
-    project_id IN (SELECT id FROM crossbeam.projects WHERE user_id = auth.uid())
+    project_id IN (SELECT id FROM permitmonkey.projects WHERE user_id = auth.uid())
   );
 ```
 
@@ -216,8 +216,8 @@ CREATE POLICY "Users can read own project messages" ON crossbeam.messages
 
 ### Step 1: Database migration (~1 min)
 ```sql
-ALTER PUBLICATION supabase_realtime ADD TABLE crossbeam.projects;
-ALTER PUBLICATION supabase_realtime ADD TABLE crossbeam.messages;
+ALTER PUBLICATION supabase_realtime ADD TABLE permitmonkey.projects;
+ALTER PUBLICATION supabase_realtime ADD TABLE permitmonkey.messages;
 ```
 
 ### Step 2: Verify RLS policies (~2 min)
@@ -268,9 +268,9 @@ The database migration is non-destructive — adding tables to the publication d
 
 ## Gotchas from Past Experience
 
-1. **Schema name matters.** Every `.on('postgres_changes', { schema: 'crossbeam', ... })` must exactly match. If you write `schema: 'public'` it silently receives zero events.
+1. **Schema name matters.** Every `.on('postgres_changes', { schema: 'permitmonkey', ... })` must exactly match. If you write `schema: 'public'` it silently receives zero events.
 
-2. **Publication must include the table.** Without `ALTER PUBLICATION supabase_realtime ADD TABLE crossbeam.projects`, the subscription connects but never fires. This is the #1 cause of "Realtime doesn't work."
+2. **Publication must include the table.** Without `ALTER PUBLICATION supabase_realtime ADD TABLE permitmonkey.projects`, the subscription connects but never fires. This is the #1 cause of "Realtime doesn't work."
 
 3. **Filter syntax is specific.** `filter: 'id=eq.${projectId}'` — no spaces, exact format. Wrong filter = silent failure.
 

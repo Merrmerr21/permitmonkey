@@ -99,7 +99,7 @@ export function ProjectDetailClient({
         'postgres_changes',
         {
           event: 'UPDATE',
-          schema: 'crossbeam',
+          schema: 'permitmonkey',
           table: 'projects',
           filter: `id=eq.${project.id}`,
         },
@@ -116,7 +116,7 @@ export function ProjectDetailClient({
         // Catch-up fetch: grab current status in case we missed the event during handshake
         if (status === 'SUBSCRIBED' && shouldListenRef.current) {
           supabase
-            .schema('crossbeam')
+            .schema('permitmonkey')
             .from('projects')
             .select('status, error_message')
             .eq('id', project.id)

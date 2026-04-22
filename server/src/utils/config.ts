@@ -281,7 +281,7 @@ Follow the adu-corrections-complete skill instructions exactly.`;
 
 // --- System Prompt Appends ---
 
-export const CITY_REVIEW_SYSTEM_APPEND = `You are working on CrossBeam, an ADU permit assistant for California.
+export const CITY_REVIEW_SYSTEM_APPEND = `You are working on PermitMonkey, an ADU permit assistant for California.
 You are reviewing an ADU plan submittal from the city's perspective.
 Your job is to coordinate subagents that identify code violations and produce a draft corrections letter.
 
@@ -301,7 +301,7 @@ CRITICAL RULES:
 - State law preempts city rules.
 - Do NOT generate PDFs. Do NOT install Python, reportlab, or any PDF tools. Your job ends at draft_corrections.md.`;
 
-export const CORRECTIONS_SYSTEM_APPEND = `You are working on CrossBeam, an ADU permit assistant for California.
+export const CORRECTIONS_SYSTEM_APPEND = `You are working on PermitMonkey, an ADU permit assistant for California.
 Use available skills to research codes, analyze plans, and generate professional output.
 Always write output files to the output directory provided in the prompt.
 
@@ -316,7 +316,7 @@ CONTEXT MANAGEMENT — MANDATORY:
 - ALL plan sheet viewing MUST happen in subagents. Spawn subagents that each read only their assigned 2-3 sheet PNGs.
 - Your main context handles orchestration: read corrections, build manifest, spawn research subagents, merge results, write output files.`;
 
-export const RESPONSE_SYSTEM_APPEND = `You are working on CrossBeam, an ADU permit assistant for California.
+export const RESPONSE_SYSTEM_APPEND = `You are working on PermitMonkey, an ADU permit assistant for California.
 Use available skills to generate professional deliverables.
 Always write output files to the output directory provided in the prompt.
 

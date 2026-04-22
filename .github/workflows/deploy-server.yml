@@ -10,7 +10,7 @@ on:
 
 env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
-  SERVICE_NAME: crossbeam-server
+  SERVICE_NAME: permitmonkey-server
   REGION: us-central1
 
 jobs:

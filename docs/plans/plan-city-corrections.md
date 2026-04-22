@@ -14,7 +14,7 @@ Build an AI plan review assistant for cities that handles the repeatable 60% —
 
 ## The Insight: Same Knowledge Base, Opposite Direction
 
-CrossBeam already has the domain knowledge built out for the contractor side:
+PermitMonkey already has the domain knowledge built out for the contractor side:
 
 | Asset | What It Knows | Status |
 |-------|--------------|--------|
@@ -30,7 +30,7 @@ The contractor flow uses all of this to **interpret** corrections. The city flow
 
 ```
                         ┌─────────────────────┐
-                        │     CROSSBEAM        │
+                        │     PERMITMONKEY        │
                         │  ADU Permit Platform  │
                         └──────────┬──────────┘
                                    │
@@ -145,11 +145,11 @@ This is the same pattern we already proved at the state level — just applied p
 ### The Demo Narrative
 The city side doesn't need to be fully built to be the most impressive part of the demo:
 
-1. Show the contractor side working (Flow 2) — "Here's a real corrections letter from Placentia. CrossBeam interprets every item, researches the codes, and builds the response package."
+1. Show the contractor side working (Flow 2) — "Here's a real corrections letter from Placentia. PermitMonkey interprets every item, researches the codes, and builds the response package."
 
-2. Then flip it: "But what if the city had CrossBeam BEFORE they sent that letter?" Show the same plan binder going through the city-side flow. AI generates a draft corrections letter. Compare it side-by-side with the real one from CSG Consultants.
+2. Then flip it: "But what if the city had PermitMonkey BEFORE they sent that letter?" Show the same plan binder going through the city-side flow. AI generates a draft corrections letter. Compare it side-by-side with the real one from CSG Consultants.
 
-3. The punchline: "CrossBeam caught 10 of 14 items before a human reviewer touched it. That's 2 hours of plan review done in 7 minutes."
+3. The punchline: "PermitMonkey caught 10 of 14 items before a human reviewer touched it. That's 2 hours of plan review done in 7 minutes."
 
 4. Show the tiered model: "Any California city gets state-level review for free. Cities that onboard get a dedicated knowledge base — like this one we built for Buena Park."
 
@@ -170,7 +170,7 @@ For a **demo-only** version (generates letter from known patterns, limited check
 2. **Buena Park skill** — Worth building a Tier 3 skill for the demo, or just show the concept with Tier 1 + Tier 2?
    - Recommendation: Build it if time allows (2-4 hours). Having your buddy the mayor as a real reference point is worth a lot.
 
-3. **Letter formatting** — Match the exact city letter format (like the CSG Consultants layout), or use our own CrossBeam format?
+3. **Letter formatting** — Match the exact city letter format (like the CSG Consultants layout), or use our own PermitMonkey format?
    - Recommendation: Our own format is fine. The point is the content, not mimicking the city's letterhead.
 
 4. **UI split** — "Are you a contractor?" vs "Are you a city?" landing page split. Worth building for the demo?
@@ -183,7 +183,7 @@ For a **demo-only** version (generates letter from known patterns, limited check
 - If AI cuts review time by 50%: each plan checker effectively doubles capacity
 - City with 2 plan checkers processing 4 permits/day → 8 permits/day
 - At $5K-10K average permit fees: that's $20K-60K more revenue/day potential throughput
-- Cost of CrossBeam for a city: fraction of a plan checker salary
+- Cost of PermitMonkey for a city: fraction of a plan checker salary
 - ROI: obvious
 
 The real sell isn't even the money — it's the **speed**. Contractors hate waiting 4-6 weeks for plan check. If the city can turn reviews around in days instead of weeks, that's a competitive advantage for the city itself. Contractors choose to build in cities that are fast.

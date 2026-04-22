@@ -44,18 +44,18 @@ E2E tests run after both V and F are passing L2+.
 
 ```sql
 -- Test 1: Schema exists
-SELECT schema_name FROM information_schema.schemata WHERE schema_name = 'crossbeam';
+SELECT schema_name FROM information_schema.schemata WHERE schema_name = 'permitmonkey';
 -- PASS: returns 1 row
 
 -- Test 2: All 5 tables exist
 SELECT table_name FROM information_schema.tables
-WHERE table_schema = 'crossbeam'
+WHERE table_schema = 'permitmonkey'
 ORDER BY table_name;
 -- PASS: contractor_answers, files, messages, outputs, projects (5 rows)
 
 -- Test 3: Projects table has correct status CHECK constraint
 SELECT conname, consrc FROM pg_catalog.pg_constraint
-WHERE conrelid = 'crossbeam.projects'::regclass AND contype = 'c'
+WHERE conrelid = 'permitmonkey.projects'::regclass AND contype = 'c'
   AND conname LIKE '%status%';
 -- PASS: Returns constraint with all 8 states:
 -- ready, uploading, processing, processing-phase1, awaiting-answers,
@@ -63,12 +63,12 @@ WHERE conrelid = 'crossbeam.projects'::regclass AND contype = 'c'
 
 -- Test 4: Outputs table has flow_phase column
 SELECT column_name, data_type FROM information_schema.columns
-WHERE table_schema = 'crossbeam' AND table_name = 'outputs' AND column_name = 'flow_phase';
+WHERE table_schema = 'permitmonkey' AND table_name = 'outputs' AND column_name = 'flow_phase';
 -- PASS: returns 1 row, data_type = 'text'
 
 -- Test 5: Messages uses BIGSERIAL (for efficient polling)
 SELECT column_name, data_type, column_default FROM information_schema.columns
-WHERE table_schema = 'crossbeam' AND table_name = 'messages' AND column_name = 'id';
+WHERE table_schema = 'permitmonkey' AND table_name = 'messages' AND column_name = 'id';
 -- PASS: column_default contains 'nextval' (bigserial)
 ```
 
@@ -89,26 +89,26 @@ WHERE table_schema = 'crossbeam' AND table_name = 'messages' AND column_name = '
 ```sql
 -- Test 6: RLS is enabled on all 5 tables
 SELECT tablename, rowsecurity FROM pg_tables
-WHERE schemaname = 'crossbeam';
+WHERE schemaname = 'permitmonkey';
 -- PASS: all 5 rows have rowsecurity = true
 
 -- Test 7: Service role can INSERT into projects
 -- (Run via Supabase MCP which uses service role)
-INSERT INTO crossbeam.projects (user_id, flow_type, project_name, city, status)
+INSERT INTO permitmonkey.projects (user_id, flow_type, project_name, city, status)
 VALUES ('00000000-0000-0000-0000-000000000000'::uuid, 'city-review', 'TEST-L1s', 'Test City', 'ready')
 RETURNING id;
 -- PASS: returns UUID (service role bypasses RLS)
 
 -- Test 8: Service role can INSERT into messages
-INSERT INTO crossbeam.messages (project_id, role, content)
-VALUES ((SELECT id FROM crossbeam.projects WHERE project_name = 'TEST-L1s'), 'system', 'Test message')
+INSERT INTO permitmonkey.messages (project_id, role, content)
+VALUES ((SELECT id FROM permitmonkey.projects WHERE project_name = 'TEST-L1s'), 'system', 'Test message')
 RETURNING id;
 -- PASS: returns bigint ID
 
 -- Test 9: Service role can INSERT into outputs
-INSERT INTO crossbeam.outputs (project_id, flow_phase, raw_artifacts)
+INSERT INTO permitmonkey.outputs (project_id, flow_phase, raw_artifacts)
 VALUES (
-  (SELECT id FROM crossbeam.projects WHERE project_name = 'TEST-L1s'),
+  (SELECT id FROM permitmonkey.projects WHERE project_name = 'TEST-L1s'),
   'review',
   '{"test": true}'::jsonb
 )
@@ -116,9 +116,9 @@ RETURNING id;
 -- PASS: returns UUID
 
 -- Test 10: Service role can INSERT into contractor_answers
-INSERT INTO crossbeam.contractor_answers (project_id, question_key, question_text)
+INSERT INTO permitmonkey.contractor_answers (project_id, question_key, question_text)
 VALUES (
-  (SELECT id FROM crossbeam.projects WHERE project_name = 'TEST-L1s'),
+  (SELECT id FROM permitmonkey.projects WHERE project_name = 'TEST-L1s'),
   'test-q1',
   'What is the existing roof material?'
 )
@@ -126,7 +126,7 @@ RETURNING id;
 -- PASS: returns UUID
 
 -- Cleanup
-DELETE FROM crossbeam.projects WHERE project_name = 'TEST-L1s';
+DELETE FROM permitmonkey.projects WHERE project_name = 'TEST-L1s';
 -- Cascades to files, messages, outputs, contractor_answers
 ```
 
@@ -144,20 +144,20 @@ DELETE FROM crossbeam.projects WHERE project_name = 'TEST-L1s';
 
 ```sql
 -- Test 11: Judge account exists in auth.users
-SELECT id, email FROM auth.users WHERE email = 'judge@crossbeam.app';
+SELECT id, email FROM auth.users WHERE email = 'judge@permitmonkey.app';
 -- PASS: returns 1 row with UUID
 
 -- Test 12: Demo projects exist and are linked to judge
 SELECT p.id, p.flow_type, p.project_name, p.is_demo, p.status
-FROM crossbeam.projects p
+FROM permitmonkey.projects p
 JOIN auth.users u ON p.user_id = u.id
-WHERE u.email = 'judge@crossbeam.app' AND p.is_demo = true;
+WHERE u.email = 'judge@permitmonkey.app' AND p.is_demo = true;
 -- PASS: returns 2 rows (city-review + corrections-analysis)
 
 -- Test 13: Demo projects have linked files
 SELECT p.project_name, f.file_type, f.filename, f.storage_path
-FROM crossbeam.files f
-JOIN crossbeam.projects p ON f.project_id = p.id
+FROM permitmonkey.files f
+JOIN permitmonkey.projects p ON f.project_id = p.id
 WHERE p.is_demo = true
 ORDER BY p.project_name, f.file_type;
 -- PASS: returns 3 rows:
@@ -165,7 +165,7 @@ ORDER BY p.project_name, f.file_type;
 --   corrections project: 1 plan-binder + 1 corrections-letter
 
 -- Test 14: Status transitions work
-UPDATE crossbeam.projects
+UPDATE permitmonkey.projects
 SET status = 'processing-phase1'
 WHERE project_name LIKE '%-L2s-test%';
 -- If you inserted a test row, PASS if no CHECK violation
@@ -178,25 +178,25 @@ DECLARE
   s TEXT;
   test_id UUID;
 BEGIN
-  INSERT INTO crossbeam.projects (user_id, flow_type, project_name, status)
+  INSERT INTO permitmonkey.projects (user_id, flow_type, project_name, status)
   VALUES ('00000000-0000-0000-0000-000000000000'::uuid, 'city-review', 'STATUS-TEST', 'ready')
   RETURNING id INTO test_id;
 
   FOREACH s IN ARRAY statuses LOOP
-    UPDATE crossbeam.projects SET status = s WHERE id = test_id;
+    UPDATE permitmonkey.projects SET status = s WHERE id = test_id;
   END LOOP;
 
-  DELETE FROM crossbeam.projects WHERE id = test_id;
+  DELETE FROM permitmonkey.projects WHERE id = test_id;
   RAISE NOTICE 'All 8 status values accepted';
 END $$;
 -- PASS: "All 8 status values accepted" (no CHECK violation)
 ```
 
 **Storage bucket tests (manual or via Supabase Dashboard):**
-- [ ] `crossbeam-uploads` bucket exists
-- [ ] `crossbeam-outputs` bucket exists
-- [ ] `crossbeam-demo-assets` bucket exists (public read)
-- [ ] Demo PDFs uploaded to `crossbeam-demo-assets`
+- [ ] `permitmonkey-uploads` bucket exists
+- [ ] `permitmonkey-outputs` bucket exists
+- [ ] `permitmonkey-demo-assets` bucket exists (public read)
+- [ ] Demo PDFs uploaded to `permitmonkey-demo-assets`
 
 **What this catches:**
 - Judge account not created
@@ -215,11 +215,11 @@ END $$;
 
 ```bash
 # Test 16: TypeScript compiles
-cd /Users/breez/openai-demo/CC-Crossbeam/server && npx tsc --noEmit
+cd /Users/breez/openai-demo/permitmonkey/server && npx tsc --noEmit
 # PASS: exits 0, no errors
 
 # Test 17: Server boots and responds to health check
-cd /Users/breez/openai-demo/CC-Crossbeam/server && \
+cd /Users/breez/openai-demo/permitmonkey/server && \
   timeout 10 node --env-file ../.env.local dist/index.js &
 SERVER_PID=$!
 sleep 2
@@ -245,7 +245,7 @@ kill $SERVER_PID
 
 ```bash
 # Test 18: Config module loads without errors
-cd /Users/breez/openai-demo/CC-Crossbeam/server && \
+cd /Users/breez/openai-demo/permitmonkey/server && \
   node --env-file ../.env.local -e "
     import('./dist/utils/config.js').then(c => {
       console.log('Flow types:', Object.keys(c.FLOW_SKILLS || {}));
@@ -260,7 +260,7 @@ cd /Users/breez/openai-demo/CC-Crossbeam/server && \
 # PASS: Shows flow types, model, turns, budget, and non-empty prompt
 
 # Test 19: Generate route rejects invalid requests
-cd /Users/breez/openai-demo/CC-Crossbeam/server && \
+cd /Users/breez/openai-demo/permitmonkey/server && \
   timeout 10 node --env-file ../.env.local dist/index.js &
 SERVER_PID=$!
 sleep 2
@@ -303,7 +303,7 @@ kill $SERVER_PID
 
 ```bash
 # Test 20: Supabase service module loads and connects
-cd /Users/breez/openai-demo/CC-Crossbeam/server && \
+cd /Users/breez/openai-demo/permitmonkey/server && \
   node --env-file ../.env.local -e "
     import('./dist/services/supabase.js').then(async (svc) => {
       // Test: Can read demo projects
@@ -363,14 +363,14 @@ cd /Users/breez/openai-demo/CC-Crossbeam/server && \
 **Cleanup after test:**
 ```sql
 -- Remove test messages and outputs (keep demo projects intact)
-DELETE FROM crossbeam.messages WHERE content = 'L2v test message';
-DELETE FROM crossbeam.outputs WHERE raw_artifacts = '{"test": true}'::jsonb;
-DELETE FROM crossbeam.contractor_answers WHERE question_key = 'test-q1';
-UPDATE crossbeam.projects SET status = 'ready' WHERE is_demo = true;
+DELETE FROM permitmonkey.messages WHERE content = 'L2v test message';
+DELETE FROM permitmonkey.outputs WHERE raw_artifacts = '{"test": true}'::jsonb;
+DELETE FROM permitmonkey.contractor_answers WHERE question_key = 'test-q1';
+UPDATE permitmonkey.projects SET status = 'ready' WHERE is_demo = true;
 ```
 
 **What this catches:**
-- Schema reference wrong (`mako` instead of `crossbeam`)
+- Schema reference wrong (`mako` instead of `permitmonkey`)
 - Table/column names don't match the DDL (e.g., `client_files` vs `files`)
 - `flow_phase` not being set on output inserts
 - `raw_artifacts` JSONB handling wrong
@@ -385,7 +385,7 @@ UPDATE crossbeam.projects SET status = 'ready' WHERE is_demo = true;
 
 ```bash
 # Test 21: All 9 skill directories exist with content
-cd /Users/breez/openai-demo/CC-Crossbeam/server && \
+cd /Users/breez/openai-demo/permitmonkey/server && \
   for skill in california-adu adu-plan-review adu-corrections-flow adu-corrections-complete \
     adu-targeted-page-viewer adu-city-research adu-corrections-pdf buena-park-adu placentia-adu; do
     if [ -d "skills/$skill" ]; then
@@ -398,12 +398,12 @@ cd /Users/breez/openai-demo/CC-Crossbeam/server && \
 # PASS: all 9 skills present with file counts
 
 # Test 22: No broken symlinks (skills should be RESOLVED copies, not symlinks)
-cd /Users/breez/openai-demo/CC-Crossbeam/server && \
+cd /Users/breez/openai-demo/permitmonkey/server && \
   find skills/ -type l 2>/dev/null | head -5
 # PASS: no output (no symlinks — all resolved copies)
 
 # Test 23: Skill loading function works
-cd /Users/breez/openai-demo/CC-Crossbeam/server && \
+cd /Users/breez/openai-demo/permitmonkey/server && \
   node --env-file ../.env.local -e "
     import('./dist/services/sandbox.js').then(svc => {
       // Test reading skills for each flow type
@@ -446,7 +446,7 @@ cd /Users/breez/openai-demo/CC-Crossbeam/server && \
 ```bash
 # Test 24: Full sandbox lifecycle with a trivial prompt
 # This tests: sandbox creation, SDK install, skill copy, agent run, message streaming, output extraction
-cd /Users/breez/openai-demo/CC-Crossbeam/server && \
+cd /Users/breez/openai-demo/permitmonkey/server && \
   timeout 10 node --env-file ../.env.local dist/index.js &
 SERVER_PID=$!
 sleep 2
@@ -469,12 +469,12 @@ sleep 60
 
 ```sql
 -- Check if the server is streaming messages
-SELECT COUNT(*) as msg_count FROM crossbeam.messages
+SELECT COUNT(*) as msg_count FROM permitmonkey.messages
 WHERE project_id = 'a0000000-0000-0000-0000-000000000001';
 -- PASS: msg_count > 0 (server is streaming)
 
 -- Check project status
-SELECT status FROM crossbeam.projects
+SELECT status FROM permitmonkey.projects
 WHERE id = 'a0000000-0000-0000-0000-000000000001';
 -- 'processing' is OK (still running)
 -- 'completed' is great (finished fast)
@@ -488,12 +488,12 @@ SELECT id, flow_phase, corrections_letter_md IS NOT NULL as has_letter,
        review_checklist_json IS NOT NULL as has_checklist,
        raw_artifacts != '{}'::jsonb as has_artifacts,
        agent_cost_usd, agent_turns, agent_duration_ms
-FROM crossbeam.outputs
+FROM permitmonkey.outputs
 WHERE project_id = 'a0000000-0000-0000-0000-000000000001';
 -- PASS: 1 row, flow_phase = 'review', has_letter = true, has_artifacts = true
 
 -- Verify status is completed
-SELECT status, error_message FROM crossbeam.projects
+SELECT status, error_message FROM permitmonkey.projects
 WHERE id = 'a0000000-0000-0000-0000-000000000001';
 -- PASS: status = 'completed', error_message IS NULL
 ```
@@ -504,9 +504,9 @@ kill $SERVER_PID
 
 **Reset after test:**
 ```sql
-UPDATE crossbeam.projects SET status = 'ready' WHERE id = 'a0000000-0000-0000-0000-000000000001';
-DELETE FROM crossbeam.messages WHERE project_id = 'a0000000-0000-0000-0000-000000000001';
-DELETE FROM crossbeam.outputs WHERE project_id = 'a0000000-0000-0000-0000-000000000001';
+UPDATE permitmonkey.projects SET status = 'ready' WHERE id = 'a0000000-0000-0000-0000-000000000001';
+DELETE FROM permitmonkey.messages WHERE project_id = 'a0000000-0000-0000-0000-000000000001';
+DELETE FROM permitmonkey.outputs WHERE project_id = 'a0000000-0000-0000-0000-000000000001';
 ```
 
 **What this catches:**
@@ -543,37 +543,37 @@ curl -s -X POST http://localhost:8080/generate \
 
 ```sql
 -- After ~15 min: Check Phase 1 completed
-SELECT status FROM crossbeam.projects WHERE id = 'a0000000-0000-0000-0000-000000000002';
+SELECT status FROM permitmonkey.projects WHERE id = 'a0000000-0000-0000-0000-000000000002';
 -- PASS: status = 'awaiting-answers'
 
 -- Check contractor questions were populated
 SELECT question_key, question_text, question_type, is_answered
-FROM crossbeam.contractor_answers
+FROM permitmonkey.contractor_answers
 WHERE project_id = 'a0000000-0000-0000-0000-000000000002';
 -- PASS: 1+ rows, all is_answered = false
 
 -- Check Phase 1 output record exists
 SELECT flow_phase, corrections_analysis_json IS NOT NULL as has_analysis,
        contractor_questions_json IS NOT NULL as has_questions
-FROM crossbeam.outputs
+FROM permitmonkey.outputs
 WHERE project_id = 'a0000000-0000-0000-0000-000000000002';
 -- PASS: flow_phase = 'analysis', has_analysis = true, has_questions = true
 ```
 
 ```sql
 -- Simulate answering questions (what the frontend form does)
-UPDATE crossbeam.contractor_answers
+UPDATE permitmonkey.contractor_answers
 SET answer_text = 'Standard comp shingle, installed 2019',
     is_answered = true,
     updated_at = now()
 WHERE project_id = 'a0000000-0000-0000-0000-000000000002'
   AND question_key = (
-    SELECT question_key FROM crossbeam.contractor_answers
+    SELECT question_key FROM permitmonkey.contractor_answers
     WHERE project_id = 'a0000000-0000-0000-0000-000000000002'
     LIMIT 1
   );
 -- (Repeat for other questions or mark all answered)
-UPDATE crossbeam.contractor_answers
+UPDATE permitmonkey.contractor_answers
 SET answer_text = 'Yes', is_answered = true, updated_at = now()
 WHERE project_id = 'a0000000-0000-0000-0000-000000000002' AND is_answered = false;
 ```
@@ -592,14 +592,14 @@ curl -s -X POST http://localhost:8080/generate \
 
 ```sql
 -- After ~8-10 min: Check Phase 2 completed
-SELECT status FROM crossbeam.projects WHERE id = 'a0000000-0000-0000-0000-000000000002';
+SELECT status FROM permitmonkey.projects WHERE id = 'a0000000-0000-0000-0000-000000000002';
 -- PASS: status = 'completed'
 
 -- Check Phase 2 output record
 SELECT flow_phase, response_letter_md IS NOT NULL as has_response,
        professional_scope_md IS NOT NULL as has_scope,
        corrections_report_md IS NOT NULL as has_report
-FROM crossbeam.outputs
+FROM permitmonkey.outputs
 WHERE project_id = 'a0000000-0000-0000-0000-000000000002'
   AND flow_phase = 'response';
 -- PASS: all three have content
@@ -615,11 +615,11 @@ WHERE project_id = 'a0000000-0000-0000-0000-000000000002'
 
 ```bash
 # Test 25: TypeScript compiles
-cd /Users/breez/openai-demo/CC-Crossbeam/frontend && npx tsc --noEmit
+cd /Users/breez/openai-demo/permitmonkey/frontend && npx tsc --noEmit
 # PASS: exits 0
 
 # Test 26: Next.js build succeeds
-cd /Users/breez/openai-demo/CC-Crossbeam/frontend && npm run build
+cd /Users/breez/openai-demo/permitmonkey/frontend && npm run build
 # PASS: exits 0, no build errors
 
 # Note: build requires env vars. Create frontend/.env.local with:
@@ -644,7 +644,7 @@ cd /Users/breez/openai-demo/CC-Crossbeam/frontend && npm run build
 
 ```bash
 # Test 27: Dev server starts without crashing
-cd /Users/breez/openai-demo/CC-Crossbeam/frontend && \
+cd /Users/breez/openai-demo/permitmonkey/frontend && \
   timeout 15 npx next dev --port 3333 &
 DEV_PID=$!
 sleep 8
@@ -680,7 +680,7 @@ kill $DEV_PID 2>/dev/null
 
 ```bash
 # Test 31: Judge login via Supabase API (simulates what the button does)
-cd /Users/breez/openai-demo/CC-Crossbeam && \
+cd /Users/breez/openai-demo/permitmonkey && \
   node -e "
     import { createClient } from '@supabase/supabase-js';
     const sb = createClient(
@@ -688,8 +688,8 @@ cd /Users/breez/openai-demo/CC-Crossbeam && \
       process.env.SUPABASE_ANON_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
     );
     const { data, error } = await sb.auth.signInWithPassword({
-      email: 'judge@crossbeam.app',
-      password: 'crossbeam-hackathon-2026'
+      email: 'judge@permitmonkey.app',
+      password: 'permitmonkey-hackathon-2026'
     });
     if (error) {
       console.log('FAIL:', error.message);
@@ -701,7 +701,7 @@ cd /Users/breez/openai-demo/CC-Crossbeam && \
 
     // Test: can read demo projects with this token
     const { data: projects, error: projErr } = await sb
-      .schema('crossbeam')
+      .schema('permitmonkey')
       .from('projects')
       .select('*')
       .eq('is_demo', true);
@@ -714,7 +714,7 @@ cd /Users/breez/openai-demo/CC-Crossbeam && \
 
     // Test: can read messages for demo project
     const { data: msgs, error: msgErr } = await sb
-      .schema('crossbeam')
+      .schema('permitmonkey')
       .from('messages')
       .select('id, role, content')
       .eq('project_id', projects[0]?.id)
@@ -723,7 +723,7 @@ cd /Users/breez/openai-demo/CC-Crossbeam && \
 
     // Test: can read contractor_answers
     const { data: answers, error: ansErr } = await sb
-      .schema('crossbeam')
+      .schema('permitmonkey')
       .from('contractor_answers')
       .select('*')
       .eq('project_id', projects[1]?.id)
@@ -735,7 +735,7 @@ cd /Users/breez/openai-demo/CC-Crossbeam && \
 **What this catches:**
 - Judge account not created or wrong password
 - Anon key not working with RLS
-- `.schema('crossbeam')` not set (queries go to `public` schema by default — silent failure)
+- `.schema('permitmonkey')` not set (queries go to `public` schema by default — silent failure)
 - RLS blocking demo project reads (is_demo policy not working)
 - Message polling would fail in production
 
@@ -748,7 +748,7 @@ cd /Users/breez/openai-demo/CC-Crossbeam && \
 
 ```bash
 # Start dev server
-cd /Users/breez/openai-demo/CC-Crossbeam/frontend && \
+cd /Users/breez/openai-demo/permitmonkey/frontend && \
   timeout 120 npx next dev --port 3333 &
 DEV_PID=$!
 sleep 8
@@ -766,7 +766,7 @@ kill $DEV_PID 2>/dev/null
 
 **Browser-based tests (use Chrome MCP if available, otherwise manual):**
 
-- [ ] Login page renders with CrossBeam branding (Playfair Display headings, moss green CTA)
+- [ ] Login page renders with PermitMonkey branding (Playfair Display headings, moss green CTA)
 - [ ] "Sign in as a Judge" button works → redirects to /dashboard
 - [ ] Dashboard shows two persona cards (City Reviewer + Contractor)
 - [ ] City Reviewer card links to demo project detail page
@@ -795,7 +795,7 @@ kill $DEV_PID 2>/dev/null
 
 ```bash
 # Boot server
-cd /Users/breez/openai-demo/CC-Crossbeam/server && \
+cd /Users/breez/openai-demo/permitmonkey/server && \
   timeout 30 node --env-file ../.env.local dist/index.js &
 SERVER_PID=$!
 sleep 2
@@ -813,11 +813,11 @@ sleep 5
 
 ```sql
 -- Verify server updated project status
-SELECT status FROM crossbeam.projects WHERE id = 'a0000000-0000-0000-0000-000000000001';
+SELECT status FROM permitmonkey.projects WHERE id = 'a0000000-0000-0000-0000-000000000001';
 -- PASS: 'processing' (not 'ready' anymore)
 
 -- Verify server started inserting messages
-SELECT COUNT(*) FROM crossbeam.messages WHERE project_id = 'a0000000-0000-0000-0000-000000000001';
+SELECT COUNT(*) FROM permitmonkey.messages WHERE project_id = 'a0000000-0000-0000-0000-000000000001';
 -- PASS: count > 0
 ```
 
@@ -827,12 +827,12 @@ kill $SERVER_PID 2>/dev/null
 
 **Reset:**
 ```sql
-UPDATE crossbeam.projects SET status = 'ready' WHERE is_demo = true;
-DELETE FROM crossbeam.messages WHERE project_id IN (
-  SELECT id FROM crossbeam.projects WHERE is_demo = true
+UPDATE permitmonkey.projects SET status = 'ready' WHERE is_demo = true;
+DELETE FROM permitmonkey.messages WHERE project_id IN (
+  SELECT id FROM permitmonkey.projects WHERE is_demo = true
 );
-DELETE FROM crossbeam.outputs WHERE project_id IN (
-  SELECT id FROM crossbeam.projects WHERE is_demo = true
+DELETE FROM permitmonkey.outputs WHERE project_id IN (
+  SELECT id FROM permitmonkey.projects WHERE is_demo = true
 );
 ```
 
@@ -960,16 +960,16 @@ Ordered by likelihood (from agent SDK + Mako experience):
 
 | # | Failure | Symptom | Fix | Test Level |
 |---|---------|---------|-----|-----------|
-| 1 | `.schema('crossbeam')` missing | Queries return empty, no error | Add `.schema('crossbeam')` to every Supabase query (server + frontend) | L2v, L2f |
-| 2 | Schema name `mako` not renamed | "relation mako.xxx does not exist" | Global replace `mako` → `crossbeam` in supabase.ts | L2v |
-| 3 | Table name wrong | "relation crossbeam.client_files does not exist" | Rename `client_files` → `files`, match DDL | L2v |
+| 1 | `.schema('permitmonkey')` missing | Queries return empty, no error | Add `.schema('permitmonkey')` to every Supabase query (server + frontend) | L2v, L2f |
+| 2 | Schema name `mako` not renamed | "relation mako.xxx does not exist" | Global replace `mako` → `permitmonkey` in supabase.ts | L2v |
+| 3 | Table name wrong | "relation permitmonkey.client_files does not exist" | Rename `client_files` → `files`, match DDL | L2v |
 | 4 | Column name wrong | "column xxx does not exist" | Cross-check against plan-supabase-0213.md DDL | L2v |
 | 5 | `flow_phase` not set on output insert | CHECK constraint violation | Always include `flow_phase` ('review', 'analysis', 'response') | L2v |
 | 6 | Status CHECK violation | "new row violates check constraint" | Ensure all 8 states match DDL exactly | L1s |
 | 7 | Skills are symlinks not copies | Docker build fails or sandbox can't read skills | `cp -rL` (resolve symlinks) when copying skills | L3v |
 | 8 | VERCEL env vars missing | Sandbox creation fails with auth error | Set VERCEL_TEAM_ID, VERCEL_PROJECT_ID, VERCEL_TOKEN | L4v |
 | 9 | RLS blocks service role | Server can't insert messages/outputs | Verify using service role key (bypasses RLS) | L1s |
-| 10 | RLS blocks anon reads | Frontend gets empty results | Check `is_demo = true` policy, verify `.schema('crossbeam')` | L2f |
+| 10 | RLS blocks anon reads | Frontend gets empty results | Check `is_demo = true` policy, verify `.schema('permitmonkey')` | L2f |
 | 11 | Frontend env vars wrong | Supabase client can't connect | Check NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY | L2f |
 | 12 | ESM/CJS module conflict | "Cannot use import statement" or "require is not defined" | Ensure `"type": "module"` in package.json, use `.js` extensions in imports | L0v |
 | 13 | Next.js 16 breaking changes | Build errors from Mako patterns | Check Next.js migration guide, update deprecated APIs | L0f |
@@ -983,17 +983,17 @@ Ordered by likelihood (from agent SDK + Mako experience):
 ```sql
 -- Current state of all projects
 SELECT id, project_name, flow_type, status, is_demo, updated_at
-FROM crossbeam.projects ORDER BY updated_at DESC;
+FROM permitmonkey.projects ORDER BY updated_at DESC;
 
 -- Message count per project (is streaming working?)
 SELECT p.project_name, COUNT(m.id) as msg_count
-FROM crossbeam.projects p
-LEFT JOIN crossbeam.messages m ON m.project_id = p.id
+FROM permitmonkey.projects p
+LEFT JOIN permitmonkey.messages m ON m.project_id = p.id
 GROUP BY p.project_name;
 
 -- Latest messages for a project (what's the agent doing?)
 SELECT id, role, LEFT(content, 100) as content_preview, created_at
-FROM crossbeam.messages
+FROM permitmonkey.messages
 WHERE project_id = 'a0000000-0000-0000-0000-000000000001'
 ORDER BY id DESC LIMIT 10;
 
@@ -1005,26 +1005,26 @@ SELECT flow_phase,
        professional_scope_md IS NOT NULL as has_scope,
        raw_artifacts != '{}'::jsonb as has_artifacts,
        agent_cost_usd, agent_turns
-FROM crossbeam.outputs
+FROM permitmonkey.outputs
 WHERE project_id = 'a0000000-0000-0000-0000-000000000001';
 
 -- Contractor questions status
 SELECT question_key, LEFT(question_text, 60) as question,
        is_answered, LEFT(answer_text, 40) as answer
-FROM crossbeam.contractor_answers
+FROM permitmonkey.contractor_answers
 WHERE project_id = 'a0000000-0000-0000-0000-000000000002';
 
 -- RESET a demo project to try again
-UPDATE crossbeam.projects SET status = 'ready', error_message = NULL
+UPDATE permitmonkey.projects SET status = 'ready', error_message = NULL
 WHERE id = 'a0000000-0000-0000-0000-000000000001';
-DELETE FROM crossbeam.messages WHERE project_id = 'a0000000-0000-0000-0000-000000000001';
-DELETE FROM crossbeam.outputs WHERE project_id = 'a0000000-0000-0000-0000-000000000001';
+DELETE FROM permitmonkey.messages WHERE project_id = 'a0000000-0000-0000-0000-000000000001';
+DELETE FROM permitmonkey.outputs WHERE project_id = 'a0000000-0000-0000-0000-000000000001';
 
 -- RESET EVERYTHING (nuclear option)
-UPDATE crossbeam.projects SET status = 'ready', error_message = NULL WHERE is_demo = true;
-DELETE FROM crossbeam.messages;
-DELETE FROM crossbeam.outputs;
-DELETE FROM crossbeam.contractor_answers;
+UPDATE permitmonkey.projects SET status = 'ready', error_message = NULL WHERE is_demo = true;
+DELETE FROM permitmonkey.messages;
+DELETE FROM permitmonkey.outputs;
+DELETE FROM permitmonkey.contractor_answers;
 ```
 
 ---
@@ -1059,12 +1059,12 @@ Before running any tests, verify these are set:
 ## Notes
 
 - **`npx tsc --noEmit` is your best friend.** Run it after every file. 5 seconds, catches most issues.
-- **`.schema('crossbeam')` is the #1 gotcha.** Every Supabase query needs it. Without it, queries
+- **`.schema('permitmonkey')` is the #1 gotcha.** Every Supabase query needs it. Without it, queries
   silently go to `public` schema and return empty results. No error thrown.
 - **Service role key vs anon key:** Server uses service role (bypasses RLS). Frontend uses anon
   key (respects RLS). Never mix them up.
 - **Skills must be resolved copies, not symlinks.** Docker and Vercel Sandbox can't follow host
-  symlinks. Use `cp -rL` when copying from `agents-crossbeam/.claude/skills/`.
+  symlinks. Use `cp -rL` when copying from `agents-permitmonkey/.claude/skills/`.
 - **Status state machine matters.** The server must transition states in the right order. The
   frontend renders different UIs per state. If they're out of sync, the UI shows the wrong thing.
 - **Phase 1 → Phase 2 handoff is the tricky part.** Server must: (1) parse contractor_questions.json,

@@ -63,7 +63,7 @@ export function AgentStream({ projectId }: AgentStreamProps) {
   // Initial fetch
   useEffect(() => {
     supabase
-      .schema('crossbeam')
+      .schema('permitmonkey')
       .from('messages')
       .select('*')
       .eq('project_id', projectId)
@@ -86,7 +86,7 @@ export function AgentStream({ projectId }: AgentStreamProps) {
         'postgres_changes',
         {
           event: 'INSERT',
-          schema: 'crossbeam',
+          schema: 'permitmonkey',
           table: 'messages',
           filter: `project_id=eq.${projectId}`,
         },

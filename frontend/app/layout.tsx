@@ -17,7 +17,7 @@ const nunito = Nunito({
 })
 
 export const metadata: Metadata = {
-  title: "CrossBeam | AI-Powered ADU Permit Review",
+  title: "PermitMonkey | AI-Powered ADU Permit Review",
   description: "AI permit review assistant for California ADUs. Built with Claude Opus 4.6.",
 }
 
@@ -28,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${playfair.variable} ${nunito.variable}`}>
-      <body className="antialiased bg-crossbeam-gradient">
+      <body className="antialiased bg-permitmonkey-gradient">
         {children}
       </body>
     </html>

@@ -32,7 +32,7 @@ export default function LandingPage() {
       {/* Nav */}
       <nav className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <span className="heading-card text-primary">CrossBeam</span>
+          <span className="heading-card text-primary">PermitMonkey</span>
           <Badge variant="outline" className="text-[10px] tracking-wide">Claude Code Hackathon 2026</Badge>
         </div>
         <div className="flex items-center gap-2">
@@ -84,7 +84,7 @@ export default function LandingPage() {
               Try It Live
             </Button>
           </Link>
-          <a href="https://github.com/mikeOnBreeze/cc-crossbeam" target="_blank" rel="noopener noreferrer">
+          <a href="https://github.com/mikeOnBreeze/cc-permitmonkey" target="_blank" rel="noopener noreferrer">
             <Button variant="outline" className="rounded-full px-8 py-5 text-base font-bold font-body" size="lg">
               <GitBranchIcon className="w-4 h-4 mr-2" />
               View Source
@@ -108,7 +108,7 @@ export default function LandingPage() {
         <div className="aspect-video rounded-xl overflow-hidden shadow-[0_12px_48px_rgba(28,25,23,0.12)] border border-border/50">
           <iframe
             src="https://www.youtube.com/embed/jHwBkFSvyk0"
-            title="CrossBeam Demo"
+            title="PermitMonkey Demo"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
             className="w-full h-full"
@@ -255,7 +255,7 @@ export default function LandingPage() {
               <p className="text-sm text-muted-foreground font-body leading-relaxed">
                 Cameron gets a 14-item corrections letter from the City of Placentia.
                 Each item cites specific code sections. His engineer takes days to parse
-                and respond. CrossBeam does it in 15 minutes &mdash; reading plans via
+                and respond. PermitMonkey does it in 15 minutes &mdash; reading plans via
                 vision, cross-referencing state and city law, drafting a professional
                 response with code citations.
               </p>
@@ -684,12 +684,12 @@ export default function LandingPage() {
         </p>
         <p className="text-xs text-muted-foreground/50 font-body">
           <a
-            href="https://github.com/mikeOnBreeze/cc-crossbeam"
+            href="https://github.com/mikeOnBreeze/cc-permitmonkey"
             target="_blank"
             rel="noopener noreferrer"
             className="underline hover:text-primary transition-colors"
           >
-            github.com/mikeOnBreeze/cc-crossbeam
+            github.com/mikeOnBreeze/cc-permitmonkey
           </a>
         </p>
       </footer>

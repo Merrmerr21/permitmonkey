@@ -24,7 +24,7 @@ export function ContractorQuestionsForm({ projectId, userId }: ContractorQuestio
 
   useEffect(() => {
     supabase
-      .schema('crossbeam')
+      .schema('permitmonkey')
       .from('contractor_answers')
       .select('*')
       .eq('project_id', projectId)
@@ -50,7 +50,7 @@ export function ContractorQuestionsForm({ projectId, userId }: ContractorQuestio
       const value = answers[q.id]
       if (value) {
         await supabase
-          .schema('crossbeam')
+          .schema('permitmonkey')
           .from('contractor_answers')
           .update({ answer_text: value, is_answered: true })
           .eq('id', q.id)

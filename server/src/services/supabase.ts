@@ -25,7 +25,7 @@ export async function updateProjectStatus(
   }
 
   const { error } = await supabase
-    .schema('crossbeam')
+    .schema('permitmonkey')
     .from('projects')
     .update(updateData)
     .eq('id', projectId);
@@ -38,7 +38,7 @@ export async function updateProjectStatus(
 
 export async function getProject(projectId: string) {
   const { data, error } = await supabase
-    .schema('crossbeam')
+    .schema('permitmonkey')
     .from('projects')
     .select('*')
     .eq('id', projectId)
@@ -53,7 +53,7 @@ export async function getProject(projectId: string) {
 
 export async function getProjectFiles(projectId: string) {
   const { data, error } = await supabase
-    .schema('crossbeam')
+    .schema('permitmonkey')
     .from('files')
     .select('*')
     .eq('project_id', projectId);
@@ -67,7 +67,7 @@ export async function getProjectFiles(projectId: string) {
 
 export async function getContractorAnswers(projectId: string) {
   const { data, error } = await supabase
-    .schema('crossbeam')
+    .schema('permitmonkey')
     .from('contractor_answers')
     .select('*')
     .eq('project_id', projectId)
@@ -82,7 +82,7 @@ export async function getContractorAnswers(projectId: string) {
 
 export async function getPhase1Outputs(projectId: string) {
   const { data, error } = await supabase
-    .schema('crossbeam')
+    .schema('permitmonkey')
     .from('outputs')
     .select('*')
     .eq('project_id', projectId)
@@ -104,7 +104,7 @@ export async function insertMessage(
   content: string,
 ): Promise<void> {
   const { error } = await supabase
-    .schema('crossbeam')
+    .schema('permitmonkey')
     .from('messages')
     .insert({ project_id: projectId, role, content });
 

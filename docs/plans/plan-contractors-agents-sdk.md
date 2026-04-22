@@ -28,7 +28,7 @@ The corrections flow works great through the CLI: you feed in a corrections lett
 
 The Mako demand letter project was built for production — it needed cloud deployment (Cloud Run + Vercel Sandbox) to handle the 60-second Vercel free-tier timeout for 10-20 minute agent runs. That took a full day of deployment work, and every change required push → build → 10-minute test cycles.
 
-**CrossBeam is a hackathon demo.** We don't need cloud deployment:
+**PermitMonkey is a hackathon demo.** We don't need cloud deployment:
 - Next.js API routes on localhost have **no timeout limit**
 - Testing locally is fast — change code, re-run, see results immediately
 - The hackathon doesn't require full deployment (nice-to-have, not judged on it)
@@ -57,7 +57,7 @@ If we want to deploy later, the learnings from Mako carry over. But for now: **e
 ### Project Structure
 
 ```
-CC-Crossbeam/                           ← Claude Code CLI works here (parent)
+permitmonkey/                           ← Claude Code CLI works here (parent)
 ├── .claude/
 │   └── skills/                         ← ALL skills (13) — for CLI dev
 │       ├── adu-city-research/          (these are fine for CLI)
@@ -77,7 +77,7 @@ CC-Crossbeam/                           ← Claude Code CLI works here (parent)
 │       ├── adu-targeted-page-viewer/
 │       └── buena-park-adu/
 │
-├── agents-crossbeam/                   ← Agent SDK app (deployable unit)
+├── agents-permitmonkey/                   ← Agent SDK app (deployable unit)
 │   ├── .claude/
 │   │   └── skills/                     ← ONLY ADU skills (6) — symlinked
 │   │       ├── california-adu → ../../../adu-skill-development/skill/california-adu
@@ -124,7 +124,7 @@ CC-Crossbeam/                           ← Claude Code CLI works here (parent)
 │
 └── frontend/                           ← Next.js app (later)
     ├── app/
-    │   └── api/                        (API routes call agents-crossbeam/)
+    │   └── api/                        (API routes call agents-permitmonkey/)
     └── package.json
 ```
 
@@ -134,11 +134,11 @@ CC-Crossbeam/                           ← Claude Code CLI works here (parent)
 
 With symlinks:
 1. Edit skills in `adu-skill-development/skill/` — no permission prompts, fast iteration
-2. Symlinks in `agents-crossbeam/.claude/skills/` auto-propagate changes
+2. Symlinks in `agents-permitmonkey/.claude/skills/` auto-propagate changes
 3. Agent SDK picks up the latest skill content on every `query()` call
 4. Parent `.claude/skills/` stays untouched — CLI dev environment is unaffected
 
-This is the same pattern from Mako (parent repo + subrepo with its own `.claude/`) but without needing a separate git repo. The `agents-crossbeam/` directory acts as the Agent SDK's project root.
+This is the same pattern from Mako (parent repo + subrepo with its own `.claude/`) but without needing a separate git repo. The `agents-permitmonkey/` directory acts as the Agent SDK's project root.
 
 ---
 
@@ -191,11 +191,11 @@ const result = query({
     systemPrompt: {
       type: 'preset',
       preset: 'claude_code',
-      append: CROSSBEAM_SYSTEM_PROMPT  // Our custom instructions
+      append: PERMITMONKEY_SYSTEM_PROMPT  // Our custom instructions
     },
 
-    // Skills discovery — loads agents-crossbeam/.claude/skills/ (only ADU skills)
-    cwd: AGENTS_ROOT,  // path.resolve(__dirname, '..')  → agents-crossbeam/
+    // Skills discovery — loads agents-permitmonkey/.claude/skills/ (only ADU skills)
+    cwd: AGENTS_ROOT,  // path.resolve(__dirname, '..')  → agents-permitmonkey/
     settingSources: ['project'],
 
     // Permissions — bypass for programmatic use
@@ -211,7 +211,7 @@ const result = query({
     ],
 
     // Filesystem access — agent needs parent dir for test-assets
-    additionalDirectories: [PROJECT_ROOT],  // CC-Crossbeam/ (parent)
+    additionalDirectories: [PROJECT_ROOT],  // permitmonkey/ (parent)
 
     // Limits
     maxTurns: 80,           // High — skills spawn many subagents
@@ -234,9 +234,9 @@ const result = query({
 | **`tools` and `systemPrompt` presets are required** | Without `{ type: 'preset', preset: 'claude_code' }`, the agent hallucinates tool usage — says "I'll write the file" but creates nothing |
 | **`settingSources: ['project']` required for skills** | Without this, agent won't discover `.claude/skills/` directories |
 | **Model name must be full alias** | Use `'claude-opus-4-6'`, not `'opus'` (SDK docs say shorthand works, but Dec 2025 learnings say use full alias — play it safe) |
-| **`cwd` must point to `agents-crossbeam/`** | Skills are loaded relative to `cwd` — must contain `.claude/skills/` with only ADU skills. Do NOT point to parent project root (loads 13 skills including nano-banana). |
+| **`cwd` must point to `agents-permitmonkey/`** | Skills are loaded relative to `cwd` — must contain `.claude/skills/` with only ADU skills. Do NOT point to parent project root (loads 13 skills including nano-banana). |
 | **Always verify file creation** | Agent reports success even when tools aren't configured. Check files exist after run. |
-| **`additionalDirectories` needed** | Agent's `cwd` is `agents-crossbeam/` but test data lives in `../test-assets/`. Without `additionalDirectories: [PROJECT_ROOT]`, filesystem access may be restricted. |
+| **`additionalDirectories` needed** | Agent's `cwd` is `agents-permitmonkey/` but test data lives in `../test-assets/`. Without `additionalDirectories: [PROJECT_ROOT]`, filesystem access may be restricted. |
 | **Subagent skill inheritance unclear** | SDK docs say "subagents inherit allowedTools but NOT skills." If Task-spawned subagents can't invoke skills, fall back to `agents` config with inline prompts. **Test this in L2.** |
 | **Node 22.6+ required** | `--experimental-strip-types` + `import.meta.dirname` need Node 22.6+. Current: v24.9.0 ✓ |
 | **ANTHROPIC_API_KEY must be in `.env`** | The project `.env` currently has GEMINI and FAL keys only. Add `ANTHROPIC_API_KEY=sk-ant-...` before running. |
@@ -257,15 +257,15 @@ All flows and tests import from one config factory (`src/utils/config.ts`). This
 import path from 'path';
 import type { Options } from '@anthropic-ai/claude-agent-sdk';
 
-export const AGENTS_ROOT = path.resolve(import.meta.dirname, '../..');  // agents-crossbeam/
-export const PROJECT_ROOT = path.resolve(AGENTS_ROOT, '..');            // CC-Crossbeam/
+export const AGENTS_ROOT = path.resolve(import.meta.dirname, '../..');  // agents-permitmonkey/
+export const PROJECT_ROOT = path.resolve(AGENTS_ROOT, '..');            // permitmonkey/
 
 export type FlowConfig = {
   model?: string;                // Default: claude-opus-4-6
   maxTurns?: number;             // Default: 80
   maxBudgetUsd?: number;         // Default: 15.00
   allowedTools?: string[];       // Default: all tools
-  systemPromptAppend?: string;   // Appended to base CrossBeam prompt
+  systemPromptAppend?: string;   // Appended to base PermitMonkey prompt
   abortController?: AbortController;
 };
 
@@ -401,14 +401,14 @@ Full testing approach documented in **`testing-agents-sdk.md`** (separate file).
 
 ### Step 1: Backend Subdirectory + Skills Setup
 
-Create the `agents-crossbeam/` directory with its own `.claude/skills/` containing only ADU skills. This is the Agent SDK's project root — `cwd` in every `query()` call points here.
+Create the `agents-permitmonkey/` directory with its own `.claude/skills/` containing only ADU skills. This is the Agent SDK's project root — `cwd` in every `query()` call points here.
 
 ```bash
 # Create backend structure
-mkdir -p agents-crossbeam/.claude/skills agents-crossbeam/src/utils
+mkdir -p agents-permitmonkey/.claude/skills agents-permitmonkey/src/utils
 
 # Symlink ADU skills from source of truth
-cd agents-crossbeam/.claude/skills
+cd agents-permitmonkey/.claude/skills
 ln -s ../../../adu-skill-development/skill/california-adu california-adu
 ln -s ../../../adu-skill-development/skill/adu-corrections-flow adu-corrections-flow
 ln -s ../../../adu-skill-development/skill/adu-corrections-complete adu-corrections-complete
@@ -418,12 +418,12 @@ ln -s ../../../adu-skill-development/skill/buena-park-adu buena-park-adu
 cd ../../..
 
 # Verify symlinks resolve
-ls -la agents-crossbeam/.claude/skills/
+ls -la agents-permitmonkey/.claude/skills/
 ```
 
 **Agents directory structure:**
 ```
-agents-crossbeam/
+agents-permitmonkey/
 ├── .claude/
 │   └── skills/                     ← 6 ADU skills only (symlinked)
 ├── src/
@@ -452,7 +452,7 @@ agents-crossbeam/
 **Package dependencies:**
 ```json
 {
-  "name": "agents-crossbeam",
+  "name": "agents-permitmonkey",
   "type": "module",
   "dependencies": {
     "@anthropic-ai/claude-agent-sdk": "latest"
@@ -466,13 +466,13 @@ agents-crossbeam/
 **Run commands (no build step needed — Node 24.9 strips types natively):**
 ```bash
 # Run a specific test level
-cd agents-crossbeam && node --env-file .env.local --experimental-strip-types ./src/tests/test-l0-smoke.ts
+cd agents-permitmonkey && node --env-file .env.local --experimental-strip-types ./src/tests/test-l0-smoke.ts
 
 # Run a flow directly
-cd agents-crossbeam && node --env-file .env.local --experimental-strip-types ./src/tests/test-l4-full-pipeline.ts
+cd agents-permitmonkey && node --env-file .env.local --experimental-strip-types ./src/tests/test-l4-full-pipeline.ts
 ```
 
-### Why `agents-crossbeam/` as a Separate Directory (Not a Subrepo)
+### Why `agents-permitmonkey/` as a Separate Directory (Not a Subrepo)
 
 In Mako, the Agent SDK lived in a separate git repo (`mako/` inside the parent). That made sense for production — the subrepo could be deployed independently.
 
@@ -480,13 +480,13 @@ For the hackathon, a subdirectory is simpler:
 - No extra git repo to manage
 - Same git history for everything
 - Easy to reference test assets via relative paths (`../test-assets/`)
-- Can still deploy independently later if needed (just copy `agents-crossbeam/`)
+- Can still deploy independently later if needed (just copy `agents-permitmonkey/`)
 
 The key thing is the **separate `.claude/skills/`**. That's what isolates the two environments.
 
 ### Step 2: Session Directory Management
 
-Each corrections job gets its own session directory under `agents-crossbeam/sessions/`:
+Each corrections job gets its own session directory under `agents-permitmonkey/sessions/`:
 
 ```typescript
 // src/utils/session.ts
@@ -531,7 +531,7 @@ export async function runCorrectionsAnalysis(opts: {
   correctionsFile: string;   // Path to corrections letter (PNG or PDF)
   planBinderFile: string;    // Path to plan binder PDF
   sessionDir: string;        // Where to write output files
-  agentsRoot: string;       // agents-crossbeam/ dir with its own .claude/skills/ (only ADU skills)
+  agentsRoot: string;       // agents-permitmonkey/ dir with its own .claude/skills/ (only ADU skills)
   onProgress?: (event: any) => void;
 }) {
   const prompt = `
@@ -564,12 +564,12 @@ IMPORTANT:
       systemPrompt: {
         type: 'preset',
         preset: 'claude_code',
-        append: `You are CrossBeam, an AI ADU permit assistant. You help contractors
+        append: `You are PermitMonkey, an AI ADU permit assistant. You help contractors
 respond to city corrections letters. Use the adu-corrections-flow skill to
 analyze corrections and generate informed contractor questions. Always write
 output files to the session directory provided.`
       },
-      cwd: opts.agentsRoot,  // agents-crossbeam/ — has .claude/skills/ with only ADU skills
+      cwd: opts.agentsRoot,  // agents-permitmonkey/ — has .claude/skills/ with only ADU skills
       settingSources: ['project'],
       permissionMode: 'bypassPermissions',
       allowDangerouslySkipPermissions: true,
@@ -611,7 +611,7 @@ import { query } from '@anthropic-ai/claude-agent-sdk';
 
 export async function runResponseGeneration(opts: {
   sessionDir: string;        // Session dir with all Phase 1-4 files + contractor_answers.json
-  agentsRoot: string;       // agents-crossbeam/ dir with its own .claude/skills/ (only ADU skills)
+  agentsRoot: string;       // agents-permitmonkey/ dir with its own .claude/skills/ (only ADU skills)
   onProgress?: (event: any) => void;
 }) {
   const prompt = `
@@ -640,11 +640,11 @@ Write ALL output files to the session directory: ${opts.sessionDir}
       systemPrompt: {
         type: 'preset',
         preset: 'claude_code',
-        append: `You are CrossBeam, an AI ADU permit assistant. You help contractors
+        append: `You are PermitMonkey, an AI ADU permit assistant. You help contractors
 respond to city corrections letters. Use the adu-corrections-complete skill to
 generate the final response package from research artifacts and contractor answers.`
       },
-      cwd: opts.agentsRoot,  // agents-crossbeam/ — has .claude/skills/ with only ADU skills
+      cwd: opts.agentsRoot,  // agents-permitmonkey/ — has .claude/skills/ with only ADU skills
       settingSources: ['project'],
       permissionMode: 'bypassPermissions',
       allowDangerouslySkipPermissions: true,
@@ -766,12 +766,12 @@ import { createSession, getSessionFiles } from './utils/session.js';
 import fs from 'fs';
 import path from 'path';
 
-// agents-crossbeam/ is the Agent SDK's project root (has .claude/skills/ with only ADU skills)
+// agents-permitmonkey/ is the Agent SDK's project root (has .claude/skills/ with only ADU skills)
 const AGENTS_ROOT = path.resolve(import.meta.dirname, '..');
 // Test assets are in the parent project
 const PROJECT_ROOT = path.resolve(AGENTS_ROOT, '..');
 
-// Create session inside agents-crossbeam/sessions/
+// Create session inside agents-permitmonkey/sessions/
 const sessionDir = createSession(AGENTS_ROOT);
 console.log(`Session: ${sessionDir}`);
 
@@ -914,7 +914,7 @@ These are things we get for free from the `claude_code` preset:
 
 | Component | Effort | Priority |
 |-----------|--------|----------|
-| `agents-crossbeam/` directory + symlinks + package.json | 10 min | P0 |
+| `agents-permitmonkey/` directory + symlinks + package.json | 10 min | P0 |
 | `src/utils/config.ts` — Shared base config factory | 20 min | P0 |
 | `src/utils/session.ts` — Session directory management | 10 min | P0 |
 | `src/tests/test-l0-smoke.ts` — Smoke test | 10 min | P0 |
@@ -936,7 +936,7 @@ These are things we get for free from the `claude_code` preset:
 
 ### ~~1. Skill Loading Strategy~~ → RESOLVED
 
-**Answer: Separate `agents-crossbeam/` directory with symlinked skills.** See "Two Environments" section above. Skills are symlinked from `adu-skill-development/skill/` into `agents-crossbeam/.claude/skills/`. The Agent SDK's `cwd` points to `agents-crossbeam/`, so it only discovers the 6 ADU skills. The parent `.claude/skills/` (with 13 skills) is untouched and used only by the CLI dev environment.
+**Answer: Separate `agents-permitmonkey/` directory with symlinked skills.** See "Two Environments" section above. Skills are symlinked from `adu-skill-development/skill/` into `agents-permitmonkey/.claude/skills/`. The Agent SDK's `cwd` points to `agents-permitmonkey/`, so it only discovers the 6 ADU skills. The parent `.claude/skills/` (with 13 skills) is untouched and used only by the CLI dev environment.
 
 ### 2. Subagent Orchestration — PARTIALLY RESOLVED
 
@@ -985,11 +985,11 @@ After the backend harness works:
 ```
 Next.js API Route (localhost)    Backend Harness         Filesystem
 ─────────────────────────       ───────────────         ──────────
-POST /api/analyze           →   runCorrectionsAnalysis  → agents-crossbeam/sessions/
+POST /api/analyze           →   runCorrectionsAnalysis  → agents-permitmonkey/sessions/
 GET  /api/status/:sessionId →   poll session dir for progress
 GET  /api/questions/:id     →   read contractor_questions.json
 POST /api/answers/:id       →   write contractor_answers.json
-POST /api/generate/:id      →   runResponseGeneration   → agents-crossbeam/sessions/
+POST /api/generate/:id      →   runResponseGeneration   → agents-permitmonkey/sessions/
 GET  /api/results/:id       →   read 4 deliverables
 ```
 
@@ -1031,9 +1031,9 @@ export async function GET(req: Request, { params }) {
 
 ### Day 3 (Wed Feb 12) — SDK Wiring + Smoke Tests
 
-1. **Create `agents-crossbeam/` + symlinks** — mkdir, symlinks, verify with `ls -la` (10 min)
+1. **Create `agents-permitmonkey/` + symlinks** — mkdir, symlinks, verify with `ls -la` (10 min)
 2. **Install Agent SDK** — `npm init -y && npm install @anthropic-ai/claude-agent-sdk` (5 min)
-3. **Add ANTHROPIC_API_KEY** to `agents-crossbeam/.env` (1 min)
+3. **Add ANTHROPIC_API_KEY** to `agents-permitmonkey/.env` (1 min)
 4. **Write shared config** — `src/utils/config.ts`, `src/utils/session.ts` (20 min)
 5. **Write + run L0 smoke test** — fix until skills discovered (15-30 min)
 6. **Write + run L1 skill invoke test** — fix until skill executes + writes file (15-30 min)
@@ -1053,7 +1053,7 @@ export async function GET(req: Request, { params }) {
 14. **Wire to Next.js API routes** — frontend integration (2-3 hours)
 15. **If time: progress monitoring** — hooks + WebSocket to frontend
 
-**Goal:** Both skills run programmatically from `agents-crossbeam/`, produce correct output, and the full Skill 1 → answers → Skill 2 pipeline works end-to-end. After this, the frontend can call these functions via Next.js API routes on localhost (no timeout issues).
+**Goal:** Both skills run programmatically from `agents-permitmonkey/`, produce correct output, and the full Skill 1 → answers → Skill 2 pipeline works end-to-end. After this, the frontend can call these functions via Next.js API routes on localhost (no timeout issues).
 
 See `testing-agents-sdk.md` for detailed test scripts and the full testing strategy.
 

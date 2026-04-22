@@ -1,7 +1,7 @@
 {
-  "project": "crossbeam-frontend",
+  "project": "permitmonkey-frontend",
   "version": "0.1.0",
-  "description": "CrossBeam frontend — Next.js 15 + shadcn/ui + Tailwind v4. Magic Dirt v2 design direction. ADU miniatures on every screen.",
+  "description": "PermitMonkey frontend — Next.js 15 + shadcn/ui + Tailwind v4. Magic Dirt v2 design direction. ADU miniatures on every screen.",
   "lastUpdated": "2026-02-13T19:05:00Z",
   "phases": [
     {
@@ -35,7 +35,7 @@
           "Scroll the page — confirm the gradient stays fixed (doesn't scroll with content)",
           "Confirm topographic contour lines are faintly visible in the background (15% opacity)",
           "Click 'Sign In' or 'Get Started' — navigate to login page",
-          "Login page shows a small ADU miniature accent above the 'CrossBeam' heading",
+          "Login page shows a small ADU miniature accent above the 'PermitMonkey' heading",
           "Click 'Sign in as a Judge' — successfully logs in and redirects to /dashboard (may show 404 — that's OK, dashboard isn't built yet)"
         ]
       },
@@ -54,7 +54,7 @@
           "Two persona cards side by side — each with a DIFFERENT ADU miniature image at the top (NOT Lucide icons)",
           "Cards have deep soft shadows, generous padding, pill-shaped CTA buttons",
           "Hover over a card — it lifts 2px with shadow deepening",
-          "Nav bar shows 'CrossBeam' branding on left, user email + sign out on right",
+          "Nav bar shows 'PermitMonkey' branding on left, user email + sign out on right",
           "Click either card — navigates to /projects/[id] (may show minimal content — project detail isn't built yet)",
           "Sign out button works — redirects to /login"
         ]
@@ -131,7 +131,7 @@
       "description": "Image pipeline — copy and compress ADU miniature PNGs",
       "steps": [
         "Create `frontend/public/images/adu/` directory",
-        "Copy 7 exterior PNGs from `~/openai-demo/cc-crossbeam-video/assets/keyed/` (see Image Pipeline section in plan for exact filenames)",
+        "Copy 7 exterior PNGs from `~/openai-demo/cc-permitmonkey-video/assets/keyed/` (see Image Pipeline section in plan for exact filenames)",
         "Copy 2 interior PNGs from same source",
         "Rename files per the plan's rename table (e.g., `cameron-01-longbeach-keyed.png` → `exterior-longbeach-modern.png`)",
         "Compress all PNGs with pngquant: `for f in *.png; do pngquant --quality=65-85 --force --output \"$f\" \"$f\"; done`",
@@ -150,7 +150,7 @@
         "Copy lib/supabase/client.ts, lib/supabase/server.ts, lib/supabase/middleware.ts, lib/utils.ts",
         "Copy ALL shadcn components from Mako's components/ui/ directory",
         "Copy tsconfig.json, postcss.config.mjs, next.config.ts, .gitignore",
-        "Do NOT copy theme-provider.tsx (CrossBeam is light-mode only)"
+        "Do NOT copy theme-provider.tsx (PermitMonkey is light-mode only)"
       ],
       "passes": true
     },
@@ -161,11 +161,11 @@
       "steps": [
         "Read DESIGN-BIBLE.md before starting (this is the law)",
         "Write globals.css with: Tailwind imports, @theme inline block with hsl() wrappers, :root light mode variables",
-        "Add .bg-crossbeam-gradient class with background-attachment: fixed",
+        "Add .bg-permitmonkey-gradient class with background-attachment: fixed",
         "Add .bg-topo-lines class with SVG contour line pattern at 15% opacity",
         "Add animations: fade-up, fade-in, slide-in-left, gentle-pulse (NO bounce, NO spring)",
         "Add typography utilities: heading-display, heading-section, heading-card",
-        "Add hover-lift, scrollbar-thin, prose-crossbeam classes",
+        "Add hover-lift, scrollbar-thin, prose-permitmonkey classes",
         "Do NOT include .dark block or @custom-variant dark",
         "CRITICAL: Every --color-* in @theme inline MUST use hsl() wrapper"
       ],
@@ -178,9 +178,9 @@
       "steps": [
         "Import Playfair_Display and Nunito from next/font/google",
         "Configure font variables: --font-display and --font-body",
-        "Set metadata: 'CrossBeam | AI-Powered ADU Permit Review'",
+        "Set metadata: 'PermitMonkey | AI-Powered ADU Permit Review'",
         "Apply className with both font variables to <html>",
-        "Apply bg-crossbeam-gradient and antialiased to <body>",
+        "Apply bg-permitmonkey-gradient and antialiased to <body>",
         "Render {children} directly — NO ThemeProvider wrapper",
         "Do NOT import next-themes anywhere"
       ],
@@ -189,11 +189,11 @@
     {
       "id": "foundation-005",
       "phase": "phase-1",
-      "description": "Write types/database.ts — CrossBeam schema types",
+      "description": "Write types/database.ts — PermitMonkey schema types",
       "steps": [
-        "Define all types matching crossbeam schema: Project, ProjectFile, Message, Output, ContractorAnswer",
+        "Define all types matching permitmonkey schema: Project, ProjectFile, Message, Output, ContractorAnswer",
         "Define enums: ProjectStatus, FlowType, FlowPhase, FileType, MessageRole, QuestionType",
-        "Define Database interface for Supabase client generic with crossbeam schema",
+        "Define Database interface for Supabase client generic with permitmonkey schema",
         "Reference plan-supabase-0213.md for exact schema if needed"
       ],
       "passes": true
@@ -203,7 +203,7 @@
       "phase": "phase-1",
       "description": "Write package.json and config files",
       "steps": [
-        "Copy package.json from Mako, update name to 'crossbeam-frontend'",
+        "Copy package.json from Mako, update name to 'permitmonkey-frontend'",
         "Remove: stripe, @react-pdf/renderer, docx-preview, jszip, framer-motion, @base-ui/react, next-themes",
         "Keep: @supabase/ssr, @supabase/supabase-js, react-markdown, remark-gfm, lucide-react, shadcn, tw-animate-css",
         "Write components.json with style: 'new-york'",
@@ -246,7 +246,7 @@
       "steps": [
         "Create app/page.tsx as a server component (NOT a redirect to /login)",
         "Add bg-topo-lines class to wrapper div for contour line background texture",
-        "Simple nav with CrossBeam branding and 'Sign In' link to /login",
+        "Simple nav with PermitMonkey branding and 'Sign In' link to /login",
         "Hero section: 'Your ADU Permit, Simplified' in heading-display, subtitle in Nunito, pill-shaped 'Get Started' CTA",
         "Below hero: <AduMiniature variant='hero' /> — randomly selected, floating on gradient",
         "Feature cards section: 3 cards (Corrections Interpreter, Code Verification, Response Letter) with Lucide icons",
@@ -263,8 +263,8 @@
       "steps": [
         "Rewrite app/(auth)/login/page.tsx as 'use client' component",
         "Add <AduMiniature variant='accent' /> at top of card for visual continuity",
-        "CrossBeam heading in heading-display, subtitle in Nunito",
-        "Primary CTA: 'Sign in as a Judge' pill button — signs in with hardcoded judge@crossbeam.app credentials",
+        "PermitMonkey heading in heading-display, subtitle in Nunito",
+        "Primary CTA: 'Sign in as a Judge' pill button — signs in with hardcoded judge@permitmonkey.app credentials",
         "Divider with 'or'",
         "Secondary: 'Sign in with Google' outline button with Google SVG icon",
         "Error state display",
@@ -279,7 +279,7 @@
       "steps": [
         "Create components/nav-bar.tsx as 'use client' component",
         "Sticky top nav with backdrop blur: border-b border-border/50 bg-card/80 backdrop-blur-sm sticky top-0 z-50",
-        "Left: CrossBeam branding link to /dashboard in heading-card style",
+        "Left: PermitMonkey branding link to /dashboard in heading-card style",
         "Right: user email (hidden on mobile) + sign out button",
         "Sign out calls POST /auth/signout then redirects to /login",
         "Max width 6xl, centered"
@@ -295,7 +295,7 @@
         "Check auth with supabase.auth.getUser() — redirect to /login if no user",
         "Render <NavBar> with user email",
         "Wrap children in max-w-6xl centered container with padding",
-        "Do NOT add sidebar navigation — CrossBeam uses top nav only"
+        "Do NOT add sidebar navigation — PermitMonkey uses top nav only"
       ],
       "passes": true
     },
@@ -334,7 +334,7 @@
       "description": "Write agent-stream component — polling messages, CSS animations",
       "steps": [
         "Fork Mako's components/project/agent-activity-log.tsx",
-        "Change .schema('mako') to .schema('crossbeam')",
+        "Change .schema('mako') to .schema('permitmonkey')",
         "Replace Supabase Realtime with setInterval polling every 2 seconds",
         "Poll with WHERE id > lastSeenId for efficiency",
         "Remove framer-motion — use CSS animate-slide-in-left for new messages",
@@ -366,8 +366,8 @@
       "description": "Write project detail server page — data fetching wrapper",
       "steps": [
         "Create app/(dashboard)/projects/[id]/page.tsx as server component",
-        "Fetch project from crossbeam.projects by ID",
-        "Fetch files from crossbeam.files by project_id",
+        "Fetch project from permitmonkey.projects by ID",
+        "Fetch files from permitmonkey.files by project_id",
         "Auth check — notFound() if no user",
         "Pass initialProject, initialFiles, userId to <ProjectDetailClient> client component",
         "Set force-dynamic"
@@ -397,7 +397,7 @@
       "description": "Write contractor-questions-form — awaiting-answers state",
       "steps": [
         "Create components/contractor-questions-form.tsx as 'use client'",
-        "Fetch questions from crossbeam.contractor_answers by project_id",
+        "Fetch questions from permitmonkey.contractor_answers by project_id",
         "Heading: 'A few questions for you' in Playfair, subtext with question count",
         "Render each question: numbered, question_text, context hint in muted text",
         "Input type based on question_type: text → Textarea, number/measurement → Input, choice → radio buttons from options array",
@@ -414,11 +414,11 @@
       "description": "Write results-viewer — tabbed content, markdown, summary stats",
       "steps": [
         "Create components/results-viewer.tsx as 'use client'",
-        "Fetch outputs from crossbeam.outputs by project_id",
+        "Fetch outputs from permitmonkey.outputs by project_id",
         "Header: <AduMiniature variant='accent' /> + 'Your response package is ready' or 'Review complete' in Playfair",
         "City review tabs: 'Corrections Letter' (corrections_letter_md), 'Review Checklist' (review_checklist_json)",
         "Contractor tabs: 'Response Letter', 'Professional Scope', 'Corrections Report' (all _md fields)",
-        "Render markdown with ReactMarkdown + remarkGfm, wrapped in prose-crossbeam class",
+        "Render markdown with ReactMarkdown + remarkGfm, wrapped in prose-permitmonkey class",
         "Summary stats sidebar card: duration (formatted), agent turns, cost ($X.XX)",
         "Active tab: moss green underline (border-b-2 border-primary)"
       ],
@@ -433,7 +433,7 @@
         "Fork from Mako's app/api/generate/route.ts",
         "Accept POST with { project_id, user_id, flow_type }",
         "Remove credits check entirely",
-        "Change .schema('mako') to .schema('crossbeam')",
+        "Change .schema('mako') to .schema('permitmonkey')",
         "Forward to CLOUD_RUN_URL with project_id, user_id, flow_type in body",
         "Handle errors gracefully — return appropriate status codes"
       ],

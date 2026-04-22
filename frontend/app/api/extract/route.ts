@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     if (!auth.isApiKey) {
       const supabase = await getSupabaseForAuth(auth)
       const { data: project, error: projectError } = await supabase
-        .schema('crossbeam')
+        .schema('permitmonkey')
         .from('projects')
         .select('id, user_id, is_demo')
         .eq('id', project_id)

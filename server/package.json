@@ -1,5 +1,5 @@
 {
-  "name": "crossbeam-server",
+  "name": "permitmonkey-server",
   "version": "1.0.0",
   "type": "module",
   "scripts": {

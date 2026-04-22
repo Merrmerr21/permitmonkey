@@ -118,8 +118,8 @@ The `contractor_answers` table has no `version` or `output_id` column. If the an
 
 **Migration (Supabase):**
 ```sql
-ALTER TABLE crossbeam.contractor_answers
-ADD COLUMN output_id uuid REFERENCES crossbeam.outputs(id);
+ALTER TABLE permitmonkey.contractor_answers
+ADD COLUMN output_id uuid REFERENCES permitmonkey.outputs(id);
 ```
 
 **In sandbox.ts — after creating the output record, pass the output ID to insertContractorQuestions:**
@@ -189,7 +189,7 @@ Before inserting new questions, delete any existing unanswered questions for thi
 ```js
 // Clear old unanswered questions before inserting new ones
 await supabase
-  .schema('crossbeam')
+  .schema('permitmonkey')
   .from('contractor_answers')
   .delete()
   .eq('project_id', projectId)
@@ -221,7 +221,7 @@ This should already work — just verify it pulls from the right table/columns.
 | File | Change |
 |------|--------|
 | `server/src/services/sandbox.ts` | Fix question parsing (question_groups), fix field mapping, add output_id param, move insert after createOutputRecord, delete old unanswered questions |
-| Supabase migration | `ALTER TABLE crossbeam.contractor_answers ADD COLUMN output_id uuid REFERENCES crossbeam.outputs(id)` |
+| Supabase migration | `ALTER TABLE permitmonkey.contractor_answers ADD COLUMN output_id uuid REFERENCES permitmonkey.outputs(id)` |
 
 ## Testing
 
@@ -229,7 +229,7 @@ After making changes:
 1. Reset project b2: `POST /api/reset-project { "project_id": "b0000000-0000-0000-0000-000000000002" }`
 2. Trigger analysis: `POST /api/generate { "project_id": "b0000000-0000-0000-0000-000000000002", "flow_type": "corrections-analysis" }`
 3. Wait for completion (~11 min)
-4. Check: `SELECT count(*) FROM crossbeam.contractor_answers WHERE project_id = 'b0000000-0000-0000-0000-000000000002'` — should have 5-9 rows
+4. Check: `SELECT count(*) FROM permitmonkey.contractor_answers WHERE project_id = 'b0000000-0000-0000-0000-000000000002'` — should have 5-9 rows
 5. Check: All rows should have `output_id` set
 6. Verify the UI shows the questions (check the project page in the browser)
 

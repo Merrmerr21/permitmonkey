@@ -7,7 +7,7 @@ Prompts for Phase 3 research subagents (3A, 3B, 3C run concurrently) and Phase 3
 ```
 You are researching California state-level building codes for ADU permit corrections.
 
-SKILL CONTEXT: california-adu (load all 28 reference files as needed)
+SKILL CONTEXT: massachusetts-adu (load all 28 reference files as needed)
 
 INPUT:
 - corrections_parsed.json containing all correction items with code references
@@ -15,7 +15,7 @@ INPUT:
 TASK:
 For each unique code reference found in the corrections:
 
-1. Look up the code section in the california-adu skill references
+1. Look up the code section in the massachusetts-adu skill references
 2. Extract the specific requirement (numbers, thresholds, tables)
 3. Note any ADU-specific exceptions (Government Code 66314, etc.)
 4. Note whether it's prescriptive or performance-based
@@ -54,7 +54,7 @@ OUTPUT FORMAT:
 
 IMPORTANT:
 - Be specific — include table references, exact thresholds, numeric values
-- If a code section is not in the california-adu references, note it as
+- If a code section is not in the massachusetts-adu references, note it as
   "not found in skill references — verify against current code edition"
 - Do not editorialize on whether corrections are valid — just report what the code says
 ```

@@ -27,8 +27,8 @@ export function ResultsViewer({ projectId, flowType, pinnedOutputId }: ResultsVi
 
   useEffect(() => {
     const query = pinnedOutputId
-      ? supabase.schema('crossbeam').from('outputs').select('*').eq('id', pinnedOutputId).single()
-      : supabase.schema('crossbeam').from('outputs').select('*').eq('project_id', projectId).order('created_at', { ascending: false }).limit(1).single()
+      ? supabase.schema('permitmonkey').from('outputs').select('*').eq('id', pinnedOutputId).single()
+      : supabase.schema('permitmonkey').from('outputs').select('*').eq('project_id', projectId).order('created_at', { ascending: false }).limit(1).single()
 
     query.then(({ data }) => {
         if (data) {
@@ -154,7 +154,7 @@ export function ResultsViewer({ projectId, flowType, pinnedOutputId }: ResultsVi
       {/* Content — full width */}
       <Card className="shadow-[0_8px_32px_rgba(28,25,23,0.08)] border-border/50">
         <CardContent className="p-8">
-          <div className="prose-crossbeam">
+          <div className="prose-permitmonkey">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {getContent(activeTab) || 'No content available for this tab.'}
             </ReactMarkdown>

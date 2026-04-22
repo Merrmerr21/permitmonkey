@@ -1,10 +1,10 @@
-# CrossBeam Design Bible
+# PermitMonkey Design Bible
 
 > **Direction: Magic Dirt v2 (Refined)**
 > Premium, photorealistic, architectural. Apple product page meets Dwell Magazine.
 > The magic comes from floating depth and the sky-to-earth gradient — not from whimsy or fantasy.
 
-**This is the single source of truth for all frontend work.** Any Claude instance building UI for CrossBeam must follow this document exactly.
+**This is the single source of truth for all frontend work.** Any Claude instance building UI for PermitMonkey must follow this document exactly.
 
 ---
 
@@ -238,7 +238,7 @@ The page background is NOT flat. It's a sky-to-earth gradient that mirrors the A
 ### Light Mode Gradient
 
 ```css
-.bg-crossbeam-gradient {
+.bg-permitmonkey-gradient {
   background: linear-gradient(180deg,
     #F0F7FF 0%,      /* sky blue */
     #FAFCFF 15%,
@@ -254,7 +254,7 @@ The page background is NOT flat. It's a sky-to-earth gradient that mirrors the A
 ### Dark Mode Gradient (Twilight)
 
 ```css
-.dark .bg-crossbeam-gradient {
+.dark .bg-permitmonkey-gradient {
   background: linear-gradient(180deg,
     #0C1222 0%,       /* night sky */
     #111827 20%,
@@ -417,11 +417,11 @@ The UI is premium and clean. Animations are smooth, subtle, and purposeful. No b
 
 | Asset Type | Location | Format |
 |-----------|----------|--------|
-| Keyed exteriors | `/cc-crossbeam-video/assets/keyed/cameron-*-keyed.png` | Transparent PNG |
-| Keyed exteriors | `/cc-crossbeam-video/assets/keyed/adu-*-keyed.png` | Transparent PNG |
-| Keyed interiors | `/cc-crossbeam-video/assets/keyed/interior-*-transparent.png` | Transparent PNG |
-| Raw tilt-shift | `/CC-Crossbeam/visuals/adu-tiltshift-*.jpg` | JPEG (white/magenta bg) |
-| Spinning videos | `/CC-Crossbeam/visuals/v3-*.mp4` | MP4 (orbit loops) |
+| Keyed exteriors | `/cc-permitmonkey-video/assets/keyed/cameron-*-keyed.png` | Transparent PNG |
+| Keyed exteriors | `/cc-permitmonkey-video/assets/keyed/adu-*-keyed.png` | Transparent PNG |
+| Keyed interiors | `/cc-permitmonkey-video/assets/keyed/interior-*-transparent.png` | Transparent PNG |
+| Raw tilt-shift | `/permitmonkey/visuals/adu-tiltshift-*.jpg` | JPEG (white/magenta bg) |
+| Spinning videos | `/permitmonkey/visuals/v3-*.mp4` | MP4 (orbit loops) |
 
 ### Asset Inventory (Keyed Exteriors)
 
@@ -462,7 +462,7 @@ The UI is premium and clean. Animations are smooth, subtle, and purposeful. No b
 
 ```
 ┌─────────────────────────────────────────────┐
-│ Nav: CrossBeam logo | links | Get Started   │
+│ Nav: PermitMonkey logo | links | Get Started   │
 ├─────────────────────────────────────────────┤
 │                                             │
 │   "Your ADU Permit, Simplified"             │
@@ -645,7 +645,7 @@ When building the frontend, follow this order:
 2. **shadcn init**: `npx shadcn@latest init` — select new-york style, CSS variables
 3. **Theme**: Replace `globals.css` variables with the palette above. Add `@theme inline` block.
 4. **Fonts**: Configure Playfair Display + Nunito via `next/font`
-5. **Gradient**: Add `.bg-crossbeam-gradient` to `globals.css` and apply to root layout
+5. **Gradient**: Add `.bg-permitmonkey-gradient` to `globals.css` and apply to root layout
 6. **Landing page**: Hero with ADU miniature, feature cards, CTA
 7. **Flow selection**: Two-card layout with miniatures
 8. **Upload screen**: Drag-and-drop form

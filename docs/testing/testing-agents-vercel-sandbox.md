@@ -4,7 +4,7 @@
 
 Local Agent SDK tests pass for both flows (contractor: $6.54/20min, city: $6.75/20min). Cloud (Vercel Sandbox) has **0 successful runs**. We need a structured testing ladder for cloud debugging — just like the local test ladders in `testing-agents-sdk.md` and `testing-agents-sdk-city.md`.
 
-**Critical difference from local testing:** Cloud tests go through the deployed API (curl + Supabase queries), not `query()` directly. Claude Code can run these autonomously using the crossbeam-ops skill + API key.
+**Critical difference from local testing:** Cloud tests go through the deployed API (curl + Supabase queries), not `query()` directly. Claude Code can run these autonomously using the permitmonkey-ops skill + API key.
 
 **Reference docs:**
 - `testing-agents-sdk.md` — Local contractor flow testing ladder
@@ -51,12 +51,12 @@ The `runCommand` for `agent.mjs` was using default (non-detached) mode, which ke
 
 ### Change 4: Cloud Run resource upgrades ✅ DONE
 ```bash
-gcloud run deploy crossbeam-server --timeout=3600 --no-cpu-throttling \
+gcloud run deploy permitmonkey-server --timeout=3600 --no-cpu-throttling \
   --min-instances=1 --memory=4Gi --cpu=4
 ```
 
 ### Change 5: Rebuild + Redeploy ✅ DONE
-Revision: `crossbeam-server-00009-66v`
+Revision: `permitmonkey-server-00009-66v`
 
 ---
 
@@ -81,7 +81,7 @@ These need to be created. They use smaller tar.gz archives for faster, cheaper u
 **Setup SQL (run once via Supabase MCP):**
 ```sql
 -- Create 1-page test project
-INSERT INTO crossbeam.projects (id, user_id, flow_type, project_name, city, project_address, status, is_demo)
+INSERT INTO permitmonkey.projects (id, user_id, flow_type, project_name, city, project_address, status, is_demo)
 VALUES (
   'c0000000-0000-0000-0000-000000000001',
   '00000000-0000-0000-0000-000000000000',
@@ -94,7 +94,7 @@ VALUES (
 );
 
 -- Create 3-page test project
-INSERT INTO crossbeam.projects (id, user_id, flow_type, project_name, city, project_address, status, is_demo)
+INSERT INTO permitmonkey.projects (id, user_id, flow_type, project_name, city, project_address, status, is_demo)
 VALUES (
   'c0000000-0000-0000-0000-000000000002',
   '00000000-0000-0000-0000-000000000000',
@@ -107,7 +107,7 @@ VALUES (
 );
 ```
 
-**Upload archives to Supabase storage bucket `crossbeam-demo-assets`:**
+**Upload archives to Supabase storage bucket `permitmonkey-demo-assets`:**
 ```
 cloud-tests/pages-png-1page.tar.gz  (3.1 MB — just page-01.png cover sheet)
 cloud-tests/pages-png-3page.tar.gz  (11 MB — page-01, page-02, page-03)
@@ -116,21 +116,21 @@ cloud-tests/pages-png-3page.tar.gz  (11 MB — page-01, page-02, page-03)
 **File records (after upload):**
 ```sql
 -- 1-page test file record
-INSERT INTO crossbeam.files (project_id, filename, file_type, storage_path)
+INSERT INTO permitmonkey.files (project_id, filename, file_type, storage_path)
 VALUES (
   'c0000000-0000-0000-0000-000000000001',
   'pages-png-1page.tar.gz',
   'archive',
-  'crossbeam-demo-assets/cloud-tests/pages-png-1page.tar.gz'
+  'permitmonkey-demo-assets/cloud-tests/pages-png-1page.tar.gz'
 );
 
 -- 3-page test file records
-INSERT INTO crossbeam.files (project_id, filename, file_type, storage_path)
+INSERT INTO permitmonkey.files (project_id, filename, file_type, storage_path)
 VALUES (
   'c0000000-0000-0000-0000-000000000002',
   'pages-png-3page.tar.gz',
   'archive',
-  'crossbeam-demo-assets/cloud-tests/pages-png-3page.tar.gz'
+  'permitmonkey-demo-assets/cloud-tests/pages-png-3page.tar.gz'
 );
 ```
 
@@ -145,25 +145,25 @@ VALUES (
 **Commands:**
 ```bash
 # 1. Cloud Run health
-curl -s https://crossbeam-server-v7eqq3533a-uc.a.run.app/health
+curl -s https://permitmonkey-server-v7eqq3533a-uc.a.run.app/health
 
 # 2. City demo project
-curl -s https://cc-crossbeam.vercel.app/api/projects/b0000000-0000-0000-0000-000000000001 \
-  -H "Authorization: Bearer $CROSSBEAM_API_KEY" | jq '{status: .project.status, files: (.files | length)}'
+curl -s https://cc-permitmonkey.vercel.app/api/projects/b0000000-0000-0000-0000-000000000001 \
+  -H "Authorization: Bearer $PERMITMONKEY_API_KEY" | jq '{status: .project.status, files: (.files | length)}'
 
 # 3. Contractor demo project
-curl -s https://cc-crossbeam.vercel.app/api/projects/b0000000-0000-0000-0000-000000000002 \
-  -H "Authorization: Bearer $CROSSBEAM_API_KEY" | jq '{status: .project.status, files: (.files | length)}'
+curl -s https://cc-permitmonkey.vercel.app/api/projects/b0000000-0000-0000-0000-000000000002 \
+  -H "Authorization: Bearer $PERMITMONKEY_API_KEY" | jq '{status: .project.status, files: (.files | length)}'
 ```
 
 **Supabase checks:**
 ```sql
 -- City demo files (expect 3)
-SELECT filename, file_type FROM crossbeam.files
+SELECT filename, file_type FROM permitmonkey.files
 WHERE project_id = 'b0000000-0000-0000-0000-000000000001';
 
 -- Contractor demo files (expect 5)
-SELECT filename, file_type FROM crossbeam.files
+SELECT filename, file_type FROM permitmonkey.files
 WHERE project_id = 'b0000000-0000-0000-0000-000000000002';
 ```
 
@@ -181,14 +181,14 @@ WHERE project_id = 'b0000000-0000-0000-0000-000000000002';
 **Commands:**
 ```bash
 # 1. Reset
-curl -X POST https://cc-crossbeam.vercel.app/api/reset-project \
-  -H "Authorization: Bearer $CROSSBEAM_API_KEY" \
+curl -X POST https://cc-permitmonkey.vercel.app/api/reset-project \
+  -H "Authorization: Bearer $PERMITMONKEY_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"project_id":"b0000000-0000-0000-0000-000000000001"}'
 
 # 2. Trigger
-curl -X POST https://cc-crossbeam.vercel.app/api/generate \
-  -H "Authorization: Bearer $CROSSBEAM_API_KEY" \
+curl -X POST https://cc-permitmonkey.vercel.app/api/generate \
+  -H "Authorization: Bearer $PERMITMONKEY_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"project_id":"b0000000-0000-0000-0000-000000000001","flow_type":"city-review"}'
 
@@ -228,14 +228,14 @@ curl -X POST https://cc-crossbeam.vercel.app/api/generate \
 
 ```bash
 # 1. Reset
-curl -X POST https://cc-crossbeam.vercel.app/api/reset-project \
-  -H "Authorization: Bearer $CROSSBEAM_API_KEY" \
+curl -X POST https://cc-permitmonkey.vercel.app/api/reset-project \
+  -H "Authorization: Bearer $PERMITMONKEY_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"project_id":"c0000000-0000-0000-0000-000000000001"}'
 
 # 2. Trigger
-curl -X POST https://cc-crossbeam.vercel.app/api/generate \
-  -H "Authorization: Bearer $CROSSBEAM_API_KEY" \
+curl -X POST https://cc-permitmonkey.vercel.app/api/generate \
+  -H "Authorization: Bearer $PERMITMONKEY_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"project_id":"c0000000-0000-0000-0000-000000000001","flow_type":"city-review"}'
 ```
@@ -243,7 +243,7 @@ curl -X POST https://cc-crossbeam.vercel.app/api/generate \
 **Monitoring (every 30 sec):**
 ```sql
 SELECT role, left(content, 150) as content, created_at
-FROM crossbeam.messages
+FROM permitmonkey.messages
 WHERE project_id = 'c0000000-0000-0000-0000-000000000001'
 ORDER BY created_at DESC LIMIT 10;
 ```
@@ -277,14 +277,14 @@ ORDER BY created_at DESC LIMIT 10;
 
 ```bash
 # 1. Reset
-curl -X POST https://cc-crossbeam.vercel.app/api/reset-project \
-  -H "Authorization: Bearer $CROSSBEAM_API_KEY" \
+curl -X POST https://cc-permitmonkey.vercel.app/api/reset-project \
+  -H "Authorization: Bearer $PERMITMONKEY_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"project_id":"c0000000-0000-0000-0000-000000000002"}'
 
 # 2. Trigger
-curl -X POST https://cc-crossbeam.vercel.app/api/generate \
-  -H "Authorization: Bearer $CROSSBEAM_API_KEY" \
+curl -X POST https://cc-permitmonkey.vercel.app/api/generate \
+  -H "Authorization: Bearer $PERMITMONKEY_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"project_id":"c0000000-0000-0000-0000-000000000002","flow_type":"city-review"}'
 ```
@@ -311,13 +311,13 @@ curl -X POST https://cc-crossbeam.vercel.app/api/generate \
 
 ```bash
 # Use the demo project (b1)
-curl -X POST https://cc-crossbeam.vercel.app/api/reset-project \
-  -H "Authorization: Bearer $CROSSBEAM_API_KEY" \
+curl -X POST https://cc-permitmonkey.vercel.app/api/reset-project \
+  -H "Authorization: Bearer $PERMITMONKEY_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"project_id":"b0000000-0000-0000-0000-000000000001"}'
 
-curl -X POST https://cc-crossbeam.vercel.app/api/generate \
-  -H "Authorization: Bearer $CROSSBEAM_API_KEY" \
+curl -X POST https://cc-permitmonkey.vercel.app/api/generate \
+  -H "Authorization: Bearer $PERMITMONKEY_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"project_id":"b0000000-0000-0000-0000-000000000001","flow_type":"city-review"}'
 ```
@@ -325,7 +325,7 @@ curl -X POST https://cc-crossbeam.vercel.app/api/generate \
 **Monitoring (every 60 sec):**
 ```sql
 SELECT role, left(content, 150) as content, created_at
-FROM crossbeam.messages
+FROM permitmonkey.messages
 WHERE project_id = 'b0000000-0000-0000-0000-000000000001'
 ORDER BY created_at DESC LIMIT 10;
 ```
@@ -354,14 +354,14 @@ ORDER BY created_at DESC LIMIT 10;
 
 ```bash
 # 1. Reset
-curl -X POST https://cc-crossbeam.vercel.app/api/reset-project \
-  -H "Authorization: Bearer $CROSSBEAM_API_KEY" \
+curl -X POST https://cc-permitmonkey.vercel.app/api/reset-project \
+  -H "Authorization: Bearer $PERMITMONKEY_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"project_id":"b0000000-0000-0000-0000-000000000002"}'
 
 # 2. Trigger Phase 1
-curl -X POST https://cc-crossbeam.vercel.app/api/generate \
-  -H "Authorization: Bearer $CROSSBEAM_API_KEY" \
+curl -X POST https://cc-permitmonkey.vercel.app/api/generate \
+  -H "Authorization: Bearer $PERMITMONKEY_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"project_id":"b0000000-0000-0000-0000-000000000002","flow_type":"corrections-analysis"}'
 
@@ -373,7 +373,7 @@ curl -X POST https://cc-crossbeam.vercel.app/api/generate \
 
 **Auto-fill answers (after Phase 1 completes):**
 ```sql
-UPDATE crossbeam.contractor_answers
+UPDATE permitmonkey.contractor_answers
 SET answer_text = 'Acknowledged — will comply with this correction.',
     is_answered = true,
     updated_at = now()
@@ -383,8 +383,8 @@ WHERE project_id = 'b0000000-0000-0000-0000-000000000002'
 
 **Phase 2 trigger:**
 ```bash
-curl -X POST https://cc-crossbeam.vercel.app/api/generate \
-  -H "Authorization: Bearer $CROSSBEAM_API_KEY" \
+curl -X POST https://cc-permitmonkey.vercel.app/api/generate \
+  -H "Authorization: Bearer $PERMITMONKEY_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"project_id":"b0000000-0000-0000-0000-000000000002","flow_type":"corrections-response"}'
 ```
@@ -421,23 +421,23 @@ curl -X POST https://cc-crossbeam.vercel.app/api/generate \
 ```sql
 -- Latest messages (reverse chron)
 SELECT id, role, left(content, 200), created_at
-FROM crossbeam.messages
+FROM permitmonkey.messages
 WHERE project_id = '<PID>'
 ORDER BY created_at DESC LIMIT 20;
 
 -- Project status + error
 SELECT status, error_message, updated_at
-FROM crossbeam.projects WHERE id = '<PID>';
+FROM permitmonkey.projects WHERE id = '<PID>';
 
 -- Output details
 SELECT flow_phase, agent_cost_usd, agent_turns, agent_duration_ms
-FROM crossbeam.outputs
+FROM permitmonkey.outputs
 WHERE project_id = '<PID>'
 ORDER BY created_at DESC LIMIT 1;
 
 -- Message count by role
 SELECT role, count(*)
-FROM crossbeam.messages WHERE project_id = '<PID>'
+FROM permitmonkey.messages WHERE project_id = '<PID>'
 GROUP BY role;
 ```
 
@@ -453,7 +453,7 @@ GROUP BY role;
 | Add [SANDBOX N/7] phase logging | ✅ DONE | `server/src/services/sandbox.ts` |
 | Detached runCommand mode | ✅ DONE | `server/src/services/sandbox.ts` — THE key fix |
 | Cloud Run resource upgrades | ✅ DONE | timeout=3600, no-cpu-throttling, 4 CPU, 4Gi RAM |
-| Rebuild + redeploy to Cloud Run | ✅ DONE | Revision `crossbeam-server-00009-66v` |
+| Rebuild + redeploy to Cloud Run | ✅ DONE | Revision `permitmonkey-server-00009-66v` |
 
 ### CV0: Pre-flight ✅ PASSED
 

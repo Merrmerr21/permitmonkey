@@ -457,10 +457,10 @@ import path from 'path';
 import fs from 'fs';
 import type { Options } from '@anthropic-ai/claude-agent-sdk';
 
-export const AGENTS_ROOT = path.resolve(import.meta.dirname, '../..');  // agents-crossbeam/
-export const PROJECT_ROOT = path.resolve(AGENTS_ROOT, '..');            // CC-Crossbeam/
+export const AGENTS_ROOT = path.resolve(import.meta.dirname, '../..');  // agents-permitmonkey/
+export const PROJECT_ROOT = path.resolve(AGENTS_ROOT, '..');            // permitmonkey/
 
-const CROSSBEAM_PROMPT = `You are CrossBeam, an AI ADU permit assistant for California.
+const PERMITMONKEY_PROMPT = `You are PermitMonkey, an AI ADU permit assistant for California.
 You help contractors respond to city corrections letters for ADU (Accessory Dwelling Unit) permits.
 Use available skills to research codes, analyze plans, and generate professional responses.
 Always write output files to the session directory provided in the prompt.`;
@@ -486,8 +486,8 @@ export function createQueryOptions(flow: FlowConfig = {}): Options {
       type: 'preset',
       preset: 'claude_code',
       append: flow.systemPromptAppend
-        ? `${CROSSBEAM_PROMPT}\n\n${flow.systemPromptAppend}`
-        : CROSSBEAM_PROMPT,
+        ? `${PERMITMONKEY_PROMPT}\n\n${flow.systemPromptAppend}`
+        : PERMITMONKEY_PROMPT,
     },
     cwd: AGENTS_ROOT,
     settingSources: ['project'],
@@ -585,7 +585,7 @@ From experience building Agent SDK projects, here's the failure order:
 ### Session Directory Naming
 
 ```
-agents-crossbeam/sessions/
+agents-permitmonkey/sessions/
 ├── l0-smoke-2026-02-12T14-30-00/          ← Auto-named with level prefix
 ├── l1-skill-2026-02-12T14-32-00/
 ├── l3-mini-2026-02-12T15-00-00/
@@ -603,8 +603,8 @@ const sessionDir = createSession('l3-mini');
 
 `sessions/` should be gitignored. To clean up between test rounds:
 ```bash
-rm -rf agents-crossbeam/sessions/l0-*  # Clear smoke test runs
-rm -rf agents-crossbeam/sessions/l1-*  # Clear skill test runs
+rm -rf agents-permitmonkey/sessions/l0-*  # Clear smoke test runs
+rm -rf agents-permitmonkey/sessions/l1-*  # Clear skill test runs
 ```
 
 Keep L3/L4 sessions — their output files become future mock-session fixtures.
@@ -617,7 +617,7 @@ Keep L3/L4 sessions — their output files become future mock-session fixtures.
 
 | Order | Task | Time | Depends On |
 |-------|------|------|-----------|
-| 1 | Set up `agents-crossbeam/` directory + symlinks | 10 min | Nothing |
+| 1 | Set up `agents-permitmonkey/` directory + symlinks | 10 min | Nothing |
 | 2 | Install Agent SDK, create config.ts | 10 min | Step 1 |
 | 3 | Write L0 smoke test | 10 min | Step 2 |
 | 4 | **Run L0** — fix until it passes | 15-30 min | Step 3 |

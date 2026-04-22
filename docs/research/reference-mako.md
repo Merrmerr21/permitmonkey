@@ -1,8 +1,8 @@
-# reference-mako.md — Mako Architecture Patterns for CrossBeam
+# reference-mako.md — Mako Architecture Patterns for PermitMonkey
 
-> **What this is:** Working code patterns from Mako (demand letter app) to replicate for CrossBeam.
+> **What this is:** Working code patterns from Mako (demand letter app) to replicate for PermitMonkey.
 > **Source repo:** `~/openai-demo/CC-Agents-SDK-test-1225/mako/`
-> **How to use:** When building CrossBeam's `frontend/` and `server/`, read this file to understand the proven patterns, then adapt them. Don't copy blindly — CrossBeam has different flows, different outputs, no credits system.
+> **How to use:** When building PermitMonkey's `frontend/` and `server/`, read this file to understand the proven patterns, then adapt them. Don't copy blindly — PermitMonkey has different flows, different outputs, no credits system.
 
 ---
 
@@ -14,9 +14,9 @@ mako/server/
 ├── src/
 │   ├── index.ts              # Express app entry point — copy as-is
 │   ├── routes/generate.ts    # POST /generate — adapt (add flow_type, remove credits)
-│   ├── services/sandbox.ts   # Core sandbox lifecycle — adapt heavily for CrossBeam skills
-│   ├── services/supabase.ts  # DB helpers — change schema 'mako' → 'crossbeam'
-│   └── utils/config.ts       # Config + prompts — REWRITE for CrossBeam
+│   ├── services/sandbox.ts   # Core sandbox lifecycle — adapt heavily for PermitMonkey skills
+│   ├── services/supabase.ts  # DB helpers — change schema 'mako' → 'permitmonkey'
+│   └── utils/config.ts       # Config + prompts — REWRITE for PermitMonkey
 ├── skills/                    # Skills bundled with the server (copied into sandbox at runtime)
 ├── Dockerfile                 # Docker container config — copy as-is
 ├── package.json               # Dependencies — copy, update name
@@ -32,7 +32,7 @@ mako/frontend/
 │   ├── auth/signout/route.ts              # Sign out
 │   ├── (auth)/login/page.tsx              # Login page — REWRITE for judge button
 │   ├── (dashboard)/dashboard/page.tsx     # Dashboard — REWRITE for persona cards
-│   ├── (dashboard)/projects/[id]/page.tsx # Project detail — adapt for CrossBeam
+│   ├── (dashboard)/projects/[id]/page.tsx # Project detail — adapt for PermitMonkey
 │   ├── (dashboard)/projects/new/page.tsx  # New project — adapt
 │   ├── layout.tsx                         # Root layout
 │   └── globals.css                        # Tailwind styles
@@ -49,7 +49,7 @@ mako/frontend/
 │   ├── supabase/server.ts                 # Server Supabase client — copy as-is
 │   ├── supabase/middleware.ts             # Auth session refresh — copy as-is
 │   └── utils.ts                           # cn() helper — copy as-is
-├── types/database.ts                      # Type definitions — REWRITE for CrossBeam
+├── types/database.ts                      # Type definitions — REWRITE for PermitMonkey
 ├── middleware.ts                           # Route protection — copy as-is
 ├── package.json
 ├── tailwind.config.ts
@@ -109,7 +109,7 @@ export const generateRouter = Router();
 const generateRequestSchema = z.object({
   project_id: z.string().uuid(),
   user_id: z.string().uuid(),
-  // CrossBeam adds: flow_type: z.enum(['city-review', 'corrections-analysis']),
+  // PermitMonkey adds: flow_type: z.enum(['city-review', 'corrections-analysis']),
 });
 
 generateRouter.post('/', async (req, res) => {
@@ -142,7 +142,7 @@ async function processGeneration(projectId: string, userId: string) {
     // Run agent in sandbox (this takes 10-20 minutes)
     await generateDemandLetter(clientFiles, /* ... */);
 
-    // ← NOTE: In Mako, credit deduction happens here. CrossBeam skips this.
+    // ← NOTE: In Mako, credit deduction happens here. PermitMonkey skips this.
 
   } catch (error) {
     await updateProjectStatus(projectId, 'failed', error.message);
@@ -183,7 +183,7 @@ async function installDependencies(sandbox: Sandbox): Promise<void> {
   await sandbox.runCommand({ cmd: 'npm', args: ['install', '-g', '@anthropic-ai/claude-code'], sudo: true });
   // Agent SDK + Supabase client
   await sandbox.runCommand({ cmd: 'npm', args: ['install', '@anthropic-ai/claude-agent-sdk', '@supabase/supabase-js'] });
-  // Any other deps (Mako installs pizzip for Word docs; CrossBeam might not need this)
+  // Any other deps (Mako installs pizzip for Word docs; PermitMonkey might not need this)
 }
 ```
 
@@ -245,7 +245,7 @@ async function copySkillToSandbox(sandbox: Sandbox): Promise<void> {
   );
 }
 
-// ← CrossBeam: You'll copy MULTIPLE skills (california-adu, adu-plan-review, etc.)
+// ← PermitMonkey: You'll copy MULTIPLE skills (california-adu, adu-plan-review, etc.)
 // ← based on which flow_type is being run. See FLOW_SKILLS in plan-deploy.md.
 ```
 
@@ -268,7 +268,7 @@ import fs from 'fs';
 const supabase = createClient('${supabaseUrl}', '${supabaseKey}');
 
 function logMessage(role, content) {
-  supabase.schema('mako').from('messages')      // ← CrossBeam: change to 'crossbeam'
+  supabase.schema('mako').from('messages')      // ← PermitMonkey: change to 'permitmonkey'
     .insert({ project_id: '${projectId}', role, content })
     .then(() => {}).catch(err => console.error(err));
 }
@@ -276,11 +276,11 @@ function logMessage(role, content) {
 async function runAgent() {
   logMessage('system', 'Agent starting...');
   const result = await query({
-    prompt: '${prompt}',                         // ← CrossBeam: use buildPrompt(flowType, city)
+    prompt: '${prompt}',                         // ← PermitMonkey: use buildPrompt(flowType, city)
     options: {
       permissionMode: 'bypassPermissions',
       allowDangerouslySkipPermissions: true,
-      maxTurns: 80,                              // ← CrossBeam uses 80 (from agents-crossbeam config)
+      maxTurns: 80,                              // ← PermitMonkey uses 80 (from agents-permitmonkey config)
       maxBudgetUsd: 15.00,
       tools: { type: 'preset', preset: 'claude_code' },
       systemPrompt: { type: 'preset', preset: 'claude_code' },
@@ -351,11 +351,11 @@ export async function POST(request: Request) {
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
   const { project_id } = await request.json()
-  // ← CrossBeam: also extract flow_type from request body
+  // ← PermitMonkey: also extract flow_type from request body
 
   // Verify user owns this project
   const { data: project } = await supabase
-    .schema('mako')                    // ← CrossBeam: 'crossbeam'
+    .schema('mako')                    // ← PermitMonkey: 'permitmonkey'
     .from('projects')
     .select('id, user_id')
     .eq('id', project_id)
@@ -365,7 +365,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
 
-  // ← Mako checks credits here. CrossBeam skips this.
+  // ← Mako checks credits here. PermitMonkey skips this.
 
   const cloudRunUrl = process.env.CLOUD_RUN_URL
   const response = await fetch(`${cloudRunUrl}/generate`, {
@@ -401,7 +401,7 @@ export function AgentActivityLog({ projectId }: { projectId: string }) {
   useEffect(() => {
     // 1. Fetch existing messages
     supabase
-      .schema('mako')                    // ← CrossBeam: 'crossbeam'
+      .schema('mako')                    // ← PermitMonkey: 'permitmonkey'
       .from('messages')
       .select('*')
       .eq('project_id', projectId)
@@ -413,7 +413,7 @@ export function AgentActivityLog({ projectId }: { projectId: string }) {
       .channel(`messages-${projectId}`)
       .on('postgres_changes', {
         event: 'INSERT',
-        schema: 'mako',                 // ← CrossBeam: 'crossbeam'
+        schema: 'mako',                 // ← PermitMonkey: 'permitmonkey'
         table: 'messages',
         filter: `project_id=eq.${projectId}`,
       }, (payload) => {
@@ -450,7 +450,7 @@ const channel = supabase
   .channel(`project-status-${projectId}`)
   .on('postgres_changes', {
     event: 'UPDATE',
-    schema: 'mako',                      // ← CrossBeam: 'crossbeam'
+    schema: 'mako',                      // ← PermitMonkey: 'permitmonkey'
     table: 'projects',
     filter: `id=eq.${projectId}`,
   }, (payload) => {
@@ -544,7 +544,7 @@ export async function middleware(request: NextRequest) {
 ## Pattern 9: Dashboard Page
 
 **File:** `mako/frontend/app/(dashboard)/dashboard/page.tsx`
-**Action:** REWRITE for CrossBeam persona cards. But study this for the data-fetching pattern.
+**Action:** REWRITE for PermitMonkey persona cards. But study this for the data-fetching pattern.
 
 ```typescript
 import { createClient } from '@/lib/supabase/server'
@@ -555,12 +555,12 @@ export default async function DashboardPage() {
   const supabase = await createClient()
 
   const { data: projects } = await supabase
-    .schema('mako')                      // ← CrossBeam: 'crossbeam'
+    .schema('mako')                      // ← PermitMonkey: 'permitmonkey'
     .from('projects')
     .select('*')
     .order('created_at', { ascending: false })
 
-  // ← CrossBeam: Instead of listing all projects, show two persona cards
+  // ← PermitMonkey: Instead of listing all projects, show two persona cards
   // ← linking to pre-seeded demo projects, plus a "New Project" option.
 }
 ```
@@ -570,7 +570,7 @@ export default async function DashboardPage() {
 ## Pattern 10: Supabase Service (Server-Side DB Helpers)
 
 **File:** `mako/server/src/services/supabase.ts`
-**Action:** Adapt — change schema, rename functions for CrossBeam domain.
+**Action:** Adapt — change schema, rename functions for PermitMonkey domain.
 
 **Key functions to replicate:**
 ```typescript
@@ -582,26 +582,26 @@ const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_SE
 
 // Update project status (processing, completed, failed)
 export async function updateProjectStatus(projectId, status, errorMessage?) {
-  await supabase.schema('crossbeam').from('projects')
+  await supabase.schema('permitmonkey').from('projects')
     .update({ status, error_message: errorMessage, updated_at: new Date().toISOString() })
     .eq('id', projectId);
 }
 
 // Get uploaded files for a project
 export async function getProjectFiles(projectId) {
-  const { data } = await supabase.schema('crossbeam').from('files')
+  const { data } = await supabase.schema('permitmonkey').from('files')
     .select('*').eq('project_id', projectId);
   return data || [];
 }
 
 // Insert agent message (fire-and-forget for streaming)
 export async function insertMessage(projectId, role, content) {
-  await supabase.schema('crossbeam').from('messages')
+  await supabase.schema('permitmonkey').from('messages')
     .insert({ project_id: projectId, role, content });
 }
 
-// ← CrossBeam DROPS: useCredits(), getActiveUserAssets()
-// ← CrossBeam ADDS: getProjectFlowType() if needed
+// ← PermitMonkey DROPS: useCredits(), getActiveUserAssets()
+// ← PermitMonkey ADDS: getProjectFlowType() if needed
 ```
 
 ---
@@ -648,17 +648,17 @@ export async function insertMessage(projectId, role, content) {
 
 2. **`stdout()` is a METHOD, not a property** — on sandbox command results. Call `result.stdout()` not `result.stdout`.
 
-3. **Schema references are everywhere** — Every Supabase call uses `.schema('mako')`. Search-and-replace to `.schema('crossbeam')` globally.
+3. **Schema references are everywhere** — Every Supabase call uses `.schema('mako')`. Search-and-replace to `.schema('permitmonkey')` globally.
 
 4. **Sandbox file paths start with `/vercel/sandbox/`** — That's the working directory inside the sandbox.
 
 5. **The agent script runs INSIDE the sandbox** — It has its own Supabase client, its own Anthropic key (passed via env). It's self-contained. If Cloud Run dies, the sandbox finishes on its own.
 
-6. **Realtime requires schema in the subscription** — `schema: 'crossbeam'` in the Realtime `.on()` calls. Miss this and you get zero events.
+6. **Realtime requires schema in the subscription** — `schema: 'permitmonkey'` in the Realtime `.on()` calls. Miss this and you get zero events.
 
 7. **Always verify files exist** after the agent claims to create them. Don't trust the agent's "done" message.
 
 ---
 
-*This file is a reference for Claude Code building CrossBeam's frontend/ and server/ directories.*
+*This file is a reference for Claude Code building PermitMonkey's frontend/ and server/ directories.*
 *See plan-deploy.md for the full deployment plan and implementation order.*

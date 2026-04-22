@@ -43,7 +43,7 @@ Sheet manifest has 15 sheets: CS, AIA.1, AIA.2, A1, A1.1, A2, A3, SN1, SN2, S1, 
 |----------|-------|---------|
 | `test-assets/04-extract-test/pages-png/` | 15 PNGs | 1232 N Jefferson, Placentia (same project) |
 | `test-assets/05-extract-test/pages-png/` | 26 PNGs | 326 Flint Ave, Long Beach (different city) |
-| `agents-crossbeam/sessions/l4-*/pages-png/` | 15 PNGs + title blocks | 1232 N Jefferson (from contractor L4) |
+| `agents-permitmonkey/sessions/l4-*/pages-png/` | 15 PNGs + title blocks | 1232 N Jefferson (from contractor L4) |
 
 ### What Still Needs to Be Created (After First Runs)
 
@@ -85,7 +85,7 @@ export function getReviewSessionFiles(sessionDir: string) {
 
 **Added to `verify.ts`** (2026-02-12): `detectReviewPhases()`, `findFileByPattern()`, and `REVIEW_FILE_PATTERNS` constant.
 
-See `agents-crossbeam/src/utils/verify.ts` for implementation.
+See `agents-permitmonkey/src/utils/verify.ts` for implementation.
 
 ---
 
@@ -909,7 +909,7 @@ L3d (PDF generation) can run as soon as L1c passes — it doesn't depend on L2c 
 
 ## Flexible File Naming (from Learnings) — DONE
 
-**Moved to `verify.ts`** (2026-02-12). Use `findFileByPattern()` and `REVIEW_FILE_PATTERNS` from `agents-crossbeam/src/utils/verify.ts`.
+**Moved to `verify.ts`** (2026-02-12). Use `findFileByPattern()` and `REVIEW_FILE_PATTERNS` from `agents-permitmonkey/src/utils/verify.ts`.
 
 ```typescript
 import { findFileByPattern, REVIEW_FILE_PATTERNS } from '../utils/verify.ts';
@@ -927,7 +927,7 @@ Adapted from the contractor flow experience, with city-specific additions:
 
 | # | Failure | Symptom | Fix | Test Level |
 |---|---------|---------|-----|-----------|
-| 1 | New symlinks broken | `adu-plan-review` skill not found | Verify `ls -la agents-crossbeam/.claude/skills/adu-plan-review` resolves | L0c |
+| 1 | New symlinks broken | `adu-plan-review` skill not found | Verify `ls -la agents-permitmonkey/.claude/skills/adu-plan-review` resolves | L0c |
 | 2 | Checklist reference inaccessible | Agent can't read `checklist-cover.md` inside skill dir | Check `additionalDirectories` includes parent, verify symlink chain | L1c |
 | 3 | `pdftoppm` not installed | Bash extraction fails | `brew install poppler` | L2c |
 | 4 | Sheet manifest wrong format | Agent can't parse manifest in later phases | Strengthen manifest schema in prompt, or pre-populate | L2c |

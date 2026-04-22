@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm california-adu *)",
+      "Bash(echo \"../../../server/skills/massachusetts-adu\")",
+      "Bash(echo \"../../../server/skills/ma-city-research\")",
+      "Read(//c/c/Users/Merritt/permitmonkey/agents-permitmonkey/.claude/**)"
+    ]
+  }
+}

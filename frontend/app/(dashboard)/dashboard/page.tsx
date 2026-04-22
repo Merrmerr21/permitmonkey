@@ -74,7 +74,7 @@ export default function DashboardPage() {
         <p className="text-muted-foreground text-lg font-body">
           {mode === 'dev-test'
             ? 'Dev mode — step through screens with scripted data'
-            : 'Select a demo scenario to run CrossBeam live'}
+            : 'Select a demo scenario to run PermitMonkey live'}
         </p>
       </div>
 

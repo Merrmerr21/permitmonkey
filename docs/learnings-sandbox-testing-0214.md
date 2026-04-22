@@ -99,7 +99,7 @@ Went from **0 successful cloud runs** to a fully working 15-page city review pip
 - Priority: test this next after CV4 passes clean.
 
 ### 4. Output record upload robustness
-- The `crossbeam-outputs` Supabase storage bucket may need MIME type policies checked.
+- The `permitmonkey-outputs` Supabase storage bucket may need MIME type policies checked.
 - If the bucket doesn't exist or has restrictive policies, uploads will fail silently.
 - Consider: do we even need storage uploads? The `raw_artifacts` JSONB column already holds all text artifacts. PDF can be generated on-demand.
 

@@ -1,6 +1,6 @@
 # Stream 2: Frontend Build Brief
 
-> **Project:** CrossBeam -- AI ADU Permit Assistant for California
+> **Project:** PermitMonkey -- AI ADU Permit Assistant for California
 > **Framework:** Next.js 15 (App Router) deployed on Vercel
 > **Hackathon Deadline:** Monday Feb 16, 12:00 PM PST
 > **Estimated Build Time:** 3-4 hours
@@ -12,7 +12,7 @@
 **Before you write a single line of code, you MUST read these two files in their entirety:**
 
 1. **Design Bible:** `DESIGN-BIBLE.md` (repo root) -- This is the law. Every color, font, shadow, animation, and layout decision comes from this file. Do not deviate.
-2. **Mako Reference Frontend:** `~/openai-demo/CC-Agents-SDK-test-1225/mako/frontend/` -- Read the entire frontend. This is your structural template. You are forking this codebase and adapting it for CrossBeam.
+2. **Mako Reference Frontend:** `~/openai-demo/CC-Agents-SDK-test-1225/mako/frontend/` -- Read the entire frontend. This is your structural template. You are forking this codebase and adapting it for PermitMonkey.
 
 The Design Bible overrides any styling you see in Mako. The Mako code provides the structural patterns (Supabase auth, middleware, polling, API routes). Combine them: Mako structure + Design Bible styling.
 
@@ -23,13 +23,13 @@ The Design Bible overrides any styling you see in Mako. The Mako code provides t
 | Reference | Path |
 |---|---|
 | Mako frontend | `~/openai-demo/CC-Agents-SDK-test-1225/mako/frontend/` |
-| Design Bible | `~/openai-demo/CC-Crossbeam/DESIGN-BIBLE.md` |
-| Supabase schema | `~/openai-demo/CC-Crossbeam/plan-supabase-0213.md` |
-| Strategy doc | `~/openai-demo/CC-Crossbeam/plan-strategy-0213.md` |
-| Deploy plan | `~/openai-demo/CC-Crossbeam/plan-deploy.md` |
-| Design mockups | `~/openai-demo/CC-Crossbeam/design-directions/` |
-| ADU miniature assets (source) | `~/openai-demo/cc-crossbeam-video/assets/keyed/` (skip `no-go/` subfolder) |
-| ADU miniature assets (frontend) | `CC-Crossbeam/frontend/public/images/adu/` (copied + compressed) |
+| Design Bible | `~/openai-demo/permitmonkey/DESIGN-BIBLE.md` |
+| Supabase schema | `~/openai-demo/permitmonkey/plan-supabase-0213.md` |
+| Strategy doc | `~/openai-demo/permitmonkey/plan-strategy-0213.md` |
+| Deploy plan | `~/openai-demo/permitmonkey/plan-deploy.md` |
+| Design mockups | `~/openai-demo/permitmonkey/design-directions/` |
+| ADU miniature assets (source) | `~/openai-demo/cc-permitmonkey-video/assets/keyed/` (skip `no-go/` subfolder) |
+| ADU miniature assets (frontend) | `permitmonkey/frontend/public/images/adu/` (copied + compressed) |
 
 ---
 
@@ -62,13 +62,13 @@ The Design Bible overrides any styling you see in Mako. The Mako code provides t
 ## File Tree
 
 ```
-CC-Crossbeam/frontend/
+permitmonkey/frontend/
 ├── public/
 │   └── images/
 │       └── adu/                              # ADU miniature PNGs (copied from keyed assets -- see Image Pipeline)
 ├── app/
 │   ├── page.tsx                              # REWRITE: Landing page with ADU hero miniature + CTA
-│   ├── layout.tsx                            # REWRITE: Playfair + Nunito fonts, gradient bg, CrossBeam branding
+│   ├── layout.tsx                            # REWRITE: Playfair + Nunito fonts, gradient bg, PermitMonkey branding
 │   ├── globals.css                           # REWRITE: Design Bible palette, @theme inline, gradient (LIGHT ONLY)
 │   ├── auth/
 │   │   ├── callback/route.ts                 # COPY from Mako as-is
@@ -98,7 +98,7 @@ CC-Crossbeam/frontend/
 │   │   └── middleware.ts                     # COPY from Mako as-is
 │   └── utils.ts                              # COPY from Mako as-is (cn() utility)
 ├── types/
-│   └── database.ts                           # REWRITE: CrossBeam schema types
+│   └── database.ts                           # REWRITE: PermitMonkey schema types
 ├── hooks/
 │   └── use-random-adu.ts                     # NEW: Hook for random ADU miniature selection
 ├── middleware.ts                              # COPY from Mako as-is
@@ -115,10 +115,10 @@ CC-Crossbeam/frontend/
 
 ## Image Pipeline (DO THIS FIRST)
 
-Before writing any code, copy ADU miniature assets into the frontend. These are the photorealistic tilt-shift miniatures that define CrossBeam's visual identity.
+Before writing any code, copy ADU miniature assets into the frontend. These are the photorealistic tilt-shift miniatures that define PermitMonkey's visual identity.
 
-**Source:** `~/openai-demo/cc-crossbeam-video/assets/keyed/`
-**Destination:** `CC-Crossbeam/frontend/public/images/adu/`
+**Source:** `~/openai-demo/cc-permitmonkey-video/assets/keyed/`
+**Destination:** `permitmonkey/frontend/public/images/adu/`
 **SKIP:** the `no-go/` subfolder — everything else is good
 
 ### Selected Exteriors (copy these)
@@ -162,7 +162,7 @@ The current assets are still PNGs. Spinning video loops (MP4) will be ready late
 
 ### Infrastructure (COPY from Mako -- minimal or zero changes)
 
-These files are identical between Mako and CrossBeam. Copy them verbatim.
+These files are identical between Mako and PermitMonkey. Copy them verbatim.
 
 **`middleware.ts`** -- Copy from `~/openai-demo/CC-Agents-SDK-test-1225/mako/frontend/middleware.ts`. No changes needed. It handles auth route protection (redirect unauthenticated users to /login, redirect authenticated users away from /login).
 
@@ -182,7 +182,7 @@ These files are identical between Mako and CrossBeam. Copy them verbatim.
 
 **`tsconfig.json`** -- Copy as-is.
 
-**NOTE:** Do NOT copy `theme-provider.tsx` from Mako. CrossBeam is light-mode only — no ThemeProvider, no `next-themes`.
+**NOTE:** Do NOT copy `theme-provider.tsx` from Mako. PermitMonkey is light-mode only — no ThemeProvider, no `next-themes`.
 
 **`postcss.config.mjs`** -- Copy as-is.
 
@@ -198,7 +198,7 @@ Copy from Mako, then make these changes:
 
 ```json
 {
-  "name": "crossbeam-frontend",
+  "name": "permitmonkey-frontend",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -279,7 +279,7 @@ The file structure is:
 3. `:root` light mode variables (Design Bible palette)
 4. Custom status colors (success, warning, info)
 5. Base layer
-6. `.bg-crossbeam-gradient` class (sky-to-earth gradient with `background-attachment: fixed`)
+6. `.bg-permitmonkey-gradient` class (sky-to-earth gradient with `background-attachment: fixed`)
 7. `.bg-topo-lines` class (topographic contour lines — subtle sophistication)
 8. Custom animations (fade-up, pulse, slide-in -- NO bounce, NO spring)
 9. Typography utilities (heading-display uses Playfair, body uses Nunito)
@@ -396,7 +396,7 @@ Here is the complete globals.css content to write:
 /* ==========================================
    SKY-TO-EARTH GRADIENT (Design Bible)
    ========================================== */
-.bg-crossbeam-gradient {
+.bg-permitmonkey-gradient {
   background: linear-gradient(180deg,
     #F0F7FF 0%,      /* sky blue */
     #FAFCFF 15%,
@@ -548,15 +548,15 @@ Here is the complete globals.css content to write:
 /* ==========================================
    PROSE STYLES (for rendering markdown output)
    ========================================== */
-.prose-crossbeam h1,
-.prose-crossbeam h2,
-.prose-crossbeam h3 {
+.prose-permitmonkey h1,
+.prose-permitmonkey h2,
+.prose-permitmonkey h3 {
   font-family: var(--font-display);
   letter-spacing: -0.02em;
   color: hsl(var(--foreground));
 }
 
-.prose-crossbeam h1 {
+.prose-permitmonkey h1 {
   font-size: 1.5rem;
   font-weight: 700;
   margin-bottom: 1.25rem;
@@ -564,48 +564,48 @@ Here is the complete globals.css content to write:
   border-bottom: 1px solid hsl(var(--border));
 }
 
-.prose-crossbeam h2 {
+.prose-permitmonkey h2 {
   font-size: 1.25rem;
   font-weight: 700;
   margin-top: 2rem;
   margin-bottom: 0.875rem;
 }
 
-.prose-crossbeam h3 {
+.prose-permitmonkey h3 {
   font-size: 1.125rem;
   font-weight: 700;
   margin-top: 1.5rem;
   margin-bottom: 0.625rem;
 }
 
-.prose-crossbeam p {
+.prose-permitmonkey p {
   margin-bottom: 1rem;
   line-height: 1.75;
   color: hsl(var(--foreground));
 }
 
-.prose-crossbeam ul,
-.prose-crossbeam ol {
+.prose-permitmonkey ul,
+.prose-permitmonkey ol {
   margin-left: 1.25rem;
   margin-bottom: 1rem;
   padding-left: 0.5rem;
 }
 
-.prose-crossbeam li {
+.prose-permitmonkey li {
   margin-bottom: 0.5rem;
   line-height: 1.65;
 }
 
-.prose-crossbeam li::marker {
+.prose-permitmonkey li::marker {
   color: hsl(var(--primary));
 }
 
-.prose-crossbeam strong {
+.prose-permitmonkey strong {
   font-weight: 600;
   color: hsl(var(--foreground));
 }
 
-.prose-crossbeam blockquote {
+.prose-permitmonkey blockquote {
   border-left: 3px solid hsl(var(--primary) / 50%);
   padding-left: 1.25rem;
   margin: 1.5rem 0;
@@ -613,20 +613,20 @@ Here is the complete globals.css content to write:
   color: hsl(var(--muted-foreground));
 }
 
-.prose-crossbeam table {
+.prose-permitmonkey table {
   width: 100%;
   margin: 1.5rem 0;
   border-collapse: collapse;
 }
 
-.prose-crossbeam th,
-.prose-crossbeam td {
+.prose-permitmonkey th,
+.prose-permitmonkey td {
   padding: 0.5rem 0.75rem;
   border: 1px solid hsl(var(--border));
   text-align: left;
 }
 
-.prose-crossbeam th {
+.prose-permitmonkey th {
   background: hsl(var(--muted));
   font-weight: 600;
 }
@@ -636,7 +636,7 @@ Here is the complete globals.css content to write:
 - Every `--color-*` in `@theme inline` MUST use the `hsl()` wrapper. Without it, Tailwind v4 utilities like `bg-primary` will not resolve.
 - The `:root` variables are HSL channels only (no `hsl()` wrapper) -- this is the shadcn convention.
 - The `@theme inline` block bridges these two formats.
-- Do NOT include any sidebar-related variables (CrossBeam has no sidebar).
+- Do NOT include any sidebar-related variables (PermitMonkey has no sidebar).
 - Do NOT include `.dark` CSS block or `@custom-variant dark` -- this is light-mode only.
 - The gradient uses `background-attachment: fixed` so it stays anchored as the user scrolls.
 - The `.bg-topo-lines` class adds subtle topographic contour lines as a background texture. Use it on hero sections and landing page for sophistication.
@@ -645,7 +645,7 @@ Here is the complete globals.css content to write:
 
 ### app/layout.tsx (REWRITE)
 
-Replace Mako's Inter + Geist Mono fonts with Playfair Display + Nunito. Apply the gradient background. Change branding to CrossBeam. **No ThemeProvider -- light-mode only.**
+Replace Mako's Inter + Geist Mono fonts with Playfair Display + Nunito. Apply the gradient background. Change branding to PermitMonkey. **No ThemeProvider -- light-mode only.**
 
 ```tsx
 import type { Metadata } from "next"
@@ -667,7 +667,7 @@ const nunito = Nunito({
 })
 
 export const metadata: Metadata = {
-  title: "CrossBeam | AI-Powered ADU Permit Review",
+  title: "PermitMonkey | AI-Powered ADU Permit Review",
   description: "AI permit review assistant for California ADUs. Built with Claude Opus 4.6.",
 }
 
@@ -678,7 +678,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${playfair.variable} ${nunito.variable}`}>
-      <body className="antialiased bg-crossbeam-gradient">
+      <body className="antialiased bg-permitmonkey-gradient">
         {children}
       </body>
     </html>
@@ -689,8 +689,8 @@ export default function RootLayout({
 **Key differences from Mako:**
 - Fonts: Playfair Display + Nunito (not Inter + Geist Mono)
 - NO ThemeProvider, NO `next-themes` -- light mode only
-- Body class: `bg-crossbeam-gradient` (the sky-to-earth gradient, fixed on scroll)
-- Metadata: CrossBeam branding
+- Body class: `bg-permitmonkey-gradient` (the sky-to-earth gradient, fixed on scroll)
+- Metadata: PermitMonkey branding
 - No `suppressHydrationWarning` (not needed without theme switching)
 
 ---
@@ -712,7 +712,7 @@ export default function LandingPage() {
     <div className="bg-topo-lines">
       {/* Nav */}
       <nav className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <span className="heading-card text-primary">CrossBeam</span>
+        <span className="heading-card text-primary">PermitMonkey</span>
         <Link href="/login">
           <Button variant="outline" size="sm" className="font-body">
             Sign In
@@ -777,7 +777,7 @@ export default function LandingPage() {
       {/* Footer */}
       <footer className="border-t border-border/30 py-6 text-center">
         <p className="text-sm text-muted-foreground font-body">
-          Built with Claude Opus 4.6 · CrossBeam © 2026
+          Built with Claude Opus 4.6 · PermitMonkey © 2026
         </p>
       </footer>
     </div>
@@ -821,8 +821,8 @@ export default function LoginPage() {
     setLoading(true)
     try {
       const { error } = await supabase.auth.signInWithPassword({
-        email: 'judge@crossbeam.app',
-        password: 'crossbeam-hackathon-2026',
+        email: 'judge@permitmonkey.app',
+        password: 'permitmonkey-hackathon-2026',
       })
       if (error) throw error
       router.push('/dashboard')
@@ -859,7 +859,7 @@ export default function LoginPage() {
 
           {/* Branding */}
           <div className="space-y-2">
-            <h1 className="heading-display text-foreground">CrossBeam</h1>
+            <h1 className="heading-display text-foreground">PermitMonkey</h1>
             <p className="text-muted-foreground font-body">
               AI-Powered Permit Review for California ADUs
             </p>
@@ -932,7 +932,7 @@ function GoogleIcon({ className }: { className?: string }) {
 
 ### app/(dashboard)/layout.tsx (ADAPT -- simpler than Mako)
 
-CrossBeam does NOT have a sidebar. Just a simple top nav bar + protected layout.
+PermitMonkey does NOT have a sidebar. Just a simple top nav bar + protected layout.
 
 ```tsx
 import { redirect } from 'next/navigation'
@@ -966,7 +966,7 @@ export default async function DashboardLayout({
 
 ### components/nav-bar.tsx (NEW)
 
-Simple top navigation. No sidebar, no hamburger menu. CrossBeam branding + sign out.
+Simple top navigation. No sidebar, no hamburger menu. PermitMonkey branding + sign out.
 
 ```tsx
 'use client'
@@ -993,7 +993,7 @@ export function NavBar({ userEmail }: NavBarProps) {
     <nav className="border-b border-border/50 bg-card/80 backdrop-blur-sm sticky top-0 z-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <span className="heading-card text-primary">CrossBeam</span>
+          <span className="heading-card text-primary">PermitMonkey</span>
         </Link>
 
         <div className="flex items-center gap-4">
@@ -1032,7 +1032,7 @@ export default function DashboardPage() {
       <div className="text-center space-y-2 pt-8">
         <h1 className="heading-display text-foreground">Choose your perspective</h1>
         <p className="text-muted-foreground text-lg font-body">
-          Select a demo scenario to see CrossBeam in action
+          Select a demo scenario to see PermitMonkey in action
         </p>
       </div>
 
@@ -1295,7 +1295,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   // Fetch project
   const { data: project, error } = await supabase
-    .schema('crossbeam')
+    .schema('permitmonkey')
     .from('projects')
     .select('*')
     .eq('id', id)
@@ -1305,7 +1305,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 
   // Fetch files
   const { data: files } = await supabase
-    .schema('crossbeam')
+    .schema('permitmonkey')
     .from('files')
     .select('*')
     .eq('project_id', id)
@@ -1326,7 +1326,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
 1. **Poll project status** every 3 seconds using `setInterval`:
    ```ts
    const { data } = await supabase
-     .schema('crossbeam')
+     .schema('permitmonkey')
      .from('projects')
      .select('status, error_message')
      .eq('id', project.id)
@@ -1442,12 +1442,12 @@ Lay them out horizontally with a thin line connecting dots.
 
 Fork Mako's `components/project/agent-activity-log.tsx` with these changes:
 
-1. **Schema:** Change `.schema('mako')` to `.schema('crossbeam')`
+1. **Schema:** Change `.schema('mako')` to `.schema('permitmonkey')`
 2. **Polling instead of realtime subscriptions:** Use `setInterval` polling every 2 seconds with `WHERE id > lastSeenId` for efficiency. Mako uses Supabase Realtime (postgres_changes) which requires additional Supabase configuration. Polling is simpler and guaranteed to work.
    ```ts
    const poll = async () => {
      const { data } = await supabase
-       .schema('crossbeam')
+       .schema('permitmonkey')
        .from('messages')
        .select('*')
        .eq('project_id', projectId)
@@ -1473,7 +1473,7 @@ Renders when `project.status === 'awaiting-answers'`.
 1. **Fetch questions:**
    ```ts
    const { data: questions } = await supabase
-     .schema('crossbeam')
+     .schema('permitmonkey')
      .from('contractor_answers')
      .select('*')
      .eq('project_id', projectId)
@@ -1499,7 +1499,7 @@ Renders when `project.status === 'awaiting-answers'`.
      // Update each answer in contractor_answers table
      for (const answer of answers) {
        await supabase
-         .schema('crossbeam')
+         .schema('permitmonkey')
          .from('contractor_answers')
          .update({ answer_text: answer.value, is_answered: true })
          .eq('id', answer.id)
@@ -1537,7 +1537,7 @@ Renders when `project.status === 'completed'`. Includes a small ADU miniature at
 1. **Fetch outputs:**
    ```ts
    const { data: outputs } = await supabase
-     .schema('crossbeam')
+     .schema('permitmonkey')
      .from('outputs')
      .select('*')
      .eq('project_id', projectId)
@@ -1560,7 +1560,7 @@ Renders when `project.status === 'completed'`. Includes a small ADU miniature at
    import ReactMarkdown from 'react-markdown'
    import remarkGfm from 'remark-gfm'
 
-   <div className="prose-crossbeam">
+   <div className="prose-permitmonkey">
      <ReactMarkdown remarkPlugins={[remarkGfm]}>
        {markdownContent}
      </ReactMarkdown>
@@ -1586,7 +1586,7 @@ Fork Mako's `app/api/generate/route.ts` with these changes:
 
 1. **Add `flow_type`** to the request body: `{ project_id, user_id, flow_type }`
 2. **Remove credits check** entirely (lines 36-49 in Mako)
-3. **Change schema reference:** `.schema('mako')` to `.schema('crossbeam')`
+3. **Change schema reference:** `.schema('mako')` to `.schema('permitmonkey')`
 4. **Change table reference:** `'projects'` stays the same
 5. **Pass `flow_type` to Cloud Run:**
    ```ts
@@ -1606,7 +1606,7 @@ The `flow_type` field accepts three values:
 
 ### types/database.ts (REWRITE)
 
-Full TypeScript types matching the crossbeam schema from `plan-supabase-0213.md`:
+Full TypeScript types matching the permitmonkey schema from `plan-supabase-0213.md`:
 
 ```ts
 export type Json =
@@ -1715,7 +1715,7 @@ export interface ContractorAnswer {
 
 // Database type for Supabase client generic
 export interface Database {
-  crossbeam: {
+  permitmonkey: {
     Tables: {
       projects: {
         Row: Project
@@ -1751,12 +1751,12 @@ export interface Database {
 
 ## Supabase Client Usage
 
-**CRITICAL:** All CrossBeam queries use `.schema('crossbeam')`:
+**CRITICAL:** All PermitMonkey queries use `.schema('permitmonkey')`:
 
 ```ts
 // Reading projects
 const { data } = await supabase
-  .schema('crossbeam')
+  .schema('permitmonkey')
   .from('projects')
   .select('*')
   .eq('id', projectId)
@@ -1764,7 +1764,7 @@ const { data } = await supabase
 
 // Polling messages (efficient)
 const { data } = await supabase
-  .schema('crossbeam')
+  .schema('permitmonkey')
   .from('messages')
   .select('*')
   .eq('project_id', projectId)
@@ -1773,7 +1773,7 @@ const { data } = await supabase
 
 // Updating contractor answers
 await supabase
-  .schema('crossbeam')
+  .schema('permitmonkey')
   .from('contractor_answers')
   .update({ answer_text: 'user response', is_answered: true })
   .eq('id', answerId)
@@ -1795,7 +1795,7 @@ For production (Vercel):
 ```
 NEXT_PUBLIC_SUPABASE_URL=https://bhjrpklzqyrelnhexhlj.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=(same)
-CLOUD_RUN_URL=https://crossbeam-server-xxx.run.app
+CLOUD_RUN_URL=https://permitmonkey-server-xxx.run.app
 ```
 
 ---
@@ -1825,7 +1825,7 @@ Read `DESIGN-BIBLE.md` before writing any code. These rules are non-negotiable:
 - Deep soft shadows on cards: `shadow-[0_8px_32px_rgba(28,25,23,0.08)]`
 - Generous whitespace: `p-6` minimum on cards, generous gaps
 - Pill-shaped primary CTAs: `rounded-full`
-- Sky-to-earth gradient background on root layout (`bg-crossbeam-gradient`) with `background-attachment: fixed`
+- Sky-to-earth gradient background on root layout (`bg-permitmonkey-gradient`) with `background-attachment: fixed`
 - Card hover: `translateY(-2px)` + shadow deepens (200ms transition)
 - Button hover glow: `hover:shadow-[0_0_20px_rgba(45,106,79,0.15)]`
 - Status badges: pill-shaped (`rounded-full`), use semantic colors (success/warning/accent/destructive/info)
@@ -1845,7 +1845,7 @@ Read `DESIGN-BIBLE.md` before writing any code. These rules are non-negotiable:
 - Use Inter, Roboto, Arial, or system fonts directly
 - Forget the `hsl()` wrapper in `@theme inline` (this breaks all Tailwind color utilities)
 - Create new files when you can edit existing ones
-- Add sidebar navigation (CrossBeam uses top nav only)
+- Add sidebar navigation (PermitMonkey uses top nav only)
 - **Use Lucide icons where an ADU miniature should go** (persona cards, hero sections)
 - **Add dark mode** -- light-only for hackathon
 - **Import `next-themes` or `ThemeProvider`** -- not needed
@@ -1861,8 +1861,8 @@ This build order mixes design and engineering so the app looks right from the fi
 1. **Image pipeline** -- Copy and compress ADU miniature PNGs into `frontend/public/images/adu/` (see Image Pipeline section above)
 2. **Copy infrastructure files** -- middleware, supabase clients, utils, shadcn components, configs (NOT theme-provider)
 3. **Write globals.css** -- Design Bible palette, `@theme inline`, gradient with `background-attachment: fixed`, topo lines, animations, typography utilities. NO dark mode.
-4. **Write layout.tsx** -- Playfair + Nunito fonts, `bg-crossbeam-gradient` body, CrossBeam metadata. NO ThemeProvider.
-5. **Write types/database.ts** -- CrossBeam schema types
+4. **Write layout.tsx** -- Playfair + Nunito fonts, `bg-permitmonkey-gradient` body, PermitMonkey metadata. NO ThemeProvider.
+5. **Write types/database.ts** -- PermitMonkey schema types
 
 ### Phase 2: First screens (design-forward — make it beautiful immediately)
 
@@ -1874,7 +1874,7 @@ This build order mixes design and engineering so the app looks right from the fi
 
 ### Phase 3: Dashboard flow (persona cards with miniatures)
 
-11. **Write nav-bar component** -- Simple top nav, CrossBeam branding
+11. **Write nav-bar component** -- Simple top nav, PermitMonkey branding
 12. **Write dashboard layout** -- Protected, top nav
 13. **Write persona-card component** -- ADU miniature hero in each card (NOT Lucide icons)
 14. **Write dashboard page** -- Two persona cards with different ADU styles

@@ -63,7 +63,7 @@ export function DevTools() {
       const errorMessage = status === 'failed' ? 'Demo error: testing the failed state UI' : null
 
       await supabase
-        .schema('crossbeam')
+        .schema('permitmonkey')
         .from('projects')
         .update({ status, error_message: errorMessage })
         .eq('id', projectId)
@@ -85,7 +85,7 @@ export function DevTools() {
   // Clear all messages for the current project
   const clearMessages = useCallback(async () => {
     await supabase
-      .schema('crossbeam')
+      .schema('permitmonkey')
       .from('messages')
       .delete()
       .eq('project_id', projectId)
@@ -102,7 +102,7 @@ export function DevTools() {
       if (messagesToInsert.length === 0) return
 
       await supabase
-        .schema('crossbeam')
+        .schema('permitmonkey')
         .from('messages')
         .insert(
           messagesToInsert.map((m) => ({
@@ -204,7 +204,7 @@ export function DevTools() {
   const autoFillAnswers = async () => {
     for (const [questionKey, answerText] of Object.entries(CAMERON_ANSWERS)) {
       await supabase
-        .schema('crossbeam')
+        .schema('permitmonkey')
         .from('contractor_answers')
         .update({ answer_text: answerText, is_answered: true })
         .eq('project_id', projectId)

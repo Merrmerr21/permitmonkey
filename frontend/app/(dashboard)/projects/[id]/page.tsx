@@ -19,7 +19,7 @@ export default async function ProjectPage({ params, searchParams }: ProjectPageP
 
   // Fetch project
   const { data: project, error } = await supabase
-    .schema('crossbeam')
+    .schema('permitmonkey')
     .from('projects')
     .select('*')
     .eq('id', id)
@@ -29,7 +29,7 @@ export default async function ProjectPage({ params, searchParams }: ProjectPageP
 
   // Fetch files
   const { data: files } = await supabase
-    .schema('crossbeam')
+    .schema('permitmonkey')
     .from('files')
     .select('*')
     .eq('project_id', id)

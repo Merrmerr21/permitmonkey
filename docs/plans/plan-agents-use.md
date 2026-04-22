@@ -1,4 +1,4 @@
-# Agent Operations Plan — CrossBeam
+# Agent Operations Plan — PermitMonkey
 
 ## Why This Matters
 
@@ -6,7 +6,7 @@ Testing is the blocker right now. Every time we push to Vercel, we have to manua
 
 Two deliverables:
 1. **API key auth on the Next.js routes** — so agents can trigger flows and read results without a browser session
-2. **`crossbeam-ops` skill** — the agent manual that teaches Claude how to operate the entire system
+2. **`permitmonkey-ops` skill** — the agent manual that teaches Claude how to operate the entire system
 
 ---
 
@@ -18,7 +18,7 @@ The two API routes that matter (`/api/generate`, `/api/reset-project`) require a
 
 ### The Fix
 
-Add `Authorization: Bearer <key>` as an alternative auth method. If the key matches the `CROSSBEAM_API_KEY` env var, you're in. Existing browser auth continues to work unchanged.
+Add `Authorization: Bearer <key>` as an alternative auth method. If the key matches the `PERMITMONKEY_API_KEY` env var, you're in. Existing browser auth continues to work unchanged.
 
 ### Files to Create/Modify
 
@@ -48,12 +48,12 @@ GET /api/projects/:id → { project, files, messages, latest_output, contractor_
 
 **`frontend/.env.local`** (local dev — add these):
 ```
-CROSSBEAM_API_KEY=dev-test-key-change-in-production
+PERMITMONKEY_API_KEY=dev-test-key-change-in-production
 SUPABASE_SERVICE_ROLE_KEY=<copy from root .env.local>
 ```
 
 **Vercel Dashboard** (production):
-- `CROSSBEAM_API_KEY` → generate with `openssl rand -hex 32`
+- `PERMITMONKEY_API_KEY` → generate with `openssl rand -hex 32`
 - `SUPABASE_SERVICE_ROLE_KEY` → same value as Cloud Run already has
 
 Both are server-side only. No `NEXT_PUBLIC_` prefix = never exposed to browser.
@@ -62,18 +62,18 @@ Both are server-side only. No `NEXT_PUBLIC_` prefix = never exposed to browser.
 
 ```bash
 # 1. Trigger a corrections analysis
-curl -X POST https://cc-crossbeam.vercel.app/api/generate \
-  -H "Authorization: Bearer $CROSSBEAM_API_KEY" \
+curl -X POST https://cc-permitmonkey.vercel.app/api/generate \
+  -H "Authorization: Bearer $PERMITMONKEY_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"project_id":"b0000000-0000-0000-0000-000000000002","user_id":"00000000-0000-0000-0000-000000000000","flow_type":"corrections-analysis"}'
 
 # 2. Poll for status and results
-curl https://cc-crossbeam.vercel.app/api/projects/b0000000-0000-0000-0000-000000000002 \
-  -H "Authorization: Bearer $CROSSBEAM_API_KEY"
+curl https://cc-permitmonkey.vercel.app/api/projects/b0000000-0000-0000-0000-000000000002 \
+  -H "Authorization: Bearer $PERMITMONKEY_API_KEY"
 
 # 3. Reset a demo project to run again
-curl -X POST https://cc-crossbeam.vercel.app/api/reset-project \
-  -H "Authorization: Bearer $CROSSBEAM_API_KEY" \
+curl -X POST https://cc-permitmonkey.vercel.app/api/reset-project \
+  -H "Authorization: Bearer $PERMITMONKEY_API_KEY" \
   -H "Content-Type: application/json" \
   -d '{"project_id":"b0000000-0000-0000-0000-000000000002"}'
 ```
@@ -83,7 +83,7 @@ curl -X POST https://cc-crossbeam.vercel.app/api/reset-project \
 Cloud Run (`POST /generate`) has zero auth — agents CAN hit it directly:
 
 ```bash
-curl -X POST https://crossbeam-server-v7eqq3533a-uc.a.run.app/generate \
+curl -X POST https://permitmonkey-server-v7eqq3533a-uc.a.run.app/generate \
   -H "Content-Type: application/json" \
   -d '{"project_id":"...","user_id":"...","flow_type":"corrections-analysis"}'
 ```
@@ -92,11 +92,11 @@ Fine for testing, not ideal for production.
 
 ---
 
-## Part 2: `crossbeam-ops` Skill
+## Part 2: `permitmonkey-ops` Skill
 
 The agent manual. When Claude loads this skill, it knows how to operate every part of the system.
 
-### Location: `.claude/skills/crossbeam-ops/`
+### Location: `.claude/skills/permitmonkey-ops/`
 
 ### Structure
 
@@ -117,7 +117,7 @@ The agent manual. When Claude loads this skill, it knows how to operate every pa
 3. `frontend/app/api/reset-project/route.ts` — swap auth block
 4. `frontend/app/api/projects/[id]/route.ts` — create GET endpoint
 5. `frontend/.env.local` — add env vars
-6. `.claude/skills/crossbeam-ops/` — create skill files
+6. `.claude/skills/permitmonkey-ops/` — create skill files
 7. Set Vercel env vars
 8. Deploy + test with curl
 
@@ -140,7 +140,7 @@ When multi-user isolation is needed: `api_keys` table + self-signed JWT. Agent p
 
 All implemented and verified on production. Commit `a6e5ca9`.
 
-**Working endpoints (tested with curl on cc-crossbeam.vercel.app):**
+**Working endpoints (tested with curl on cc-permitmonkey.vercel.app):**
 - `GET /api/projects/:id` → 200 with full project JSON
 - `POST /api/generate` → 200, triggers Cloud Run, agent starts processing
 - `POST /api/reset-project` → 200, resets demo project
@@ -148,9 +148,9 @@ All implemented and verified on production. Commit `a6e5ca9`.
 - Wrong key → 401
 - Non-existent project → 404
 
-**Production API key:** Set in Vercel env as `CROSSBEAM_API_KEY`. Value is in `vercel env pull --environment production`.
+**Production API key:** Set in Vercel env as `PERMITMONKEY_API_KEY`. Value is in `vercel env pull --environment production`.
 
-**`crossbeam-ops` skill:** Live and auto-detected by Claude Code. 5 reference files covering API, data model, flows, UI navigation, and demo projects.
+**`permitmonkey-ops` skill:** Live and auto-detected by Claude Code. 5 reference files covering API, data model, flows, UI navigation, and demo projects.
 
 ---
 

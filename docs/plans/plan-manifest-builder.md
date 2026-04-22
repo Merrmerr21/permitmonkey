@@ -299,7 +299,7 @@ function validateManifest(manifest: any, expectedPageCount: number): string[] {
 - The existing `downloadFilesInSandbox()` pulls it into `project-files/`
 - Step 5.5 in `sandbox.ts` checks: pre-built manifest in project-files → copy to output. If missing → fall back to static fixture.
 
-**Important:** Verify the storage bucket and path match what `downloadFilesInSandbox()` expects. The manifest should go to the same `crossbeam-outputs` bucket, at `{userId}/{projectId}/sheet-manifest.json`, with a corresponding `files` table record.
+**Important:** Verify the storage bucket and path match what `downloadFilesInSandbox()` expects. The manifest should go to the same `permitmonkey-outputs` bucket, at `{userId}/{projectId}/sheet-manifest.json`, with a corresponding `files` table record.
 
 ### Update sandbox.ts Step 5.5
 

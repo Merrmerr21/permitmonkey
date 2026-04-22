@@ -1,4 +1,4 @@
-# CrossBeam — Deployment Strategy (Feb 13, 2026)
+# PermitMonkey — Deployment Strategy (Feb 13, 2026)
 
 > **Author:** Foreman Claude (orchestrating instance)
 > **Date:** Thursday, Feb 13, 2026
@@ -20,7 +20,7 @@ Stream 0 (Schema) ──→ Stream 1 (Server)  ──→ Stream 3 (Deploy)
 
 ## What Exists Today
 
-### agents-crossbeam/ (DONE — the heart)
+### agents-permitmonkey/ (DONE — the heart)
 The Agent SDK flows and skills that run inside Vercel sandboxes. This is complete and tested.
 
 - **9 skills** (symlinked from `adu-skill-development/skill/`):
@@ -48,7 +48,7 @@ The Agent SDK flows and skills that run inside Vercel sandboxes. This is complet
 - **URL:** `https://bhjrpklzqyrelnhexhlj.supabase.co`
 - **Region:** us-east-1
 - **Status:** ACTIVE_HEALTHY, Postgres 17
-- **Existing `crossbeam` schema:** FROM AN EARLIER ITERATION — will be nuked and rebuilt (see Stream 0)
+- **Existing `permitmonkey` schema:** FROM AN EARLIER ITERATION — will be nuked and rebuilt (see Stream 0)
 
 ### Mako Reference Project
 - **Location:** `~/openai-demo/CC-Agents-SDK-test-1225/mako/`
@@ -68,7 +68,7 @@ The Agent SDK flows and skills that run inside Vercel sandboxes. This is complet
 - **Fonts:** Playfair Display (headings 24px+) + Nunito (everything else)
 - **Colors:** Moss green primary, warm soil brown secondary, sunset coral accent
 - **Background:** Sky-to-earth gradient (not flat)
-- **Assets:** Keyed ADU miniature PNGs in `/cc-crossbeam-video/assets/keyed/`
+- **Assets:** Keyed ADU miniature PNGs in `/cc-permitmonkey-video/assets/keyed/`
 
 ---
 
@@ -103,20 +103,20 @@ with the contractor two-phase flow. Here's what changed:
 
 ### 0.1 Nuke Existing Schema
 
-The existing `crossbeam` schema has tables from an earlier iteration that don't match the deploy plan. Tables to drop:
-- `crossbeam.contractor_questions` (58 rows — test data)
-- `crossbeam.agent_messages` (0 rows)
-- `crossbeam.correction_analyses` (8 rows — test data)
-- `crossbeam.outputs` (6 rows — wrong structure)
-- `crossbeam.messages` (53 rows — test data)
-- `crossbeam.client_files` (6 rows)
-- `crossbeam.projects` (2 rows — test data)
-- `crossbeam.transactions` (0 rows)
-- `crossbeam.promo_codes` (0 rows)
-- `crossbeam.leads` (0 rows)
-- `crossbeam.users` (64 rows — test data)
+The existing `permitmonkey` schema has tables from an earlier iteration that don't match the deploy plan. Tables to drop:
+- `permitmonkey.contractor_questions` (58 rows — test data)
+- `permitmonkey.agent_messages` (0 rows)
+- `permitmonkey.correction_analyses` (8 rows — test data)
+- `permitmonkey.outputs` (6 rows — wrong structure)
+- `permitmonkey.messages` (53 rows — test data)
+- `permitmonkey.client_files` (6 rows)
+- `permitmonkey.projects` (2 rows — test data)
+- `permitmonkey.transactions` (0 rows)
+- `permitmonkey.promo_codes` (0 rows)
+- `permitmonkey.leads` (0 rows)
+- `permitmonkey.users` (64 rows — test data)
 
-**Action:** `DROP SCHEMA IF EXISTS crossbeam CASCADE;`
+**Action:** `DROP SCHEMA IF EXISTS permitmonkey CASCADE;`
 
 ### 0.2 Create New Schema
 
@@ -124,24 +124,24 @@ The existing `crossbeam` schema has tables from an earlier iteration that don't 
 
 | Table | Key Columns | Purpose |
 |---|---|---|
-| `crossbeam.projects` | flow_type, status (8 states), is_demo | Project lifecycle |
-| `crossbeam.files` | file_type (plan-binder/corrections-letter) | Uploaded documents |
-| `crossbeam.messages` | BIGSERIAL id, role, content | Agent streaming |
-| `crossbeam.outputs` | flow_phase, named deliverables, raw_artifacts JSONB | Agent outputs |
-| `crossbeam.contractor_answers` | question_key, answer_text, is_answered | Human-in-the-loop |
+| `permitmonkey.projects` | flow_type, status (8 states), is_demo | Project lifecycle |
+| `permitmonkey.files` | file_type (plan-binder/corrections-letter) | Uploaded documents |
+| `permitmonkey.messages` | BIGSERIAL id, role, content | Agent streaming |
+| `permitmonkey.outputs` | flow_phase, named deliverables, raw_artifacts JSONB | Agent outputs |
+| `permitmonkey.contractor_answers` | question_key, answer_text, is_answered | Human-in-the-loop |
 
 ### 0.3 Storage Buckets
 
-- `crossbeam-uploads` — user-uploaded plan binders + corrections letters
-- `crossbeam-outputs` — agent-generated files (PDFs, response packages)
-- `crossbeam-demo-assets` — pre-seeded demo files (public read)
+- `permitmonkey-uploads` — user-uploaded plan binders + corrections letters
+- `permitmonkey-outputs` — agent-generated files (PDFs, response packages)
+- `permitmonkey-demo-assets` — pre-seeded demo files (public read)
 
 ### 0.4 Manual Dashboard Tasks (Mike does these)
 
 1. **Enable email/password auth** in Authentication → Providers
 2. **Enable Google OAuth** (stretch — judge button is sufficient for demo)
-3. **Create judge account:** `judge@crossbeam.app` / `crossbeam-hackathon-2026`
-4. **Upload demo PDFs** to `crossbeam-demo-assets` bucket
+3. **Create judge account:** `judge@permitmonkey.app` / `permitmonkey-hackathon-2026`
+4. **Upload demo PDFs** to `permitmonkey-demo-assets` bucket
 5. **Seed demo projects** (SQL provided in `plan-supabase-0213.md`)
 
 ---
@@ -178,17 +178,17 @@ An Express server that handles two flow types:
 ### 1.2 Files to Create (forked from Mako)
 
 ```
-CC-Crossbeam/server/
+permitmonkey/server/
 ├── src/
 │   ├── index.ts              ← Copy Mako as-is (Express setup, health check, route mounting)
 │   ├── routes/
 │   │   └── generate.ts       ← Fork Mako: add flow_type, remove credits logic
 │   ├── services/
-│   │   ├── sandbox.ts        ← Fork Mako: CrossBeam skills, prompts, output extraction
-│   │   └── supabase.ts       ← Fork Mako: schema 'mako' → 'crossbeam', rename functions
+│   │   ├── sandbox.ts        ← Fork Mako: PermitMonkey skills, prompts, output extraction
+│   │   └── supabase.ts       ← Fork Mako: schema 'mako' → 'permitmonkey', rename functions
 │   └── utils/
-│       └── config.ts         ← REWRITE: CrossBeam prompts, flow types, model config
-├── skills/                    ← Copy from agents-crossbeam/.claude/skills/ (resolve symlinks)
+│       └── config.ts         ← REWRITE: PermitMonkey prompts, flow types, model config
+├── skills/                    ← Copy from agents-permitmonkey/.claude/skills/ (resolve symlinks)
 │   ├── california-adu/
 │   ├── adu-plan-review/
 │   ├── adu-corrections-flow/
@@ -199,7 +199,7 @@ CC-Crossbeam/server/
 │   ├── buena-park-adu/
 │   └── placentia-adu/
 ├── Dockerfile                 ← Copy Mako as-is (Node 22 slim, PORT 8080)
-├── package.json               ← Copy Mako, update name to "crossbeam-server"
+├── package.json               ← Copy Mako, update name to "permitmonkey-server"
 └── tsconfig.json              ← Copy Mako as-is
 ```
 
@@ -222,14 +222,14 @@ CC-Crossbeam/server/
 - `readSkillFilesFromDisk()` → reads skills based on flow_type from `FLOW_SKILLS` config
 - `buildDownloadManifest()` → plan binder + optional corrections letter
 - For `corrections-response`: also download Phase 1 output files + contractor_answers.json
-- `runAgent()` → uses CrossBeam prompt from `buildPrompt()`
+- `runAgent()` → uses PermitMonkey prompt from `buildPrompt()`
 - `extractOutputs()` → flow-aware: different output files per flow_phase
 - After Phase 1: parse `contractor_questions.json` → insert into `contractor_answers` table
 - After Phase 1: set status `awaiting-answers` (not `completed`)
-- Schema references: `'mako'` → `'crossbeam'` throughout
+- Schema references: `'mako'` → `'permitmonkey'` throughout
 
 **supabase.ts (ADAPT):**
-- All `.schema('mako')` → `.schema('crossbeam')`
+- All `.schema('mako')` → `.schema('permitmonkey')`
 - Table references: `client_files` → `files`, match new column names
 - Output record: include `flow_phase`, `raw_artifacts`, named deliverable columns
 - New functions: `insertContractorAnswers()`, `getContractorAnswers()`, `getPhase1Outputs()`
@@ -237,7 +237,7 @@ CC-Crossbeam/server/
 
 ### 1.4 Skills Handling
 
-The skills in `agents-crossbeam/.claude/skills/` are **symlinks** pointing to `adu-skill-development/skill/`. When copying to `server/skills/`, resolve the symlinks — copy the actual skill directories. Each skill directory contains markdown instruction files + reference files.
+The skills in `agents-permitmonkey/.claude/skills/` are **symlinks** pointing to `adu-skill-development/skill/`. When copying to `server/skills/`, resolve the symlinks — copy the actual skill directories. Each skill directory contains markdown instruction files + reference files.
 
 ### 1.5 Testing
 
@@ -267,15 +267,15 @@ A Next.js 15 app with:
 1. **Login page** — "Sign in as Judge" button (hardcoded creds) + Google OAuth
 2. **Dashboard** — Two persona cards (City Reviewer / Contractor)
 3. **Project detail** — File display, "Start Analysis" button, agent working stream, results view
-4. **Agent stream** — Real-time message polling from `crossbeam.messages`
+4. **Agent stream** — Real-time message polling from `permitmonkey.messages`
 5. **Results viewer** — Corrections letter display, checklist, download
 
 ### 2.2 Files to Create (forked from Mako)
 
 ```
-CC-Crossbeam/frontend/
+permitmonkey/frontend/
 ├── app/
-│   ├── page.tsx                         ← Landing page (CrossBeam branding, design bible hero)
+│   ├── page.tsx                         ← Landing page (PermitMonkey branding, design bible hero)
 │   ├── layout.tsx                       ← Fork Mako: change fonts (Playfair+Nunito), branding
 │   ├── globals.css                      ← REWRITE: design bible colors, gradient, @theme inline
 │   ├── auth/
@@ -294,7 +294,7 @@ CC-Crossbeam/frontend/
 ├── components/
 │   ├── ui/                              ← Copy Mako's shadcn components
 │   ├── persona-card.tsx                 ← NEW: dashboard persona card component
-│   ├── agent-stream.tsx                 ← ADAPT: polls crossbeam.messages, renders activity log
+│   ├── agent-stream.tsx                 ← ADAPT: polls permitmonkey.messages, renders activity log
 │   ├── contractor-questions-form.tsx    ← NEW: questions form for awaiting-answers state
 │   └── results-viewer.tsx               ← NEW: corrections letter + checklist display
 ├── lib/
@@ -304,7 +304,7 @@ CC-Crossbeam/frontend/
 │   │   └── middleware.ts               ← Copy Mako as-is (session refresh)
 │   └── utils.ts                         ← Copy Mako (cn() utility)
 ├── types/
-│   └── database.ts                      ← REWRITE: CrossBeam schema types
+│   └── database.ts                      ← REWRITE: PermitMonkey schema types
 ├── middleware.ts                         ← Copy Mako as-is (auth routing)
 ├── package.json                         ← Copy Mako, update name
 ├── next.config.js                       ← Copy Mako
@@ -318,7 +318,7 @@ CC-Crossbeam/frontend/
 **CRITICAL: The frontend instance MUST read `DESIGN-BIBLE.md` before writing any code.**
 
 Key rules:
-- **globals.css:** Replace all CSS variables with design bible palette (§Color Palette). Include `@theme inline` block. Add `.bg-crossbeam-gradient` class.
+- **globals.css:** Replace all CSS variables with design bible palette (§Color Palette). Include `@theme inline` block. Add `.bg-permitmonkey-gradient` class.
 - **Fonts:** Configure Playfair Display + Nunito via `next/font/google` in layout.tsx. Playfair ONLY for headings 24px+.
 - **Cards:** Deep soft shadows (`0 8px 32px rgba(28,25,23,0.08)`), generous padding (`p-6`), `border-border/50`
 - **Buttons:** Primary CTAs are pill-shaped (`rounded-full`), moss green
@@ -328,8 +328,8 @@ Key rules:
 ### 2.4 Screen-by-Screen Instructions
 
 **Login Page:**
-- CrossBeam logo + tagline at top
-- Big primary button: "Sign in as a Judge" — calls `supabase.auth.signInWithPassword({email: 'judge@crossbeam.app', password: 'crossbeam-hackathon-2026'})`
+- PermitMonkey logo + tagline at top
+- Big primary button: "Sign in as a Judge" — calls `supabase.auth.signInWithPassword({email: 'judge@permitmonkey.app', password: 'permitmonkey-hackathon-2026'})`
 - Divider: "— or —"
 - Secondary button: "Sign in with Google" — calls `supabase.auth.signInWithOAuth({provider: 'google'})`
 - Clean, centered, on gradient background
@@ -356,13 +356,13 @@ full status→UI mapping table. The key states:
 | `failed` | Error message + retry option |
 
 The `awaiting-answers` state is the **human-in-the-loop** for the contractor flow. The frontend:
-1. Fetches questions from `crossbeam.contractor_answers WHERE project_id = ?`
+1. Fetches questions from `permitmonkey.contractor_answers WHERE project_id = ?`
 2. Renders a form with each question + input field
 3. On submit: updates `answer_text` + `is_answered` for each row
 4. POSTs to `/api/generate` with `flow_type: 'corrections-response'`
 
 **Agent Stream:**
-- Polls `crossbeam.messages` every 2 seconds (use `WHERE id > last_seen_id` for efficiency)
+- Polls `permitmonkey.messages` every 2 seconds (use `WHERE id > last_seen_id` for efficiency)
 - Displays messages in a scrolling log with timestamps
 - Shows progress indicator: `● completed (green)` → `◉ active (amber pulse)` → `○ pending (gray)`
 - Phases: Extract → Research → Review → Generate (for city-review) or Extract → Analyze → Research → Categorize → Prepare (for corrections)
@@ -372,9 +372,9 @@ The `awaiting-answers` state is the **human-in-the-loop** for the contractor flo
 The frontend uses **anon key** (not service role). All queries go through RLS policies.
 
 ```typescript
-// All CrossBeam queries use .schema('crossbeam')
+// All PermitMonkey queries use .schema('permitmonkey')
 const { data } = await supabase
-  .schema('crossbeam')
+  .schema('permitmonkey')
   .from('projects')
   .select('*')
   .eq('user_id', userId)
@@ -404,11 +404,11 @@ The `CLOUD_RUN_URL` comes from env var. In dev, use `http://localhost:8080`.
 
 ```bash
 cd server
-docker build -t crossbeam-server .
-docker tag crossbeam-server gcr.io/{GCP_PROJECT}/crossbeam-server
-docker push gcr.io/{GCP_PROJECT}/crossbeam-server
-gcloud run deploy crossbeam-server \
-  --image=gcr.io/{GCP_PROJECT}/crossbeam-server \
+docker build -t permitmonkey-server .
+docker tag permitmonkey-server gcr.io/{GCP_PROJECT}/permitmonkey-server
+docker push gcr.io/{GCP_PROJECT}/permitmonkey-server
+gcloud run deploy permitmonkey-server \
+  --image=gcr.io/{GCP_PROJECT}/permitmonkey-server \
   --memory=512Mi \
   --timeout=3600 \
   --allow-unauthenticated \
@@ -437,7 +437,7 @@ Env vars for Vercel:
 ```
 NEXT_PUBLIC_SUPABASE_URL=https://bhjrpklzqyrelnhexhlj.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
-CLOUD_RUN_URL=https://crossbeam-server-xxx.run.app
+CLOUD_RUN_URL=https://permitmonkey-server-xxx.run.app
 ```
 
 ### 3.3 Vercel Sandbox Project
@@ -466,7 +466,7 @@ Add these to Cloud Run env vars.
 - `SUPABASE_URL` = `https://bhjrpklzqyrelnhexhlj.supabase.co`
 - `SUPABASE_SERVICE_ROLE_KEY` = (in .env.local)
 - `NEXT_PUBLIC_SUPABASE_ANON_KEY` = (in .env.local)
-- `ANTHROPIC_API_KEY` = (in agents-crossbeam/.env.local)
+- `ANTHROPIC_API_KEY` = (in agents-permitmonkey/.env.local)
 
 ### Need to Get
 - `VERCEL_TEAM_ID` — from Vercel dashboard
@@ -532,7 +532,7 @@ For any Claude instance that needs to look at the Mako source:
 - **URL:** `https://bhjrpklzqyrelnhexhlj.supabase.co`
 - **DB host:** `db.bhjrpklzqyrelnhexhlj.supabase.co`
 - **Region:** us-east-1
-- **Schema:** `crossbeam` (will be rebuilt fresh in Stream 0)
+- **Schema:** `permitmonkey` (will be rebuilt fresh in Stream 0)
 - **Org ID:** `ihkvfmmwetbujbbtmzuh`
 
 ---

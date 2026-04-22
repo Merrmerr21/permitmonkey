@@ -1,6 +1,6 @@
 ---
 name: adu-corrections-flow
-description: Analyzes ADU permit corrections letters — the first half of the corrections pipeline. Reads the corrections letter, builds a sheet manifest from the plan binder, researches state and city codes, views referenced plan sheets, categorizes each correction item, and generates informed contractor questions. This skill should be used when a contractor receives a city corrections letter for an ADU permit. It coordinates three sub-skills (california-adu for state law, adu-city-research for city rules, adu-targeted-page-viewer for plan sheet navigation) to produce research artifacts and a UI-ready questions JSON. Does NOT generate the final response package — that is handled by adu-corrections-complete after the contractor answers questions. Triggers when a corrections letter PDF/PNG is provided along with the plan binder PDF.
+description: Analyzes ADU permit corrections letters — the first half of the corrections pipeline. Reads the corrections letter, builds a sheet manifest from the plan binder, researches state and city codes, views referenced plan sheets, categorizes each correction item, and generates informed contractor questions. This skill should be used when a contractor receives a city corrections letter for an ADU permit. It coordinates three sub-skills (massachusetts-adu for state law, ma-city-research for city rules, adu-targeted-page-viewer for plan sheet navigation) to produce research artifacts and a UI-ready questions JSON. Does NOT generate the final response package — that is handled by adu-corrections-complete after the contractor answers questions. Triggers when a corrections letter PDF/PNG is provided along with the plan binder PDF.
 ---
 
 # ADU Corrections Flow
@@ -18,8 +18,8 @@ This skill coordinates three sub-skills through a 4-phase workflow and stops aft
 
 | Skill | Role | When Used |
 |-------|------|-----------|
-| `california-adu` | State-level building codes (CRC, CBC, CPC, etc.) | Phase 3A — offline, 28 reference files |
-| `adu-city-research` | City municipal code, standard details, IBs | Phase 3B (Mode 1: Discovery) + Phase 3.5 (Mode 2: Extraction) + optional Mode 3 (Browser Fallback) |
+| `massachusetts-adu` | State-level building codes (CRC, CBC, CPC, etc.) | Phase 3A — offline, 28 reference files |
+| `ma-city-research` | City municipal code, standard details, IBs | Phase 3B (Mode 1: Discovery) + Phase 3.5 (Mode 2: Extraction) + optional Mode 3 (Browser Fallback) |
 | `adu-targeted-page-viewer` | Sheet manifest + on-demand plan viewing | Phase 2 + Phase 3C — PDF extraction + vision |
 
 **Key principle:** Research happens *before* contractor questions. Questions informed by actual code requirements are specific and answerable in seconds. Vague questions waste the contractor's time.
@@ -86,7 +86,7 @@ See `references/subagent-prompts.md` for the full subagent prompts.
 
 #### Subagent 3A: State Law Researcher
 
-- **Skill context:** `california-adu` (28 reference files, all offline)
+- **Skill context:** `massachusetts-adu` (28 reference files, all offline)
 - **Input:** All correction items with their code references
 - **Task:** Look up every referenced code section. Deduplicate — if multiple items cite the same section, look it up once and link to all relevant items.
 - **Speed:** Fast — no network, just reading reference files (~60 sec)
@@ -94,7 +94,7 @@ See `references/subagent-prompts.md` for the full subagent prompts.
 
 #### Subagent 3B: City Discovery
 
-- **Skill context:** `adu-city-research` — **Mode 1 (Discovery) only**
+- **Skill context:** `ma-city-research` — **Mode 1 (Discovery) only**
 - **Input:** City name + list of topics extracted from corrections
 - **Task:** Run WebSearch to find the city's key ADU-related URLs: ADU page, municipal code platform, standard detail PDFs, Information Bulletins, submittal requirements. Do NOT fetch page content — just find URLs.
 - **Speed:** Fast — WebSearch only (~30 sec)
@@ -114,7 +114,7 @@ After Phase 3 completes (all three subagents return), launch city content extrac
 
 #### Single-Agent Mode (default)
 
-One subagent runs `adu-city-research` **Mode 2 (Targeted Extraction)** against all discovered URLs.
+One subagent runs `ma-city-research` **Mode 2 (Targeted Extraction)** against all discovered URLs.
 
 - **Input:** `city_discovery.json` + correction topics
 - **Task:** WebFetch each discovered URL, extract content relevant to corrections. Prioritize standard detail PDFs and municipal code sections.
@@ -129,13 +129,13 @@ Split the discovered URLs across 2-3 subagents by topic:
 - **Agent 2:** Standard detail PDFs + Information Bulletin URLs
 - **Agent 3:** ADU page + submittal requirements
 
-Each agent runs `adu-city-research` Mode 2 with its URL subset. Orchestrator merges results into a single `city_research_findings.json`.
+Each agent runs `ma-city-research` Mode 2 with its URL subset. Orchestrator merges results into a single `city_research_findings.json`.
 
 **When to use fan-out:** When Discovery returns 6+ URLs across multiple categories. For smaller cities with 2-3 URLs, single-agent is sufficient.
 
 #### Browser Fallback (conditional)
 
-If Mode 2 extraction has gaps (URLs that returned empty, PDFs that couldn't be read, sections not found), launch one subagent running `adu-city-research` **Mode 3 (Browser Fallback)** with Chrome MCP.
+If Mode 2 extraction has gaps (URLs that returned empty, PDFs that couldn't be read, sections not found), launch one subagent running `ma-city-research` **Mode 3 (Browser Fallback)** with Chrome MCP.
 
 - **Input:** `extraction_gaps` from Mode 2 output
 - **Task:** Navigate the city's website with browser automation to fill specific gaps

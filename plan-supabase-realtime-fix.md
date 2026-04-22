@@ -68,12 +68,12 @@ useEffect(() => {
 ### Mako's AgentActivityLog subscription
 ```typescript
 // Dependency array: [projectId, supabase]
-// Same pattern as CrossBeam's agent-stream (which is already correct)
+// Same pattern as PermitMonkey's agent-stream (which is already correct)
 ```
 
 ### The Pattern
 
-| | Mako | CrossBeam |
+| | Mako | PermitMonkey |
 |---|---|---|
 | Status in deps? | Never | Yes (bug) |
 | Subscribe callback? | Yes (logging) | No |
@@ -124,7 +124,7 @@ useEffect(() => {
       'postgres_changes',
       {
         event: 'UPDATE',
-        schema: 'crossbeam',
+        schema: 'permitmonkey',
         table: 'projects',
         filter: `id=eq.${project.id}`,
       },
@@ -164,7 +164,7 @@ To handle the race condition where the server updates status before the subscrip
   if (status === 'SUBSCRIBED' && shouldSubscribeRef.current) {
     // Catch-up: fetch current status in case we missed the event
     supabase
-      .schema('crossbeam')
+      .schema('permitmonkey')
       .from('projects')
       .select('status, error_message')
       .eq('id', project.id)
@@ -191,7 +191,7 @@ The agent stream subscription is already correct (no status in deps). Just add t
 ## Database / Server Changes
 
 None needed. The publication, RLS, and server-side status updates are all working correctly:
-- `crossbeam.projects` and `crossbeam.messages` are in the `supabase_realtime` publication
+- `permitmonkey.projects` and `permitmonkey.messages` are in the `supabase_realtime` publication
 - RLS policies allow SELECT for authenticated users on their own projects + demo projects
 - Server uses `service_role` key for writes (bypasses RLS)
 

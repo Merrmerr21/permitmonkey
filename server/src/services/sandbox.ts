@@ -152,15 +152,15 @@ function buildDownloadManifest(files: ProjectFile[]): FileToDownload[] {
     let bucket: string;
     let storagePath: string;
 
-    if (f.storage_path.startsWith('crossbeam-demo-assets/')) {
-      bucket = 'crossbeam-demo-assets';
-      storagePath = f.storage_path.replace('crossbeam-demo-assets/', '');
-    } else if (f.storage_path.startsWith('crossbeam-uploads/')) {
-      bucket = 'crossbeam-uploads';
-      storagePath = f.storage_path.replace('crossbeam-uploads/', '');
+    if (f.storage_path.startsWith('permitmonkey-demo-assets/')) {
+      bucket = 'permitmonkey-demo-assets';
+      storagePath = f.storage_path.replace('permitmonkey-demo-assets/', '');
+    } else if (f.storage_path.startsWith('permitmonkey-uploads/')) {
+      bucket = 'permitmonkey-uploads';
+      storagePath = f.storage_path.replace('permitmonkey-uploads/', '');
     } else {
       // Fallback: treat the whole path as the storage path, use uploads bucket
-      bucket = 'crossbeam-uploads';
+      bucket = 'permitmonkey-uploads';
       storagePath = f.storage_path;
     }
 
@@ -419,7 +419,7 @@ const OUTPUT_PATH = '${SANDBOX_OUTPUT_PATH}';
 // Fire-and-forget message logging
 function logMessage(role, content) {
   supabase
-    .schema('crossbeam')
+    .schema('permitmonkey')
     .from('messages')
     .insert({ project_id: projectId, role, content })
     .then(() => {})
@@ -433,7 +433,7 @@ async function uploadFile(filename, content) {
   const mimeTypes = { pdf: 'application/pdf', png: 'image/png', jpg: 'image/jpeg', json: 'application/json' };
   const contentType = mimeTypes[ext] || 'application/octet-stream';
   const { error } = await supabase.storage
-    .from('crossbeam-outputs')
+    .from('permitmonkey-outputs')
     .upload(storagePath, content, { upsert: true, contentType });
   if (error) {
     console.error('Upload error for', filename, ':', error.message);
@@ -477,7 +477,7 @@ function readOutputFiles() {
 async function createOutputRecord(data) {
   // Get max version for this project+flow_phase
   const { data: existing } = await supabase
-    .schema('crossbeam')
+    .schema('permitmonkey')
     .from('outputs')
     .select('version')
     .eq('project_id', projectId)
@@ -487,7 +487,7 @@ async function createOutputRecord(data) {
   const nextVersion = (existing?.[0]?.version || 0) + 1;
 
   const { data: inserted, error } = await supabase
-    .schema('crossbeam')
+    .schema('permitmonkey')
     .from('outputs')
     .insert({
       project_id: projectId,
@@ -514,7 +514,7 @@ async function insertContractorQuestions(questions, outputId = null) {
 
   // Clear old unanswered questions before inserting new ones
   const { error: deleteError } = await supabase
-    .schema('crossbeam')
+    .schema('permitmonkey')
     .from('contractor_answers')
     .delete()
     .eq('project_id', projectId)
@@ -536,7 +536,7 @@ async function insertContractorQuestions(questions, outputId = null) {
   }));
 
   const { error } = await supabase
-    .schema('crossbeam')
+    .schema('permitmonkey')
     .from('contractor_answers')
     .insert(rows);
 
@@ -552,7 +552,7 @@ async function updateProjectStatus(status, errorMessage = null) {
   const updateData = { status, updated_at: new Date().toISOString() };
   if (errorMessage) updateData.error_message = errorMessage;
   const { error } = await supabase
-    .schema('crossbeam')
+    .schema('permitmonkey')
     .from('projects')
     .update(updateData)
     .eq('id', projectId);
@@ -766,7 +766,7 @@ runAgent();
 
 // --- Main Export ---
 
-export async function runCrossBeamFlow(options: RunFlowOptions): Promise<void> {
+export async function runPermitMonkeyFlow(options: RunFlowOptions): Promise<void> {
   let sandbox: Sandbox | null = null;
 
   try {

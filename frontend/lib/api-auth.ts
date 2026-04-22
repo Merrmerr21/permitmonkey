@@ -17,7 +17,7 @@ export async function authenticateRequest(request: NextRequest): Promise<AuthRes
 
   if (authHeader?.startsWith('Bearer ')) {
     const token = authHeader.slice(7)
-    const apiKey = process.env.CROSSBEAM_API_KEY
+    const apiKey = process.env.PERMITMONKEY_API_KEY
     if (apiKey && token === apiKey) {
       return { authenticated: true, userId: null, isApiKey: true }
     }

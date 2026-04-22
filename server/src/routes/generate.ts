@@ -7,7 +7,7 @@ import {
   getPhase1Outputs,
   getProject,
 } from '../services/supabase.js';
-import { runCrossBeamFlow } from '../services/sandbox.js';
+import { runPermitMonkeyFlow } from '../services/sandbox.js';
 import { extractPdfForProject } from '../services/extract.js';
 import type { InternalFlowType } from '../utils/config.js';
 
@@ -108,7 +108,7 @@ async function processGeneration(
     if (!supabaseUrl || !supabaseKey) throw new Error('Supabase not configured');
 
     // Run the agent
-    await runCrossBeamFlow({
+    await runPermitMonkeyFlow({
       files,
       flowType,
       city,

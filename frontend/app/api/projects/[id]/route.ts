@@ -16,7 +16,7 @@ export async function GET(
 
     // Fetch project
     const { data: project, error: projectError } = await supabase
-      .schema('crossbeam')
+      .schema('permitmonkey')
       .from('projects')
       .select('*')
       .eq('id', id)
@@ -33,7 +33,7 @@ export async function GET(
 
     // Fetch recent messages (last 50, chronological)
     const { data: messages } = await supabase
-      .schema('crossbeam')
+      .schema('permitmonkey')
       .from('messages')
       .select('*')
       .eq('project_id', id)
@@ -42,7 +42,7 @@ export async function GET(
 
     // Fetch latest output
     const { data: outputs } = await supabase
-      .schema('crossbeam')
+      .schema('permitmonkey')
       .from('outputs')
       .select('*')
       .eq('project_id', id)
@@ -51,7 +51,7 @@ export async function GET(
 
     // Fetch contractor answers
     const { data: answers } = await supabase
-      .schema('crossbeam')
+      .schema('permitmonkey')
       .from('contractor_answers')
       .select('*')
       .eq('project_id', id)
@@ -59,7 +59,7 @@ export async function GET(
 
     // Fetch files
     const { data: files } = await supabase
-      .schema('crossbeam')
+      .schema('permitmonkey')
       .from('files')
       .select('*')
       .eq('project_id', id)

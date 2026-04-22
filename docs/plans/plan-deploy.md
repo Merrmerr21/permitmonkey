@@ -1,9 +1,9 @@
-# CrossBeam — Deployment Plan
+# PermitMonkey — Deployment Plan
 
 > **Goal:** Live deployed app for hackathon judging. Judges click one button, see the agent work.
 > **Architecture:** Mako-pattern — Vercel Frontend + Google Cloud Run Orchestrator + Vercel Sandbox
 > **Deadline:** Monday Feb 16, 12:00 PM PST (submission)
-> **Repo:** CC-Crossbeam (add `frontend/` + `server/` to existing repo)
+> **Repo:** permitmonkey (add `frontend/` + `server/` to existing repo)
 
 ---
 
@@ -15,15 +15,15 @@
 
 Pre-create a Supabase demo account:
 ```
-Email: judge@crossbeam.app
-Password: crossbeam-hackathon-2026
+Email: judge@permitmonkey.app
+Password: permitmonkey-hackathon-2026
 ```
 
 Login page layout:
 ```
 ┌──────────────────────────────────┐
 │                                  │
-│        🏗️ CrossBeam              │
+│        🏗️ PermitMonkey              │
 │   AI-Powered Permit Review       │
 │   for California ADUs            │
 │                                  │
@@ -45,8 +45,8 @@ Login page layout:
 // Judge button handler — hardcoded credentials, no user input needed
 const handleJudgeLogin = async () => {
   await supabase.auth.signInWithPassword({
-    email: 'judge@crossbeam.app',
-    password: 'crossbeam-hackathon-2026'
+    email: 'judge@permitmonkey.app',
+    password: 'permitmonkey-hackathon-2026'
   })
   router.push('/dashboard')
 }
@@ -55,14 +55,14 @@ const handleJudgeLogin = async () => {
 **Supabase config:**
 - Enable email/password auth
 - Enable Google OAuth
-- Create the judge@crossbeam.app account via Supabase dashboard
+- Create the judge@permitmonkey.app account via Supabase dashboard
 - RLS policies: authenticated users can CRUD their own projects + read demo projects
 
 ### 1.2 First-Time Onboarding (Bread-Style Popups)
 
 When judge lands on dashboard for first time, show a guided walkthrough:
 
-**Step 1:** "Welcome to CrossBeam 👋 — We use AI to review ADU building permits for California cities."
+**Step 1:** "Welcome to PermitMonkey 👋 — We use AI to review ADU building permits for California cities."
 
 **Step 2:** "Choose a perspective: Are you a **City Reviewer** checking submitted plans, or a **Contractor** who got corrections back?"
 
@@ -76,7 +76,7 @@ After login, the judge sees:
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│  CrossBeam Dashboard                                             │
+│  PermitMonkey Dashboard                                             │
 │                                                                   │
 │  Choose your perspective:                                         │
 │                                                                   │
@@ -178,7 +178,7 @@ This reuses the exact same backend — just different input files. Low increment
 │  3. Async: Creates Vercel Sandbox (30 min timeout)                │
 │  4. Installs Claude Code CLI + Agent SDK in sandbox               │
 │  5. Downloads files from Supabase Storage → sandbox               │
-│  6. Copies CrossBeam skills to sandbox (.claude/skills/)          │
+│  6. Copies PermitMonkey skills to sandbox (.claude/skills/)          │
 │  7. Runs agent via query() — streams messages to Supabase         │
 │  8. Agent finishes → uploads results to Supabase from sandbox     │
 │  9. Updates project status to 'completed'                         │
@@ -191,7 +191,7 @@ This reuses the exact same backend — just different input files. Low increment
      │  Vercel  │  │ Supabase │  │   Supabase   │
      │ Sandbox  │  │ Postgres │  │   Storage    │
      │          │  │          │  │              │
-     │ Agent SDK│  │ crossbeam│  │ Buckets:     │
+     │ Agent SDK│  │ permitmonkey│  │ Buckets:     │
      │ + Skills │  │ schema:  │  │ - uploads    │
      │ + Tools  │  │ - users  │  │ - outputs    │
      │          │  │ - projects│ │ - demo-assets│
@@ -204,8 +204,8 @@ This reuses the exact same backend — just different input files. Low increment
 ### 2.2 Repo Structure (New Files)
 
 ```
-CC-Crossbeam/
-├── agents-crossbeam/          (existing — agent SDK flows + skills)
+permitmonkey/
+├── agents-permitmonkey/          (existing — agent SDK flows + skills)
 │   ├── .claude/skills/        (9 skills — symlinks)
 │   ├── src/flows/             (corrections-analysis, plan-review, corrections-response)
 │   └── src/utils/             (config, session, progress)
@@ -243,10 +243,10 @@ CC-Crossbeam/
 │   │   └── utils.ts
 │   ├── middleware.ts                   # Route protection (fork Mako)
 │   ├── types/
-│   │   └── database.ts                # CrossBeam types — REWRITE
+│   │   └── database.ts                # PermitMonkey types — REWRITE
 │   ├── supabase/
 │   │   └── migrations/
-│   │       └── 001_crossbeam_schema.sql  # Schema — NEW
+│   │       └── 001_permitmonkey_schema.sql  # Schema — NEW
 │   ├── package.json
 │   ├── next.config.js
 │   ├── tailwind.config.ts
@@ -259,12 +259,12 @@ CC-Crossbeam/
 │   │   ├── routes/
 │   │   │   └── generate.ts            # Generate endpoint — ADAPT for two flow types
 │   │   ├── services/
-│   │   │   ├── sandbox.ts             # Sandbox orchestration — ADAPT for CrossBeam skills
+│   │   │   ├── sandbox.ts             # Sandbox orchestration — ADAPT for PermitMonkey skills
 │   │   │   └── supabase.ts            # DB helpers — ADAPT schema references
 │   │   └── utils/
-│   │       └── config.ts              # Config + prompts — REWRITE for CrossBeam
+│   │       └── config.ts              # Config + prompts — REWRITE for PermitMonkey
 │   ├── skills/                         # Skills copied INTO the sandbox at runtime
-│   │   ├── california-adu/             # State-level ADU skill (copy from agents-crossbeam)
+│   │   ├── california-adu/             # State-level ADU skill (copy from agents-permitmonkey)
 │   │   ├── adu-plan-review/            # City review flow skill
 │   │   ├── adu-corrections-flow/       # Contractor corrections skill
 │   │   ├── adu-corrections-complete/   # Response generation skill
@@ -282,7 +282,7 @@ CC-Crossbeam/
 ├── design-directions/          (existing — UI mockups)
 ├── docs/                       (existing)
 ├── spec.md                     (existing)
-├── plan-crossbeam.md           (existing)
+├── plan-permitmonkey.md           (existing)
 ├── plan-deploy.md              (this file)
 └── ...
 ```
@@ -290,24 +290,24 @@ CC-Crossbeam/
 ### 2.3 What to Fork vs Rewrite
 
 > **📖 For working code examples of every file below, see `@reference-mako.md`.**
-> It has the exact code patterns with inline comments showing what to change for CrossBeam.
+> It has the exact code patterns with inline comments showing what to change for PermitMonkey.
 
 #### Fork Directly from Mako (minimal changes):
 
-| Mako File | CrossBeam File | Changes Needed |
+| Mako File | PermitMonkey File | Changes Needed |
 |-----------|---------------|----------------|
 | `server/src/index.ts` | `server/src/index.ts` | None — identical Express setup |
 | `server/Dockerfile` | `server/Dockerfile` | None — identical Node container |
 | `server/package.json` | `server/package.json` | Update name, same deps |
 | `server/src/services/sandbox.ts` | `server/src/services/sandbox.ts` | Change skill paths, prompt, flow routing |
-| `server/src/services/supabase.ts` | `server/src/services/supabase.ts` | Change schema `mako` → `crossbeam`, rename functions |
+| `server/src/services/supabase.ts` | `server/src/services/supabase.ts` | Change schema `mako` → `permitmonkey`, rename functions |
 | `server/src/routes/generate.ts` | `server/src/routes/generate.ts` | Add `flow_type` field, remove credits logic |
 | `frontend/lib/supabase/*` | `frontend/lib/supabase/*` | Same — Supabase client setup is identical |
 | `frontend/middleware.ts` | `frontend/middleware.ts` | Same — auth route protection |
 | `frontend/app/auth/*` | `frontend/app/auth/*` | Same — OAuth callback/signout |
 | `frontend/components/ui/*` | `frontend/components/ui/*` | Same — shadcn components |
 
-#### Rewrite for CrossBeam:
+#### Rewrite for PermitMonkey:
 
 | File | Why |
 |------|-----|
@@ -315,17 +315,17 @@ CC-Crossbeam/
 | `frontend/app/(auth)/login/page.tsx` | Judge button + Google OAuth (new design) |
 | `frontend/app/(dashboard)/dashboard/page.tsx` | Two persona cards (completely different from Mako dashboard) |
 | `frontend/app/(dashboard)/projects/[id]/page.tsx` | Different results display (corrections letter vs demand letter) |
-| `frontend/types/database.ts` | CrossBeam schema types |
-| `frontend/supabase/migrations/001_crossbeam_schema.sql` | CrossBeam-specific tables |
+| `frontend/types/database.ts` | PermitMonkey schema types |
+| `frontend/supabase/migrations/001_permitmonkey_schema.sql` | PermitMonkey-specific tables |
 
-### 2.4 Supabase Schema (`crossbeam`)
+### 2.4 Supabase Schema (`permitmonkey`)
 
 ```sql
 -- Create schema
-CREATE SCHEMA IF NOT EXISTS crossbeam;
+CREATE SCHEMA IF NOT EXISTS permitmonkey;
 
 -- Projects table
-CREATE TABLE crossbeam.projects (
+CREATE TABLE permitmonkey.projects (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID REFERENCES auth.users(id) NOT NULL,
   flow_type TEXT NOT NULL CHECK (flow_type IN ('city-review', 'corrections-analysis')),
@@ -341,9 +341,9 @@ CREATE TABLE crossbeam.projects (
 );
 
 -- Uploaded files (plan binders, corrections letters)
-CREATE TABLE crossbeam.files (
+CREATE TABLE permitmonkey.files (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  project_id UUID REFERENCES crossbeam.projects(id) ON DELETE CASCADE NOT NULL,
+  project_id UUID REFERENCES permitmonkey.projects(id) ON DELETE CASCADE NOT NULL,
   file_type TEXT NOT NULL CHECK (file_type IN ('plan-binder', 'corrections-letter', 'other')),
   filename TEXT NOT NULL,
   storage_path TEXT NOT NULL,
@@ -353,18 +353,18 @@ CREATE TABLE crossbeam.files (
 );
 
 -- Agent messages (real-time streaming)
-CREATE TABLE crossbeam.messages (
+CREATE TABLE permitmonkey.messages (
   id BIGSERIAL PRIMARY KEY,
-  project_id UUID REFERENCES crossbeam.projects(id) ON DELETE CASCADE NOT NULL,
+  project_id UUID REFERENCES permitmonkey.projects(id) ON DELETE CASCADE NOT NULL,
   role TEXT NOT NULL CHECK (role IN ('system', 'assistant', 'tool')),
   content TEXT NOT NULL,
   created_at TIMESTAMPTZ DEFAULT now()
 );
 
 -- Agent outputs
-CREATE TABLE crossbeam.outputs (
+CREATE TABLE permitmonkey.outputs (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  project_id UUID REFERENCES crossbeam.projects(id) ON DELETE CASCADE NOT NULL,
+  project_id UUID REFERENCES permitmonkey.projects(id) ON DELETE CASCADE NOT NULL,
   version INTEGER DEFAULT 1,
 
   -- City Review outputs
@@ -387,39 +387,39 @@ CREATE TABLE crossbeam.outputs (
 );
 
 -- RLS Policies
-ALTER TABLE crossbeam.projects ENABLE ROW LEVEL SECURITY;
-ALTER TABLE crossbeam.files ENABLE ROW LEVEL SECURITY;
-ALTER TABLE crossbeam.messages ENABLE ROW LEVEL SECURITY;
-ALTER TABLE crossbeam.outputs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE permitmonkey.projects ENABLE ROW LEVEL SECURITY;
+ALTER TABLE permitmonkey.files ENABLE ROW LEVEL SECURITY;
+ALTER TABLE permitmonkey.messages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE permitmonkey.outputs ENABLE ROW LEVEL SECURITY;
 
 -- Authenticated users can read/write their own projects + all demo projects
 CREATE POLICY "Users can CRUD own projects"
-  ON crossbeam.projects FOR ALL
+  ON permitmonkey.projects FOR ALL
   USING (auth.uid() = user_id OR is_demo = true);
 
 CREATE POLICY "Users can CRUD own files"
-  ON crossbeam.files FOR ALL
+  ON permitmonkey.files FOR ALL
   USING (
     EXISTS (
-      SELECT 1 FROM crossbeam.projects p
+      SELECT 1 FROM permitmonkey.projects p
       WHERE p.id = project_id AND (p.user_id = auth.uid() OR p.is_demo = true)
     )
   );
 
 CREATE POLICY "Users can read messages for their projects"
-  ON crossbeam.messages FOR SELECT
+  ON permitmonkey.messages FOR SELECT
   USING (
     EXISTS (
-      SELECT 1 FROM crossbeam.projects p
+      SELECT 1 FROM permitmonkey.projects p
       WHERE p.id = project_id AND (p.user_id = auth.uid() OR p.is_demo = true)
     )
   );
 
 CREATE POLICY "Users can read outputs for their projects"
-  ON crossbeam.outputs FOR SELECT
+  ON permitmonkey.outputs FOR SELECT
   USING (
     EXISTS (
-      SELECT 1 FROM crossbeam.projects p
+      SELECT 1 FROM permitmonkey.projects p
       WHERE p.id = project_id AND (p.user_id = auth.uid() OR p.is_demo = true)
     )
   );
@@ -533,7 +533,7 @@ Key changes from Mako:
 - `readSkillFilesFromDisk()` → reads skills based on `flow_type` (use `FLOW_SKILLS` config)
 - `copySkillToSandbox()` → copies only relevant skills for the flow
 - `buildDownloadManifest()` → simpler: just plan binder + optional corrections letter (no user assets concept)
-- `runAgent()` → uses CrossBeam prompt from `buildPrompt()`
+- `runAgent()` → uses PermitMonkey prompt from `buildPrompt()`
 - `extractOutputs()` → looks for corrections letter PDF, review checklist, response package (not demand letter)
 
 ### 2.6 Frontend — Key Adaptations from Mako
@@ -544,7 +544,7 @@ Key changes from Mako:
 
 - **Judge button:** calls `supabase.auth.signInWithPassword()` with hardcoded creds
 - **Google button:** calls `supabase.auth.signInWithOAuth({ provider: 'google' })`
-- CrossBeam branding (not Mako branding)
+- PermitMonkey branding (not Mako branding)
 
 #### Dashboard (`frontend/app/(dashboard)/dashboard/page.tsx`) — New
 
@@ -564,9 +564,9 @@ Fork Mako's project page but change:
 
 Fork Mako's message polling component:
 ```typescript
-// Poll crossbeam.messages table for real-time updates
+// Poll permitmonkey.messages table for real-time updates
 const { data: messages } = await supabase
-  .schema('crossbeam')
+  .schema('permitmonkey')
   .from('messages')
   .select('*')
   .eq('project_id', projectId)
@@ -583,26 +583,26 @@ Create a seed script (`frontend/supabase/seed.sql` or a Node script) that:
 2. **Uploads test assets** to Supabase Storage:
    - Plan binder PDF (`test-assets/buena-park/` or `test-assets/approved/`)
    - Corrections letter (from `test-assets/corrections/`)
-3. **Creates two demo projects** in `crossbeam.projects`:
+3. **Creates two demo projects** in `permitmonkey.projects`:
    ```sql
    -- City Review Demo
-   INSERT INTO crossbeam.projects (id, user_id, flow_type, project_name, project_address, city, status, is_demo)
+   INSERT INTO permitmonkey.projects (id, user_id, flow_type, project_name, project_address, city, status, is_demo)
    VALUES ('demo-city-001', '{judge_user_id}', 'city-review', '742 Flint Ave ADU', '742 Flint Ave', 'Buena Park', 'ready', true);
 
    -- Contractor Demo
-   INSERT INTO crossbeam.projects (id, user_id, flow_type, project_name, project_address, city, status, is_demo)
+   INSERT INTO permitmonkey.projects (id, user_id, flow_type, project_name, project_address, city, status, is_demo)
    VALUES ('demo-corrections-001', '{judge_user_id}', 'corrections-analysis', '742 Flint Ave — Corrections Response', '742 Flint Ave', 'Buena Park', 'ready', true);
    ```
-4. **Links files** to demo projects in `crossbeam.files`
+4. **Links files** to demo projects in `permitmonkey.files`
 
 **Optional pre-run:** Run both flows once against the demo data, save the outputs. Then the judge can either view pre-computed results instantly OR re-run live to watch the agent work. Best of both worlds.
 
 ### 2.8 Storage Buckets
 
 Create in Supabase Storage:
-- `crossbeam-uploads` — user-uploaded plan binders + corrections letters
-- `crossbeam-outputs` — agent-generated files (corrections PDFs, response packages)
-- `crossbeam-demo-assets` — pre-seeded demo files (plan binder, corrections letter for demo projects)
+- `permitmonkey-uploads` — user-uploaded plan binders + corrections letters
+- `permitmonkey-outputs` — agent-generated files (corrections PDFs, response packages)
+- `permitmonkey-demo-assets` — pre-seeded demo files (plan binder, corrections letter for demo projects)
 
 ### 2.9 Environment Variables
 
@@ -610,7 +610,7 @@ Create in Supabase Storage:
 ```
 NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
-CLOUD_RUN_URL=https://crossbeam-server-xxx.run.app
+CLOUD_RUN_URL=https://permitmonkey-server-xxx.run.app
 ```
 
 #### Server (Cloud Run):
@@ -628,21 +628,21 @@ PORT=8080
 
 #### Step 1: Supabase Setup
 1. Create new Supabase project (or use existing with new schema)
-2. Run migration (`001_crossbeam_schema.sql`)
+2. Run migration (`001_permitmonkey_schema.sql`)
 3. Create storage buckets
 4. Enable Google OAuth in Auth settings
-5. Create judge@crossbeam.app account
+5. Create judge@permitmonkey.app account
 6. Run seed script (upload demo PDFs, create demo projects)
 
 #### Step 2: Vercel Frontend
 1. `cd frontend && vercel deploy`
 2. Set env vars in Vercel dashboard
-3. Link to CC-Crossbeam repo, set root directory to `frontend/`
+3. Link to permitmonkey repo, set root directory to `frontend/`
 
 #### Step 3: Cloud Run Server
-1. Build Docker image: `cd server && docker build -t crossbeam-server .`
+1. Build Docker image: `cd server && docker build -t permitmonkey-server .`
 2. Push to GCR: `docker tag ... && docker push ...`
-3. Deploy: `gcloud run deploy crossbeam-server --image=... --memory=512Mi --timeout=3600 --allow-unauthenticated`
+3. Deploy: `gcloud run deploy permitmonkey-server --image=... --memory=512Mi --timeout=3600 --allow-unauthenticated`
 4. Set env vars via `gcloud run services update --set-env-vars=...`
 5. Note the Cloud Run URL → set in Vercel env vars
 
@@ -667,12 +667,12 @@ PORT=8080
 
 **📖 Read `@reference-mako.md` first** — Patterns 1-3 and 5-6 cover every server file.
 
-1. Fork Mako's `server/` directory into CC-Crossbeam (see `reference-mako.md` → File Map → Server)
-2. Rewrite `config.ts` with CrossBeam prompts + flow types (see Pattern 2 for the generate route pattern)
+1. Fork Mako's `server/` directory into permitmonkey (see `reference-mako.md` → File Map → Server)
+2. Rewrite `config.ts` with PermitMonkey prompts + flow types (see Pattern 2 for the generate route pattern)
 3. Adapt `generate.ts` — add `flow_type`, remove credits (see Pattern 2: "Respond Immediately, Process Async")
-4. Adapt `sandbox.ts` — CrossBeam skills, file paths, output extraction (see Pattern 3: Sandbox Lifecycle, all 6 steps)
-5. Adapt `supabase.ts` — change schema `'mako'` → `'crossbeam'` (see Pattern 10)
-6. Copy skills from `agents-crossbeam/.claude/skills/` into `server/skills/` (see Pattern 3, Step 4)
+4. Adapt `sandbox.ts` — PermitMonkey skills, file paths, output extraction (see Pattern 3: Sandbox Lifecycle, all 6 steps)
+5. Adapt `supabase.ts` — change schema `'mako'` → `'permitmonkey'` (see Pattern 10)
+6. Copy skills from `agents-permitmonkey/.claude/skills/` into `server/skills/` (see Pattern 3, Step 4)
 7. Test locally: `node --env-file .env.local dist/index.js`
 
 ### Phase 2: Supabase — ~1 hour
@@ -714,7 +714,7 @@ PORT=8080
 
 ## Appendix: Files to Copy from Mako
 
-> **📖 For the full code of every file below with inline `← CrossBeam:` adaptation comments, see `@reference-mako.md`.**
+> **📖 For the full code of every file below with inline `← PermitMonkey:` adaptation comments, see `@reference-mako.md`.**
 
 When telling Claude Code to fork, point it at these exact files:
 
@@ -724,9 +724,9 @@ SOURCE: ~/openai-demo/CC-Agents-SDK-test-1225/mako/
 FORK server/:
   server/src/index.ts              → copy as-is
   server/src/routes/generate.ts    → adapt (add flow_type, remove credits)
-  server/src/services/sandbox.ts   → adapt (CrossBeam skills, prompts)
-  server/src/services/supabase.ts  → adapt (schema mako→crossbeam)
-  server/src/utils/config.ts       → rewrite (CrossBeam config)
+  server/src/services/sandbox.ts   → adapt (PermitMonkey skills, prompts)
+  server/src/services/supabase.ts  → adapt (schema mako→permitmonkey)
+  server/src/utils/config.ts       → rewrite (PermitMonkey config)
   server/Dockerfile                → copy as-is
   server/package.json              → copy, update name
   server/tsconfig.json             → copy as-is
@@ -744,12 +744,12 @@ FORK frontend/:
   frontend/next.config.js          → copy as-is
   frontend/postcss.config.mjs      → copy as-is
 
-REWRITE (CrossBeam-specific):
+REWRITE (PermitMonkey-specific):
   frontend/app/(auth)/login/page.tsx        → judge button + Google
   frontend/app/(dashboard)/dashboard/page.tsx → persona cards
-  frontend/app/(dashboard)/projects/[id]/*  → adapted for CrossBeam flows
+  frontend/app/(dashboard)/projects/[id]/*  → adapted for PermitMonkey flows
   frontend/app/api/generate/route.ts        → adapted (no credits, flow_type)
-  frontend/types/database.ts                → CrossBeam types
+  frontend/types/database.ts                → PermitMonkey types
 ```
 
 ---

@@ -12,7 +12,7 @@ The gap between "boring permit software" and "this looks like a premium architec
 - **SHIFT:** From "whimsical fairy tale" to "premium architectural showcase"
 
 ## Visual Assets (LOCKED IN)
-The user has a library of ~30 keyed assets at `/cc-crossbeam-video/assets/keyed/`:
+The user has a library of ~30 keyed assets at `/cc-permitmonkey-video/assets/keyed/`:
 - **Exteriors:** Photorealistic isometric tilt-shift miniature ADUs on soil platforms — concrete/wood/glass modern architecture, Spanish style, farmhouse cottage, prefab modular, A-frame, garage conversion, etc.
 - **Interiors:** Photorealistic isometric cutaway floor plans showing furniture, wood floors, kitchens, bedrooms — Scandinavian-minimal aesthetic
 - **All transparent PNGs** — magenta chroma keyed and removed

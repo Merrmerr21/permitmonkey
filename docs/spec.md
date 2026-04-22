@@ -1,4 +1,4 @@
-# CrossBeam
+# PermitMonkey
 
 ## The Problem
 
@@ -15,17 +15,17 @@ Most permit rejections aren't about structural engineering failures. They're abo
 
 AI can handle this.
 
-## What CrossBeam Does
+## What PermitMonkey Does
 
 ### For Contractors & Homeowners
 
 1. **Permit Checklist Generator** — Give us an address, and we look up zoning, city regulations, and state requirements to produce a clear checklist of everything needed before you submit.
 
-2. **Corrections Letter Interpreter** — Upload your submitted permit and the corrections letter you got back. CrossBeam tells you exactly what to fix, what you can handle yourself, and what you need to get from your engineers/designers.
+2. **Corrections Letter Interpreter** — Upload your submitted permit and the corrections letter you got back. PermitMonkey tells you exactly what to fix, what you can handle yourself, and what you need to get from your engineers/designers.
 
 ### For Cities (Open Source)
 
-3. **AI Permit Pre-Screening** — Before a human reviewer spends hours on a submission, CrossBeam catches the ~90% of issues that are straightforward (missing documents, unsigned pages, absent engineer stamps, incomplete forms). The contractor gets a corrections letter back fast, fixes the easy stuff, resubmits, and *then* a human reviewer handles what actually requires expertise.
+3. **AI Permit Pre-Screening** — Before a human reviewer spends hours on a submission, PermitMonkey catches the ~90% of issues that are straightforward (missing documents, unsigned pages, absent engineer stamps, incomplete forms). The contractor gets a corrections letter back fast, fixes the easy stuff, resubmits, and *then* a human reviewer handles what actually requires expertise.
 
 ## Why It Matters
 

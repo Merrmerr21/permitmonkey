@@ -27,7 +27,7 @@ export function CityDashboard() {
 
   useEffect(() => {
     supabase
-      .schema('crossbeam')
+      .schema('permitmonkey')
       .from('projects')
       .select('*')
       .eq('is_demo', true)

@@ -1,6 +1,6 @@
-# CrossBeam Frontend — Development Prompt
+# PermitMonkey Frontend — Development Prompt
 
-You are building the **CrossBeam frontend** — a Next.js 15 + shadcn/ui web app for AI-powered ADU permit review. Work is organized into **phases** — complete all tasks in a phase, then stop for verification.
+You are building the **PermitMonkey frontend** — a Next.js 15 + shadcn/ui web app for AI-powered ADU permit review. Work is organized into **phases** — complete all tasks in a phase, then stop for verification.
 
 ## Project Overview
 
@@ -16,7 +16,7 @@ You are building the **CrossBeam frontend** — a Next.js 15 + shadcn/ui web app
 - `~/openai-demo/CC-Agents-SDK-test-1225/mako/frontend/` — Mako reference frontend. Fork structure (Supabase auth, middleware, polling), NOT styling.
 
 **Reference Data**:
-- `plan-supabase-0213.md` — Supabase schema (crossbeam schema, all tables)
+- `plan-supabase-0213.md` — Supabase schema (permitmonkey schema, all tables)
 - `design-directions/` — Mockup images for visual reference
 
 ## CRITICAL: Read Before Writing ANY Code
@@ -86,9 +86,9 @@ When a task is done, update `claude-task-frontend.json`:
 - **Playfair Display** only for headings 24px+ — **Nunito** for everything else
 - **Pill-shaped CTAs** — `rounded-full` on primary action buttons
 - **Deep soft shadows** — `shadow-[0_8px_32px_rgba(28,25,23,0.08)]` on cards
-- **Gradient must be fixed** — `background-attachment: fixed` on `.bg-crossbeam-gradient`
+- **Gradient must be fixed** — `background-attachment: fixed` on `.bg-permitmonkey-gradient`
 - **No framer-motion** — CSS animations only. No bounce, no spring, no particles.
-- **All Supabase queries use `.schema('crossbeam')`**
+- **All Supabase queries use `.schema('permitmonkey')`**
 
 ### Never Do These
 - Do NOT skip phases
@@ -115,7 +115,7 @@ When a task is done, update `claude-task-frontend.json`:
 ## File Structure Target
 
 ```
-CC-Crossbeam/frontend/
+permitmonkey/frontend/
 ├── public/
 │   └── images/
 │       └── adu/                              # 9 compressed ADU miniature PNGs
@@ -148,7 +148,7 @@ CC-Crossbeam/frontend/
 │   ├── supabase/{client,server,middleware}.ts # Supabase clients (from Mako)
 │   └── utils.ts                              # cn() utility (from Mako)
 ├── types/
-│   └── database.ts                           # CrossBeam schema types
+│   └── database.ts                           # PermitMonkey schema types
 ├── middleware.ts                              # Auth middleware (from Mako)
 ├── package.json
 ├── next.config.ts
@@ -169,7 +169,7 @@ CC-Crossbeam/frontend/
 | Image hosting | `public/` folder | Static assets → Vercel CDN auto. No Supabase Storage for these. |
 | ADU selection | Random per mount | `useRandomAdu` hook — different page = different house |
 | Video support | Prepared but not active | `<AduMiniature>` has `videoSrc` prop for future swap |
-| Schema access | `.schema('crossbeam')` | All Supabase queries use CrossBeam schema |
+| Schema access | `.schema('permitmonkey')` | All Supabase queries use PermitMonkey schema |
 | Polling interval | 2-3 seconds | Status polling for project + message updates |
 | Font loading | `next/font/google` | Optimal loading with variable CSS custom properties |
 

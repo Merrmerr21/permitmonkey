@@ -2,7 +2,7 @@
 
 ## Goal
 
-**Run the ADU plan review pipeline programmatically via the Claude Agent SDK**, so a city plan checker can upload a plan binder PDF and receive a draft corrections letter. This is the city-side counterpart to the contractor corrections flow already running in `agents-crossbeam/`.
+**Run the ADU plan review pipeline programmatically via the Claude Agent SDK**, so a city plan checker can upload a plan binder PDF and receive a draft corrections letter. This is the city-side counterpart to the contractor corrections flow already running in `agents-permitmonkey/`.
 
 ### What We're Building
 
@@ -20,7 +20,7 @@ A single `query()` call that:
 
 - **Hackathon deadline:** Mon Feb 16, 12:00 PM PST
 - **Today is:** Wed Feb 12 (Day 3 of 6)
-- **Proven foundation:** Contractor flow (`agents-crossbeam/`) is fully built — L0-L4 tests all passing
+- **Proven foundation:** Contractor flow (`agents-permitmonkey/`) is fully built — L0-L4 tests all passing
 - **Skill is designed:** `adu-plan-review/SKILL.md` — 280 lines, 5 phases, sub-skill routing
 - **70% accuracy validated:** CLI test produced 23 findings, 7/10 real corrections matched, 0 false positives
 - **Test data exists:** Same Placentia plan binder (1232 N Jefferson, 15 pages) used for contractor flow
@@ -41,9 +41,9 @@ The big simplification: no human-in-the-loop pause means a single `query()` call
 
 ---
 
-## Architecture: Extend `agents-crossbeam/`
+## Architecture: Extend `agents-permitmonkey/`
 
-**Decision: Add to the existing `agents-crossbeam/` directory.** Not a new backend.
+**Decision: Add to the existing `agents-permitmonkey/` directory.** Not a new backend.
 
 Rationale:
 - Shared utilities already work (`config.ts`, `session.ts`, `progress.ts`, `verify.ts`)
@@ -64,7 +64,7 @@ What changes:
 ### Updated Skill Symlinks
 
 ```
-agents-crossbeam/.claude/skills/
+agents-permitmonkey/.claude/skills/
 ├── adu-city-research       → (existing)
 ├── adu-corrections-complete → (existing — not needed for city flow, but doesn't hurt)
 ├── adu-corrections-flow     → (existing — not needed for city flow, but doesn't hurt)
@@ -81,7 +81,7 @@ Only 3 new symlinks needed. `document-skills/pdf` is loaded by the `adu-correcti
 ### Updated Flow Structure
 
 ```
-agents-crossbeam/src/flows/
+agents-permitmonkey/src/flows/
 ├── corrections-analysis.ts    ← Existing (contractor Skill 1)
 ├── corrections-response.ts    ← Existing (contractor Skill 2)
 └── plan-review.ts             ← NEW (city flow — single query())
@@ -137,7 +137,7 @@ Base prompt is minimal — project context only, no identity (Claude Code preset
 
 ```typescript
 // config.ts — DONE (updated 2026-02-12)
-const CROSSBEAM_PROMPT = `You are working on CrossBeam, an ADU permit assistant for California.
+const PERMITMONKEY_PROMPT = `You are working on PermitMonkey, an ADU permit assistant for California.
 Use available skills to research codes, analyze plans, and generate professional output.
 Always write output files to the session directory provided in the prompt.`;
 ```
@@ -192,7 +192,7 @@ export async function runPlanReview(opts: PlanReviewOptions): Promise<PlanReview
 Each plan review job gets a session directory:
 
 ```
-agents-crossbeam/sessions/review-{timestamp}/
+agents-permitmonkey/sessions/review-{timestamp}/
 ├── pages-png/                    ← Extracted plan pages (Phase 1)
 │   ├── page-01.png
 │   ├── page-02.png
@@ -471,9 +471,9 @@ City research is the bottleneck in the contractor flow (14 min). For Placentia (
 
 ### Phase A: Skills Setup + Smoke Test (~30 min)
 
-1. Add 3 new symlinks to `agents-crossbeam/.claude/skills/`
+1. Add 3 new symlinks to `agents-permitmonkey/.claude/skills/`
 2. Verify symlinks resolve with `ls -la`
-3. ~~Update `CROSSBEAM_PROMPT` in config.ts to be flow-neutral~~ **DONE**
+3. ~~Update `PERMITMONKEY_PROMPT` in config.ts to be flow-neutral~~ **DONE**
 4. ~~Add `getReviewSessionFiles()` to session.ts~~ **DONE**
 5. ~~Add `detectReviewPhases()` + `findFileByPattern()` to verify.ts~~ **DONE**
 6. Write + run L0c smoke test
@@ -530,11 +530,11 @@ This is doable in a single focused day. Phases A-D could run on Day 4 (Thu), Pha
 
 ### 1. Config.ts: Shared or Forked? → **RESOLVED: Shared (Option A)**
 
-**DONE.** Updated the shared `CROSSBEAM_PROMPT` to be flow-neutral. `systemPromptAppend` support was already built in. Zero risk to contractor flow — all changes are additive.
+**DONE.** Updated the shared `PERMITMONKEY_PROMPT` to be flow-neutral. `systemPromptAppend` support was already built in. Zero risk to contractor flow — all changes are additive.
 
 ### 2. Subagent Skill Access → **RESOLVED: Read tool with file paths (Option A)**
 
-Subagents use `Read` tool to load checklist files by absolute path. The main agent's prompt tells each subagent the full path. Path resolution works because `additionalDirectories: [PROJECT_ROOT]` includes the parent `CC-Crossbeam/` directory, which contains `adu-skill-development/skill/...`.
+Subagents use `Read` tool to load checklist files by absolute path. The main agent's prompt tells each subagent the full path. Path resolution works because `additionalDirectories: [PROJECT_ROOT]` includes the parent `permitmonkey/` directory, which contains `adu-skill-development/skill/...`.
 
 **CRITICAL: Validate in L1c** — L1c must include a subagent variant that spawns a Task subagent to read a checklist file. If this fails, fall back to inlining checklist content in subagent prompts (Option B).
 
@@ -565,13 +565,13 @@ The city flow requires a pre-built city skill (e.g., `placentia-adu`, `buena-par
 
 | File | Purpose |
 |------|---------|
-| `agents-crossbeam/src/flows/plan-review.ts` | **NEW** — City flow wrapper (single query()) |
-| `agents-crossbeam/src/utils/config.ts` | Update system prompt to be flow-neutral |
-| `agents-crossbeam/src/tests/test-l0c-smoke-city.ts` | **NEW** — Smoke test for city skills |
-| `agents-crossbeam/src/tests/test-l1c-skill-invoke.ts` | **NEW** — Skill invocation test |
-| `agents-crossbeam/src/tests/test-l2c-extraction.ts` | **NEW** — Phase 1 extraction test |
-| `agents-crossbeam/src/tests/test-l3c-admin-review.ts` | **NEW** — Administrative review test |
-| `agents-crossbeam/src/tests/test-l4c-full-review.ts` | **NEW** — Full pipeline test |
+| `agents-permitmonkey/src/flows/plan-review.ts` | **NEW** — City flow wrapper (single query()) |
+| `agents-permitmonkey/src/utils/config.ts` | Update system prompt to be flow-neutral |
+| `agents-permitmonkey/src/tests/test-l0c-smoke-city.ts` | **NEW** — Smoke test for city skills |
+| `agents-permitmonkey/src/tests/test-l1c-skill-invoke.ts` | **NEW** — Skill invocation test |
+| `agents-permitmonkey/src/tests/test-l2c-extraction.ts` | **NEW** — Phase 1 extraction test |
+| `agents-permitmonkey/src/tests/test-l3c-admin-review.ts` | **NEW** — Administrative review test |
+| `agents-permitmonkey/src/tests/test-l4c-full-review.ts` | **NEW** — Full pipeline test |
 | `adu-skill-development/skill/adu-plan-review/SKILL.md` | The orchestrator skill (280 lines) |
 | `adu-skill-development/skill/adu-plan-review/references/checklist-cover.md` | Cover sheet checklist (450 lines) |
 | `adu-skill-development/skill/placentia-adu/` | Onboarded city (12 reference files) |

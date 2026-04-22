@@ -1,16 +1,19 @@
-# CrossBeam
+# PermitMonkey
 
 ### Winner — Anthropic's Global Claude Code Hackathon "Built with Opus 4.6"
 
 [Official announcement](https://x.com/claudeai/status/2024986294820958647?s=20)
 
-AI-powered ADU permit assistant for California. Upload your architectural plans and corrections letter — get back a professional response package ready for resubmission.
+AI-powered ADU permit assistant for Massachusetts. Upload your architectural plans and corrections letter — get back a professional response package ready for resubmission.
 
-**Built for the Built with Opus 4.6: Claude Code Hackathon (Feb 10-16, 2026)**
+**Built for the Built with Opus 4.6: Claude Code Hackathon (Feb 10–16, 2026)**
+**Pivoting California → Massachusetts (April 2026)** — see `PLAYBOOK.md` for strategic rationale.
 
 ### For Other Builders
 
-If you're curious about the build process, check out `progress.md` — I kept voice logs of my thinking throughout the hackathon while Claude was building. It's a raw, unfiltered look at the decision-making and problem-solving that went into this project.
+If you're curious about the build process, check out `progress.md` — voice logs of the thinking throughout the hackathon while Claude was building. A raw, unfiltered look at the decision-making and problem-solving that went into this project.
+
+The operating manual for how this project is run day-to-day now lives at `PLAYBOOK.md`. Skills live in `.claude/skills/`. Agent job descriptions in `.claude/agents/`.
 
 ### Contact
 
@@ -20,13 +23,17 @@ Questions? Reach out:
 
 ## The Problem
 
-California's ADU permits have a **90%+ rejection rate** on first submission. Most rejections aren't engineering failures — they're bureaucratic: missing signatures, incorrect code citations, incomplete forms. The average 6-month permit delay costs homeowners **$30,000**.
+Massachusetts passed **Chapter 150 of the Acts of 2024** (the Affordable Homes Act) in August 2024. Effective February 2, 2025, Massachusetts General Laws Chapter 40A § 3 now allows accessory dwelling units (ADUs) **by-right** in single-family residential zoning districts statewide. Up to 900 square feet or 50% of the primary dwelling, whichever is less. No owner-occupancy requirement. No off-street parking within 0.5 miles of transit. EOHLC implementing regulation: **760 CMR 71.00**.
 
-Contractors aren't lawyers. Cities are understaffed. Nobody wins.
+The Healey-Driscoll administration estimates 8,000–10,000 ADUs will be built across MA over the next five years.
 
-## What CrossBeam Does
+But the permit process is still local. 351 cities and towns, each with their own zoning bylaw, design standards, historic districts, wetlands overlays, and submittal checklists. Contractors aren't zoning lawyers. Cities are understaffed and the bylaw updates are still rolling out. Corrections letters are inevitable.
 
-CrossBeam uses Claude Opus 4.6 as an AI agent that reads your architectural plans, interprets city corrections letters, cross-references California state law, and generates a professional response package.
+Most rejections aren't engineering failures — they're bureaucratic: missing signatures, wrong code citations, incomplete forms, city requirements preempted by state law that haven't been updated. Every correction cycle costs weeks. Every week costs thousands.
+
+## What PermitMonkey Does
+
+PermitMonkey uses Claude Opus as an AI agent that reads your architectural plans, interprets city corrections letters, cross-references Massachusetts state law, and generates a professional response package.
 
 ### Flow 1: Corrections Letter Interpreter
 
@@ -37,10 +44,11 @@ The primary flow. A contractor uploads:
 The agent then:
 - Extracts and reads every page of the plans using vision
 - Parses each correction item from the city's letter
-- Cross-references against California ADU law (Government Code sections 66310-66342)
-- Researches city-specific municipal code via live web search
+- Cross-references against Massachusetts ADU law (MGL Ch 40A §§ 1A and 3 as amended by St. 2024, c. 150, §§ 7–8; 760 CMR 71.00)
+- Researches city-specific municipal code via live web search (covered cities cache to local skill; uncovered cities via WebSearch → WebFetch → Chrome fallback)
+- Cross-checks local bylaws against state preemption (flags requirements that are unenforceable)
 - Asks the contractor clarifying questions about their project
-- Generates a corrections response package: analysis report, professional scope of work, and draft response letter
+- Generates a corrections response package: analysis report, professional scope of work, draft response letter, sheet annotations
 
 ### Flow 2: Permit Checklist Generator
 
@@ -50,6 +58,10 @@ A contractor enters their project address and basic info (ADU type, size, lot ty
 
 A city building department uploads a permit submission. The agent reviews it against their own requirements and state ADU law, flagging missing documents, unsigned pages, and incomplete forms before a human plan checker ever touches it. This flow is not built — it's the open-source vision for how this tool could work on the city side.
 
+### Bonus Flow: ADU Eligibility Checker (Free Tool)
+
+A homeowner or contractor enters an MA address, lot size, and primary dwelling size. Returns eligibility verdict, max ADU size, parking requirement, and top-3 city-specific gotchas in under 10 seconds. Lead magnet for the paid corrections-interpretation service.
+
 ## Architecture
 
 ```
@@ -57,13 +69,13 @@ Browser (Next.js)
     ↓ API + Supabase Realtime
 Cloud Run Server (Orchestrator)
     ↓ launches isolated sandboxes
-Vercel Sandbox (Agent SDK + Claude Opus 4.6 + Skills)
+Vercel Sandbox (Agent SDK + Claude Opus + Skills)
     ↓ reads/writes
 Supabase (Database, Realtime, Storage)
 ```
 
 **Why this architecture:**
-- Agent runs take 10-30 minutes. Vercel serverless functions timeout at 60-300s. Cloud Run provides a persistent orchestrator process.
+- Agent runs take 10–30 minutes. Vercel serverless functions timeout at 60–300s. Cloud Run provides a persistent orchestrator process.
 - Vercel Sandbox gives each job an isolated, ephemeral execution environment with file system access — needed for the Agent SDK's `claude_code` preset tools.
 - Supabase Realtime pushes status updates and agent messages to the frontend without polling.
 
@@ -71,10 +83,24 @@ Supabase (Database, Realtime, Storage)
 
 The agent's domain knowledge comes from **skills** — structured reference files that teach Claude about a specific domain:
 
-- **California ADU Skill** — 28 reference files covering the HCD ADU Handbook (54 pages), Government Code sections 66310-66342, a decision tree router (lot type → construction type → modifiers → process), and a quick-reference thresholds table for common numbers (heights, sizes, setbacks, parking, fees).
-- **ADU Corrections Interpreter Skill** — Guides the agent through the multi-step corrections analysis workflow.
-- **ADU City Research Skill** — Three-mode city research (WebSearch discovery, WebFetch extraction, browser fallback for difficult city websites).
-- **CrossBeam Ops Skill** — Teaches agents how to operate the deployed system via API.
+- **Massachusetts ADU Skill** (`.claude/skills/massachusetts-adu/`) — MGL Ch 40A §§ 1A and 3 as amended, 760 CMR 71.00 (Protected Use ADU), 780 CMR (MA State Building Code 10th Edition) essentials, EOHLC guidance, Stretch / Specialized Energy Code, dimensional summary (state floor vs. local ceiling), conflicts and preemption reasoning, and a three-file decision tree (by-right eligibility, construction type, modifiers).
+- **MA City Research Skill** (`.claude/skills/ma-city-research/`) — Three-mode research (WebSearch discovery, WebFetch extraction, browser fallback). Covered cities currently: Boston, Cambridge, Somerville. Next: Newton, Brookline, Worcester, Quincy, Lowell.
+- **ADU Eligibility Checker Skill** (`.claude/skills/adu-eligibility-checker/`) — Backs the free-tool funnel.
+- **PermitMonkey Ops Skill** — Teaches agents how to operate the deployed system via API.
+
+Retired California skills live in `_legacy/` for regression testing and historical reference.
+
+### Agent Roster (see `.claude/agents/`)
+
+| Agent | Role |
+|-------|------|
+| Planner (Opus xhigh) | Orchestrates, plans, synthesizes |
+| PlanReader (Opus vision) | Extracts architectural plan sheets |
+| CorrectionsParser (Sonnet) | Decomposes and classifies corrections |
+| MALawLookup (Sonnet, advisor Opus) | State law citations — **zero-tolerance for hallucinations** |
+| CityCodeLookup (Sonnet) | Local bylaw citations, preemption cross-check |
+| ResponseWriter (Opus xhigh) | Produces the contractor-facing package |
+| QAReviewer (Opus xhigh) | Final validation gate |
 
 ## Tech Stack
 
@@ -82,9 +108,9 @@ The agent's domain knowledge comes from **skills** — structured reference file
 |-------|------|
 | Frontend | Next.js 16, React 19, shadcn/ui, Tailwind CSS 4 |
 | Server | Express 5, Cloud Run, Vercel Sandbox |
-| Agent | Claude Opus 4.6, Agent SDK, `claude_code` preset |
+| Agent | Claude Opus 4.6 (4.7 upgrade path open), Agent SDK, `claude_code` preset |
 | Database | Supabase (Postgres, Realtime, Storage) |
-| Skills | 28+ reference files, decision tree router |
+| Skills | Markdown reference files with frontmatter |
 | Dev Tools | Claude Code (the entire project was built with Claude Code) |
 
 ## Project Structure
@@ -92,16 +118,22 @@ The agent's domain knowledge comes from **skills** — structured reference file
 ```
 ├── frontend/              # Next.js app (Vercel)
 ├── server/                # Express orchestrator (Cloud Run)
-├── adu-skill-development/ # Skills: California ADU, PDF extraction
-├── agents-crossbeam/      # Agent SDK configurations
-├── .claude/skills/        # Claude Code skills (ops, city research, corrections)
+├── agents-permitmonkey/      # Agent SDK configurations
+├── .claude/
+│   ├── CLAUDE.md          # Project rules for Claude Code
+│   ├── agents/            # Agent job descriptions (7 agents)
+│   ├── agent-performance.md  # Three-strike policy tracker
+│   └── skills/            # Active skills (MA-focused after pivot)
+├── _legacy/               # Retired CA skills (regression reference)
 ├── test-assets/           # Real permit data for testing
-│   ├── corrections/       # Placentia corrections letter + plans
-│   ├── approved/          # Long Beach approved plans
-│   └── correction-01/     # Sample agent output
+│   ├── corrections/       # Placentia corrections letter + plans (CA, legacy)
+│   ├── approved/          # Long Beach approved plans (CA, legacy)
+│   └── correction-01/     # Sample agent output (CA, legacy)
 ├── design-directions/     # UI design exploration
 ├── docs/                  # Plans, research, learnings, schedule
-└── scripts/               # Utility scripts
+├── AGENTS.md              # Non-Claude agent diversification mirror
+├── PLAYBOOK.md            # Operating manual (see this first after README)
+└── progress.md            # Voice-log build history from hackathon week
 ```
 
 ## Running Locally
@@ -110,7 +142,7 @@ The agent's domain knowledge comes from **skills** — structured reference file
 
 - Node.js 20+
 - Supabase project (for database + storage)
-- Anthropic API key (for Claude Opus 4.6)
+- Anthropic API key (for Claude Opus)
 - Vercel account (for sandbox)
 
 ### Frontend
@@ -135,11 +167,14 @@ npm run dev
 
 The `test-assets/` directory contains real permit documents used for development and testing:
 
-- **California ADU Handbook** (`adu-handbook-update-2026.pdf`) — Published by the California Department of Housing and Community Development (HCD). Public government document.
-- **Placentia Submittal Requirements** — Published by the City of Placentia Building Division. Public government document.
+**Legacy California assets (retained for regression testing during the MA pivot):**
+- **California ADU Handbook** (`adu-handbook-update-2026.pdf`) — California HCD. Public government document.
+- **Placentia Submittal Requirements** — City of Placentia Building Division. Public government document.
 - **Corrections Letter** (`corrections/2nd-Review-Corrections-1232-Jefferson-St-Placentia.pdf`) — City of Placentia plan check corrections. Public government correspondence.
 - **Architectural Plans — 1232 N Jefferson, Placentia** (`corrections/Binder-1232-N-Jefferson.pdf`) — Included with permission from the project designer for demonstration purposes.
 - **Architectural Plans — 326 Flint Ave, Long Beach** (`approved/FLINT-AVE-326-BADD326126-APPROVED-PLANS.pdf`) — Included with permission from the project designer for demonstration purposes.
+
+**Massachusetts test assets:** Sourcing in progress. See `PLAYBOOK.md` §22 for sourcing paths. Will live at `test-assets/ma/` when collected.
 
 ## License
 

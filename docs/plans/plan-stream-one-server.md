@@ -1,6 +1,6 @@
 # Stream 1: Server Build Brief
 
-> **For:** Dedicated Claude Code instance building the CrossBeam server
+> **For:** Dedicated Claude Code instance building the PermitMonkey server
 > **Author:** Foreman Claude (orchestrating instance)
 > **Date:** Thursday, Feb 13, 2026
 > **Deadline:** Monday Feb 16, 12:00 PM PST (hackathon submission)
@@ -8,9 +8,9 @@
 
 ---
 
-## What Is CrossBeam
+## What Is PermitMonkey
 
-CrossBeam is an AI-powered ADU (Accessory Dwelling Unit) permit review assistant for California. It uses Claude Opus 4.6 running inside Vercel Sandboxes to analyze building plans and corrections letters. Two personas:
+PermitMonkey is an AI-powered ADU (Accessory Dwelling Unit) permit review assistant for California. It uses Claude Opus 4.6 running inside Vercel Sandboxes to analyze building plans and corrections letters. Two personas:
 
 1. **City Reviewer** — Reviews a plan binder against state + city code, produces a draft corrections letter
 2. **Contractor** — Receives a corrections letter, analyzes each item, asks the contractor clarifying questions, then generates a professional response package
@@ -30,7 +30,7 @@ THIS SERVER (Express on Google Cloud Run)
     │  2. Creates Vercel Sandbox (30 min timeout)
     │  3. Installs Claude Code CLI + Agent SDK in sandbox
     │  4. Downloads project files from Supabase Storage into sandbox
-    │  5. Copies CrossBeam skills into sandbox (.claude/skills/)
+    │  5. Copies PermitMonkey skills into sandbox (.claude/skills/)
     │  6. Runs agent via query() — agent streams messages to Supabase
     │  7. Agent finishes — uploads results to Supabase FROM INSIDE the sandbox
     │  8. Server updates project status
@@ -40,9 +40,9 @@ Vercel Sandbox (Agent SDK + Claude Opus 4.6 + Skills)
     │
     ├── Reads files from: /vercel/sandbox/project-files/
     ├── Reads skills from: /vercel/sandbox/.claude/skills/
-    ├── Streams messages to: Supabase crossbeam.messages (fire-and-forget)
-    ├── Uploads outputs to: Supabase Storage crossbeam-outputs bucket
-    └── Creates output record in: Supabase crossbeam.outputs table
+    ├── Streams messages to: Supabase permitmonkey.messages (fire-and-forget)
+    ├── Uploads outputs to: Supabase Storage permitmonkey-outputs bucket
+    └── Creates output record in: Supabase permitmonkey.outputs table
 ```
 
 ---
@@ -53,14 +53,14 @@ Vercel Sandbox (Agent SDK + Claude Opus 4.6 + Skills)
 
 **CRITICAL: Before writing ANY code, read EVERY file in the Mako server `src/` directory.** The Mako server is a working, deployed demand letter generator for lawyers. It has the exact same architecture (Express on Cloud Run, Vercel Sandboxes, Supabase). We are forking it, not building from scratch.
 
-**What Mako does vs CrossBeam:**
+**What Mako does vs PermitMonkey:**
 
-| Aspect | Mako (source) | CrossBeam (target) |
+| Aspect | Mako (source) | PermitMonkey (target) |
 |---|---|---|
 | Domain | Personal injury demand letters | ADU permit review |
 | Flow types | Single flow (generate demand letter) | Three internal flows (city-review, corrections-analysis, corrections-response) |
 | Skills | 1 skill (demand-letter) | 9 skills (california-adu, adu-plan-review, etc.) |
-| Schema | `mako` | `crossbeam` |
+| Schema | `mako` | `permitmonkey` |
 | Billing | Credits system (use_credits RPC) | None (hackathon) |
 | User assets | Letterhead templates, sample demands | None |
 | Model | claude-opus-4-5 | claude-opus-4-6 |
@@ -79,7 +79,7 @@ Vercel Sandbox (Agent SDK + Claude Opus 4.6 + Skills)
 
 ## Mako Server File Map
 
-Read each of these before writing any CrossBeam code:
+Read each of these before writing any PermitMonkey code:
 
 ```
 ~/openai-demo/CC-Agents-SDK-test-1225/mako/server/
@@ -103,12 +103,12 @@ Read each of these before writing any CrossBeam code:
 
 ## Files to Create
 
-All files go in `CC-Crossbeam/server/`. Here is every file, the Mako source, and exactly what to do.
+All files go in `permitmonkey/server/`. Here is every file, the Mako source, and exactly what to do.
 
 ### Directory Structure
 
 ```
-CC-Crossbeam/server/
+permitmonkey/server/
 ├── src/
 │   ├── index.ts              ← COPY AS-IS from Mako
 │   ├── routes/
@@ -117,8 +117,8 @@ CC-Crossbeam/server/
 │   │   ├── sandbox.ts        ← ADAPT from Mako
 │   │   └── supabase.ts       ← ADAPT from Mako
 │   └── utils/
-│       └── config.ts         ← REWRITE (CrossBeam-specific)
-├── skills/                   ← COPY from agents-crossbeam (resolve symlinks)
+│       └── config.ts         ← REWRITE (PermitMonkey-specific)
+├── skills/                   ← COPY from agents-permitmonkey (resolve symlinks)
 │   ├── california-adu/
 │   ├── adu-plan-review/
 │   ├── adu-corrections-flow/
@@ -139,13 +139,13 @@ CC-Crossbeam/server/
 
 **Source:** `~/openai-demo/CC-Agents-SDK-test-1225/mako/server/src/index.ts`
 
-Copy verbatim. Only change the console.log from "Mako server" to "CrossBeam server":
+Copy verbatim. Only change the console.log from "Mako server" to "PermitMonkey server":
 
 ```typescript
 // Line 26: Change
 console.log(`Mako server listening on port ${PORT}`);
 // To:
-console.log(`CrossBeam server listening on port ${PORT}`);
+console.log(`PermitMonkey server listening on port ${PORT}`);
 ```
 
 Everything else (Express setup, JSON middleware, health check, error handler, route mounting) stays identical.
@@ -321,7 +321,7 @@ Follow the adu-corrections-complete skill instructions exactly.`;
 
 // --- System Prompt Appends ---
 
-export const CITY_REVIEW_SYSTEM_APPEND = `You are working on CrossBeam, an ADU permit assistant for California.
+export const CITY_REVIEW_SYSTEM_APPEND = `You are working on PermitMonkey, an ADU permit assistant for California.
 Use available skills to research codes, analyze plans, and generate professional output.
 Always write output files to the output directory provided in the prompt.
 
@@ -334,7 +334,7 @@ CRITICAL RULES:
 - ADUs can ONLY be subject to objective standards (Gov. Code 66314(b)(1)).
 - State law preempts city rules.`;
 
-export const CORRECTIONS_SYSTEM_APPEND = `You are working on CrossBeam, an ADU permit assistant for California.
+export const CORRECTIONS_SYSTEM_APPEND = `You are working on PermitMonkey, an ADU permit assistant for California.
 Use available skills to research codes, analyze plans, and generate professional output.
 Always write output files to the output directory provided in the prompt.
 
@@ -342,7 +342,7 @@ You are analyzing corrections for an ADU permit on behalf of a contractor.
 Your goal is to categorize each correction item, research the relevant codes,
 and prepare materials for a professional response.`;
 
-export const RESPONSE_SYSTEM_APPEND = `You are working on CrossBeam, an ADU permit assistant for California.
+export const RESPONSE_SYSTEM_APPEND = `You are working on PermitMonkey, an ADU permit assistant for California.
 Use available skills to generate professional deliverables.
 Always write output files to the output directory provided in the prompt.
 
@@ -379,7 +379,7 @@ const generateRequestSchema = z.object({
 
 2. **Remove ALL credits logic** — Delete `useCredits` import and the credit deduction block (lines 94-101 in Mako). No billing for hackathon.
 
-3. **Remove `getActiveUserAssets`** — CrossBeam has no user assets concept. Delete the import and the user asset fetching block.
+3. **Remove `getActiveUserAssets`** — PermitMonkey has no user assets concept. Delete the import and the user asset fetching block.
 
 4. **Remove `case_notes`** — No case_notes field. Delete from destructure and from `processGeneration` args.
 
@@ -393,7 +393,7 @@ import {
   getPhase1Outputs,
   getProject,
 } from '../services/supabase.js';
-import { runCrossBeamFlow } from '../services/sandbox.js';
+import { runPermitMonkeyFlow } from '../services/sandbox.js';
 
 // In processGeneration():
 async function processGeneration(
@@ -450,7 +450,7 @@ async function processGeneration(
     if (!supabaseUrl || !supabaseKey) throw new Error('Supabase not configured');
 
     // Run the agent
-    await runCrossBeamFlow({
+    await runPermitMonkeyFlow({
       files,
       flowType,
       city,
@@ -629,24 +629,24 @@ async function copySkillsToSandbox(
 }
 ```
 
-#### 4d. `buildDownloadManifest()` — CrossBeam file types
+#### 4d. `buildDownloadManifest()` — PermitMonkey file types
 
-Replace Mako's client files + user assets with CrossBeam's plan binder + corrections letter:
+Replace Mako's client files + user assets with PermitMonkey's plan binder + corrections letter:
 
 ```typescript
 function buildDownloadManifest(files: ProjectFile[]): FileToDownload[] {
   return files.map((f) => {
     // Determine the bucket based on storage_path prefix
-    // Demo files are in crossbeam-demo-assets, user uploads in crossbeam-uploads
+    // Demo files are in permitmonkey-demo-assets, user uploads in permitmonkey-uploads
     let bucket: string;
-    if (f.storage_path.startsWith('crossbeam-demo-assets/')) {
-      bucket = 'crossbeam-demo-assets';
+    if (f.storage_path.startsWith('permitmonkey-demo-assets/')) {
+      bucket = 'permitmonkey-demo-assets';
     } else {
-      bucket = 'crossbeam-uploads';
+      bucket = 'permitmonkey-uploads';
     }
 
     // Strip bucket prefix from storage path if present
-    const storagePath = f.storage_path.replace(/^crossbeam-(demo-assets|uploads)\//, '');
+    const storagePath = f.storage_path.replace(/^permitmonkey-(demo-assets|uploads)\//, '');
 
     return {
       bucket,
@@ -657,7 +657,7 @@ function buildDownloadManifest(files: ProjectFile[]): FileToDownload[] {
 }
 ```
 
-**IMPORTANT: The corrections letter is TWO PNG files, not a single PDF.** The download manifest handles this automatically because both PNG files are separate rows in `crossbeam.files` with `file_type = 'corrections-letter'`. Each gets its own download entry (e.g., `1232-n-jefferson-corrections-P1.png` and `1232-n-jefferson-corrections-P2.png`).
+**IMPORTANT: The corrections letter is TWO PNG files, not a single PDF.** The download manifest handles this automatically because both PNG files are separate rows in `permitmonkey.files` with `file_type = 'corrections-letter'`. Each gets its own download entry (e.g., `1232-n-jefferson-corrections-P1.png` and `1232-n-jefferson-corrections-P2.png`).
 
 #### 4e. `downloadFilesInSandbox()` — Adapt paths
 
@@ -698,7 +698,7 @@ async function writePhase1Artifacts(
 
 #### 4f. `installDependencies()` — Remove pizzip
 
-Keep Claude Code CLI and Agent SDK. Remove the pizzip install (CrossBeam doesn't generate Word docs):
+Keep Claude Code CLI and Agent SDK. Remove the pizzip install (PermitMonkey doesn't generate Word docs):
 
 ```typescript
 async function installDependencies(sandbox: Sandbox): Promise<void> {
@@ -772,7 +772,7 @@ const OUTPUT_PATH = '${SANDBOX_OUTPUT_PATH}';
 // Fire-and-forget message logging
 function logMessage(role, content) {
   supabase
-    .schema('crossbeam')
+    .schema('permitmonkey')
     .from('messages')
     .insert({ project_id: projectId, role, content })
     .then(() => {})
@@ -783,7 +783,7 @@ function logMessage(role, content) {
 async function uploadFile(filename, content) {
   const storagePath = userId + '/' + projectId + '/' + filename;
   const { error } = await supabase.storage
-    .from('crossbeam-outputs')
+    .from('permitmonkey-outputs')
     .upload(storagePath, content, { upsert: true });
   if (error) {
     console.error('Upload error for', filename, ':', error.message);
@@ -822,7 +822,7 @@ function readOutputFiles() {
 // Create output record
 async function createOutputRecord(data) {
   const { error } = await supabase
-    .schema('crossbeam')
+    .schema('permitmonkey')
     .from('outputs')
     .insert({
       project_id: projectId,
@@ -855,7 +855,7 @@ async function insertContractorQuestions(questions) {
   }));
 
   const { error } = await supabase
-    .schema('crossbeam')
+    .schema('permitmonkey')
     .from('contractor_answers')
     .insert(rows);
 
@@ -871,7 +871,7 @@ async function updateProjectStatus(status, errorMessage = null) {
   const updateData = { status, updated_at: new Date().toISOString() };
   if (errorMessage) updateData.error_message = errorMessage;
   const { error } = await supabase
-    .schema('crossbeam')
+    .schema('permitmonkey')
     .from('projects')
     .update(updateData)
     .eq('id', projectId);
@@ -1042,16 +1042,16 @@ runAgent();
 
 #### 4h. `extractOutputs()` — Can be simplified or removed
 
-In Mako, `extractOutputs()` reads files back from the sandbox after the agent finishes. But in the CrossBeam pattern (copied from Mako's resilient upload design), **the agent script inside the sandbox handles its own uploads directly to Supabase.** This means the server does NOT need to extract outputs — they are already in the DB by the time the sandbox exits.
+In Mako, `extractOutputs()` reads files back from the sandbox after the agent finishes. But in the PermitMonkey pattern (copied from Mako's resilient upload design), **the agent script inside the sandbox handles its own uploads directly to Supabase.** This means the server does NOT need to extract outputs — they are already in the DB by the time the sandbox exits.
 
-The `extractOutputs()` function in Mako is essentially dead code (it runs but its return value is unused because the agent script already uploaded). You can **remove it entirely** in CrossBeam.
+The `extractOutputs()` function in Mako is essentially dead code (it runs but its return value is unused because the agent script already uploaded). You can **remove it entirely** in PermitMonkey.
 
 #### 4i. Main export function
 
-Rename from `generateDemandLetter()` to `runCrossBeamFlow()`:
+Rename from `generateDemandLetter()` to `runPermitMonkeyFlow()`:
 
 ```typescript
-export async function runCrossBeamFlow(options: RunFlowOptions): Promise<void> {
+export async function runPermitMonkeyFlow(options: RunFlowOptions): Promise<void> {
   let sandbox: Sandbox | null = null;
 
   try {
@@ -1119,7 +1119,7 @@ export async function runCrossBeamFlow(options: RunFlowOptions): Promise<void> {
 
 **Changes:**
 
-1. **All `.schema('mako')` becomes `.schema('crossbeam')`** — global find-and-replace.
+1. **All `.schema('mako')` becomes `.schema('permitmonkey')`** — global find-and-replace.
 
 2. **`client_files` table becomes `files` table.**
 
@@ -1130,7 +1130,7 @@ export async function runCrossBeamFlow(options: RunFlowOptions): Promise<void> {
    - `uploadOutput()` — uploads happen from inside the sandbox
    - `createOutputRecord()` — the agent script creates this from inside the sandbox
 
-4. **Update `updateProjectStatus()`** — expand the status type to include CrossBeam states:
+4. **Update `updateProjectStatus()`** — expand the status type to include PermitMonkey states:
 
 ```typescript
 export async function updateProjectStatus(
@@ -1148,7 +1148,7 @@ export async function updateProjectStatus(
   }
 
   const { error } = await supabase
-    .schema('crossbeam')
+    .schema('permitmonkey')
     .from('projects')
     .update(updateData)
     .eq('id', projectId);
@@ -1165,7 +1165,7 @@ export async function updateProjectStatus(
 ```typescript
 export async function getProjectFiles(projectId: string) {
   const { data, error } = await supabase
-    .schema('crossbeam')
+    .schema('permitmonkey')
     .from('files')
     .select('*')
     .eq('project_id', projectId);
@@ -1183,7 +1183,7 @@ export async function getProjectFiles(projectId: string) {
 ```typescript
 export async function getProject(projectId: string) {
   const { data, error } = await supabase
-    .schema('crossbeam')
+    .schema('permitmonkey')
     .from('projects')
     .select('*')
     .eq('id', projectId)
@@ -1198,7 +1198,7 @@ export async function getProject(projectId: string) {
 
 export async function getContractorAnswers(projectId: string) {
   const { data, error } = await supabase
-    .schema('crossbeam')
+    .schema('permitmonkey')
     .from('contractor_answers')
     .select('*')
     .eq('project_id', projectId)
@@ -1213,7 +1213,7 @@ export async function getContractorAnswers(projectId: string) {
 
 export async function getPhase1Outputs(projectId: string) {
   const { data, error } = await supabase
-    .schema('crossbeam')
+    .schema('permitmonkey')
     .from('outputs')
     .select('*')
     .eq('project_id', projectId)
@@ -1238,7 +1238,7 @@ export async function getPhase1Outputs(projectId: string) {
 
 **Source:** `~/openai-demo/CC-Agents-SDK-test-1225/mako/server/Dockerfile`
 
-Copy verbatim. No changes needed. The Dockerfile copies `dist/` and `skills/` into the image, which is exactly what CrossBeam needs.
+Copy verbatim. No changes needed. The Dockerfile copies `dist/` and `skills/` into the image, which is exactly what PermitMonkey needs.
 
 ```dockerfile
 FROM node:22-slim
@@ -1272,14 +1272,14 @@ CMD ["node", "dist/index.js"]
 **Source:** `~/openai-demo/CC-Agents-SDK-test-1225/mako/server/package.json`
 
 Copy and change:
-- `"name"` from `"mako-server"` to `"crossbeam-server"`
+- `"name"` from `"mako-server"` to `"permitmonkey-server"`
 - Remove the `"clone-user"` script (Mako-specific)
 
 Keep everything else (same dependencies: `@vercel/sandbox`, `express`, `ms`, `zod`, `@supabase/supabase-js`).
 
 ```json
 {
-  "name": "crossbeam-server",
+  "name": "permitmonkey-server",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
@@ -1316,15 +1316,15 @@ Copy verbatim.
 
 ### 9. `skills/` Directory — COPY (resolve symlinks)
 
-The skills in `agents-crossbeam/.claude/skills/` are **symlinks** pointing to `adu-skill-development/skill/`. When copying to `server/skills/`, you must **resolve the symlinks** and copy the actual directories.
+The skills in `agents-permitmonkey/.claude/skills/` are **symlinks** pointing to `adu-skill-development/skill/`. When copying to `server/skills/`, you must **resolve the symlinks** and copy the actual directories.
 
 **Command to copy all 9 skills:**
 
 ```bash
-cd /Users/breez/openai-demo/CC-Crossbeam
+cd /Users/breez/openai-demo/permitmonkey
 mkdir -p server/skills
 for skill in california-adu adu-plan-review adu-corrections-flow adu-corrections-complete adu-targeted-page-viewer adu-city-research adu-corrections-pdf buena-park-adu placentia-adu; do
-  cp -rL agents-crossbeam/.claude/skills/$skill server/skills/$skill
+  cp -rL agents-permitmonkey/.claude/skills/$skill server/skills/$skill
 done
 ```
 
@@ -1350,9 +1350,9 @@ Each skill directory contains markdown instruction files and reference files. Th
 
 ## Supabase Schema Reference
 
-The server reads and writes to these tables in the `crossbeam` schema. The schema is created separately (Stream 0). Here is what the server needs to know:
+The server reads and writes to these tables in the `permitmonkey` schema. The schema is created separately (Stream 0). Here is what the server needs to know:
 
-### `crossbeam.projects`
+### `permitmonkey.projects`
 
 | Column | Type | Server Usage |
 |---|---|---|
@@ -1373,7 +1373,7 @@ The server reads and writes to these tables in the `crossbeam` schema. The schem
 - Contractor Phase 1: `ready` -> `processing-phase1` -> `awaiting-answers` (or `failed`)
 - Contractor Phase 2: `awaiting-answers` -> `processing-phase2` -> `completed` (or `failed`)
 
-### `crossbeam.files`
+### `permitmonkey.files`
 
 | Column | Type | Server Usage |
 |---|---|---|
@@ -1383,7 +1383,7 @@ The server reads and writes to these tables in the `crossbeam` schema. The schem
 | `filename` | TEXT | Read (used as download target filename) |
 | `storage_path` | TEXT | Read (Supabase Storage path for download) |
 
-### `crossbeam.messages`
+### `permitmonkey.messages`
 
 | Column | Type | Server Usage |
 |---|---|---|
@@ -1394,7 +1394,7 @@ The server reads and writes to these tables in the `crossbeam` schema. The schem
 
 Server inserts messages. Frontend polls them. Fire-and-forget — do not await.
 
-### `crossbeam.outputs`
+### `permitmonkey.outputs`
 
 | Column | Type | Server Usage |
 |---|---|---|
@@ -1415,7 +1415,7 @@ Server inserts messages. Frontend polls them. Fire-and-forget — do not await.
 | `agent_turns` | INTEGER | Write |
 | `agent_duration_ms` | INTEGER | Write |
 
-### `crossbeam.contractor_answers`
+### `permitmonkey.contractor_answers`
 
 | Column | Type | Server Usage |
 |---|---|---|
@@ -1438,14 +1438,14 @@ For testing, these demo resources exist:
 - **Judge user_id:** `1440ab46-738c-40b4-9e59-3b2c32971879`
 - **City review project:** `a0000000-0000-0000-0000-000000000001` (flow_type: `city-review`, city: `Placentia`)
 - **Contractor project:** `a0000000-0000-0000-0000-000000000002` (flow_type: `corrections-analysis`, city: `Placentia`)
-- **Demo files in `crossbeam-demo-assets` bucket:**
+- **Demo files in `permitmonkey-demo-assets` bucket:**
   - `Binder-1232-N-Jefferson.pdf` (plan binder)
   - `1232-n-jefferson-corrections-P1.png` (corrections letter page 1)
   - `1232-n-jefferson-corrections-P2.png` (corrections letter page 2)
 - **City:** Placentia
 - **Address:** 1232 N Jefferson
 
-The `crossbeam.files` table has rows linking these demo files to the demo projects.
+The `permitmonkey.files` table has rows linking these demo files to the demo projects.
 
 ---
 
@@ -1456,14 +1456,14 @@ Create `server/.env.local` with:
 ```
 ANTHROPIC_API_KEY=sk-ant-...
 SUPABASE_URL=https://bhjrpklzqyrelnhexhlj.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=(from existing .env.local in repo root or agents-crossbeam/)
+SUPABASE_SERVICE_ROLE_KEY=(from existing .env.local in repo root or agents-permitmonkey/)
 VERCEL_TEAM_ID=(from Vercel dashboard)
 VERCEL_PROJECT_ID=(from Vercel dashboard)
 VERCEL_TOKEN=(from Vercel settings)
 PORT=8080
 ```
 
-The `ANTHROPIC_API_KEY` and `SUPABASE_SERVICE_ROLE_KEY` already exist in `agents-crossbeam/.env.local`. Copy them.
+The `ANTHROPIC_API_KEY` and `SUPABASE_SERVICE_ROLE_KEY` already exist in `agents-permitmonkey/.env.local`. Copy them.
 
 The `VERCEL_TEAM_ID`, `VERCEL_PROJECT_ID`, and `VERCEL_TOKEN` are for creating Vercel Sandboxes. If Mike has not set these up yet, the server will fail at sandbox creation. These can be added later.
 
@@ -1474,7 +1474,7 @@ The `VERCEL_TEAM_ID`, `VERCEL_PROJECT_ID`, and `VERCEL_TOKEN` are for creating V
 ### Local Build & Run
 
 ```bash
-cd /Users/breez/openai-demo/CC-Crossbeam/server
+cd /Users/breez/openai-demo/permitmonkey/server
 npm install
 npm run build
 node --env-file .env.local dist/index.js
@@ -1498,9 +1498,9 @@ curl -X POST http://localhost:8080/generate \
     "flow_type": "city-review"
   }'
 # Expected immediate response: {"status":"processing","project_id":"a0000000-..."}
-# Then monitor: crossbeam.messages table for streaming messages
-# Then monitor: crossbeam.projects table for status -> 'completed'
-# Then check: crossbeam.outputs table for the output record
+# Then monitor: permitmonkey.messages table for streaming messages
+# Then monitor: permitmonkey.projects table for status -> 'completed'
+# Then check: permitmonkey.outputs table for the output record
 ```
 
 ### Test Contractor Phase 1
@@ -1514,7 +1514,7 @@ curl -X POST http://localhost:8080/generate \
     "flow_type": "corrections-analysis"
   }'
 # Expected: status -> 'processing-phase1' -> 'awaiting-answers'
-# Check: crossbeam.contractor_answers table should have questions
+# Check: permitmonkey.contractor_answers table should have questions
 ```
 
 ### Test Contractor Phase 2
@@ -1522,7 +1522,7 @@ curl -X POST http://localhost:8080/generate \
 After Phase 1 completes and `contractor_answers` has rows, manually answer a few questions in the DB:
 
 ```sql
-UPDATE crossbeam.contractor_answers
+UPDATE permitmonkey.contractor_answers
 SET answer_text = 'Yes, confirmed', is_answered = true
 WHERE project_id = 'a0000000-0000-0000-0000-000000000002';
 ```
@@ -1538,29 +1538,29 @@ curl -X POST http://localhost:8080/generate \
     "flow_type": "corrections-response"
   }'
 # Expected: status -> 'processing-phase2' -> 'completed'
-# Check: crossbeam.outputs table should have Phase 2 output record
+# Check: permitmonkey.outputs table should have Phase 2 output record
 ```
 
 ### What to Monitor During Tests
 
-- **Supabase Table Editor** — watch `crossbeam.messages` for real-time agent messages
-- **Supabase Table Editor** — watch `crossbeam.projects` for status transitions
+- **Supabase Table Editor** — watch `permitmonkey.messages` for real-time agent messages
+- **Supabase Table Editor** — watch `permitmonkey.projects` for status transitions
 - **Terminal** — watch server console logs for sandbox lifecycle
-- **Supabase Storage** — check `crossbeam-outputs` bucket for uploaded PDFs
+- **Supabase Storage** — check `permitmonkey-outputs` bucket for uploaded PDFs
 
 ---
 
 ## What NOT to Do
 
 - **Don't add Stripe/billing.** No credits, no payments. This is a hackathon.
-- **Don't add user assets concept.** No letterhead templates, no sample demands. CrossBeam doesn't have these.
-- **Don't add `case_notes` field.** Mako has attorney notes. CrossBeam doesn't.
+- **Don't add user assets concept.** No letterhead templates, no sample demands. PermitMonkey doesn't have these.
+- **Don't add `case_notes` field.** Mako has attorney notes. PermitMonkey doesn't.
 - **Don't overcomplicate.** Every extra abstraction is time you don't have. The deadline is Monday.
 - **Don't create new files when editing Mako files works.** Fork the Mako code, change what needs changing, move on.
 - **Don't add authentication to the `/generate` endpoint.** The frontend proxy handles auth. The Cloud Run server trusts incoming requests (it's not publicly advertised).
 - **Don't worry about the `extractOutputs()` function.** The agent script uploads directly to Supabase from inside the sandbox. Server-side extraction is a backup that Mako had but never used. Omit it.
-- **Don't install pizzip or any Word doc generation.** CrossBeam outputs are Markdown + JSON. No `.docx` files.
-- **Don't add a `scripts/` directory.** Mako had a clone-user script. CrossBeam doesn't need it.
+- **Don't install pizzip or any Word doc generation.** PermitMonkey outputs are Markdown + JSON. No `.docx` files.
+- **Don't add a `scripts/` directory.** Mako had a clone-user script. PermitMonkey doesn't need it.
 
 ---
 
@@ -1568,17 +1568,17 @@ curl -X POST http://localhost:8080/generate \
 
 | File | Action | Key Changes |
 |---|---|---|
-| `index.ts` | Copy | Change "Mako" to "CrossBeam" in log message |
+| `index.ts` | Copy | Change "Mako" to "PermitMonkey" in log message |
 | `config.ts` | Rewrite | 3 flow types, 9 skills, flow-specific prompts, flow-specific budgets, claude-opus-4-6 |
 | `generate.ts` | Adapt | Add `flow_type`, remove credits/billing, remove user assets, remove case_notes, add Phase 2 data loading |
-| `sandbox.ts` | Adapt | Multi-skill loading, CrossBeam file types, corrections-response Phase 1 artifact injection, flow-aware output extraction, rename export function |
-| `supabase.ts` | Adapt | Schema mako->crossbeam, client_files->files, remove billing functions, add getProject/getContractorAnswers/getPhase1Outputs |
+| `sandbox.ts` | Adapt | Multi-skill loading, PermitMonkey file types, corrections-response Phase 1 artifact injection, flow-aware output extraction, rename export function |
+| `supabase.ts` | Adapt | Schema mako->permitmonkey, client_files->files, remove billing functions, add getProject/getContractorAnswers/getPhase1Outputs |
 | `Dockerfile` | Copy | No changes |
-| `package.json` | Copy | Rename to crossbeam-server, remove clone-user script |
+| `package.json` | Copy | Rename to permitmonkey-server, remove clone-user script |
 | `tsconfig.json` | Copy | No changes |
 | `skills/` | New | Copy 9 skill directories (resolve symlinks) |
 
 ---
 
-*Written: Feb 13, 2026 — Stream 1 brief for the CrossBeam server build.*
+*Written: Feb 13, 2026 — Stream 1 brief for the PermitMonkey server build.*
 *Hackathon deadline: Monday Feb 16, 12:00 PM PST.*

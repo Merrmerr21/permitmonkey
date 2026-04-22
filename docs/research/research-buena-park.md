@@ -2,7 +2,7 @@
 
 > **Research date**: February 11, 2026
 > **Sources**: Buena Park ADU Ordinance (June 2025), HCD Findings Letter (May 28, 2025), ecode360 municipal code, city website, OCFA, web research
-> **Purpose**: Raw research dump for building a Tier 3 city skill for CrossBeam
+> **Purpose**: Raw research dump for building a Tier 3 city skill for PermitMonkey
 
 ---
 

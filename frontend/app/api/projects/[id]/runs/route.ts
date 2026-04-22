@@ -16,7 +16,7 @@ export async function GET(
 
     // Verify project exists and user has access
     const { data: project, error: projectError } = await supabase
-      .schema('crossbeam')
+      .schema('permitmonkey')
       .from('projects')
       .select('id, is_demo, user_id')
       .eq('id', id)
@@ -35,7 +35,7 @@ export async function GET(
     const flowPhase = searchParams.get('flow_phase')
 
     let query = supabase
-      .schema('crossbeam')
+      .schema('permitmonkey')
       .from('outputs')
       .select('id, flow_phase, version, agent_cost_usd, agent_turns, agent_duration_ms, raw_artifacts, created_at')
       .eq('project_id', id)

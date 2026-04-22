@@ -106,7 +106,7 @@ export interface ContractorAnswer {
 
 // Database type for Supabase client generic
 export interface Database {
-  crossbeam: {
+  permitmonkey: {
     Tables: {
       projects: {
         Row: Project

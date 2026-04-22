@@ -14,7 +14,7 @@ import { supabase, insertMessage } from './supabase.js';
 export async function extractPdfForProject(projectId: string): Promise<void> {
   // 1. Find the PDF binder in the project's file records
   const { data: files, error: filesErr } = await supabase
-    .schema('crossbeam')
+    .schema('permitmonkey')
     .from('files')
     .select('*')
     .eq('project_id', projectId);
@@ -41,14 +41,14 @@ export async function extractPdfForProject(projectId: string): Promise<void> {
   // Parse bucket and path from storage_path
   let bucket: string;
   let storagePath: string;
-  if (pdfFile.storage_path.startsWith('crossbeam-demo-assets/')) {
-    bucket = 'crossbeam-demo-assets';
-    storagePath = pdfFile.storage_path.replace('crossbeam-demo-assets/', '');
-  } else if (pdfFile.storage_path.startsWith('crossbeam-uploads/')) {
-    bucket = 'crossbeam-uploads';
-    storagePath = pdfFile.storage_path.replace('crossbeam-uploads/', '');
+  if (pdfFile.storage_path.startsWith('permitmonkey-demo-assets/')) {
+    bucket = 'permitmonkey-demo-assets';
+    storagePath = pdfFile.storage_path.replace('permitmonkey-demo-assets/', '');
+  } else if (pdfFile.storage_path.startsWith('permitmonkey-uploads/')) {
+    bucket = 'permitmonkey-uploads';
+    storagePath = pdfFile.storage_path.replace('permitmonkey-uploads/', '');
   } else {
-    bucket = 'crossbeam-uploads';
+    bucket = 'permitmonkey-uploads';
     storagePath = pdfFile.storage_path;
   }
 
@@ -152,7 +152,7 @@ export async function extractPdfForProject(projectId: string): Promise<void> {
 
     // 6. Upload archives to Supabase Storage
     // Use same bucket as the original PDF for consistency
-    const archiveBucket = 'crossbeam-uploads';
+    const archiveBucket = 'permitmonkey-uploads';
     const prefix = storagePath.replace(/\/[^/]+$/, ''); // parent path of the PDF
 
     for (const { localPath, name } of [
@@ -173,7 +173,7 @@ export async function extractPdfForProject(projectId: string): Promise<void> {
       console.log(`Uploaded: ${archiveBucket}/${archiveStoragePath}`);
 
       // Insert file record
-      await supabase.schema('crossbeam').from('files').insert({
+      await supabase.schema('permitmonkey').from('files').insert({
         project_id: projectId,
         file_type: 'other',
         filename: name,

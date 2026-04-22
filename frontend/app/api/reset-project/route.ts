@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
 
     // Only allow resetting demo projects
     const { data: project, error: projectError } = await supabase
-      .schema('crossbeam')
+      .schema('permitmonkey')
       .from('projects')
       .select('id, is_demo')
       .eq('id', project_id)
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
 
     // Clear messages
     await supabase
-      .schema('crossbeam')
+      .schema('permitmonkey')
       .from('messages')
       .delete()
       .eq('project_id', project_id)
@@ -44,14 +44,14 @@ export async function POST(request: NextRequest) {
 
     // Clear contractor answers
     await supabase
-      .schema('crossbeam')
+      .schema('permitmonkey')
       .from('contractor_answers')
       .delete()
       .eq('project_id', project_id)
 
     // Reset project status to ready
     await supabase
-      .schema('crossbeam')
+      .schema('permitmonkey')
       .from('projects')
       .update({ status: 'ready', error_message: null })
       .eq('id', project_id)

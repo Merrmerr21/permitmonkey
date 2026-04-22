@@ -40,7 +40,7 @@ These are strengths — don't regress them:
 
 **Current gradient:**
 ```css
-.bg-crossbeam-gradient {
+.bg-permitmonkey-gradient {
   background: linear-gradient(180deg,
     #F0F7FF 0%,      /* sky blue */
     #FAFCFF 15%,
@@ -54,7 +54,7 @@ These are strengths — don't regress them:
 
 **Change to:**
 ```css
-.bg-crossbeam-gradient {
+.bg-permitmonkey-gradient {
   background: linear-gradient(180deg,
     #F0F7FF 0%,       /* sky blue */
     #FAFCFF 12%,
