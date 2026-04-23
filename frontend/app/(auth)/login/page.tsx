@@ -49,7 +49,7 @@ export default function LoginPage() {
           <div className="space-y-2">
             <h1 className="heading-display text-foreground">PermitMonkey</h1>
             <p className="text-muted-foreground font-body">
-              AI-Powered Permit Review for California ADUs
+              AI-Powered Permit Review for Massachusetts ADUs
             </p>
           </div>
 

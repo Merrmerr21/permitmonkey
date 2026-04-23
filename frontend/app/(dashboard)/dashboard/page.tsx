@@ -59,7 +59,7 @@ export default function DashboardPage() {
           <p className="text-muted-foreground font-body text-center max-w-md">
             Full project creation with file upload is coming soon.
             Switch to <span className="font-semibold text-foreground">Judge Demo</span> mode
-            to test with pre-loaded Placentia plans.
+            to test with pre-loaded test plans (currently California legacy fixtures during MA pivot).
           </p>
         </div>
       </div>
@@ -85,7 +85,7 @@ export default function DashboardPage() {
           title="City Reviewer"
           description="I'm reviewing a permit submission. Help me pre-screen it against state + city code."
           projectName="1232 N Jefferson ADU"
-          projectCity="Placentia, CA"
+          projectCity="Boston, MA"
           projectId={cityId}
           ctaText="Run AI Review"
           showcaseOutputId={mode === 'judge-demo' ? SHOWCASE_CITY_OUTPUT_ID : undefined}
@@ -95,7 +95,7 @@ export default function DashboardPage() {
           title="Contractor"
           description="I got a corrections letter back. Help me understand what to fix and build a response."
           projectName="1232 N Jefferson ADU"
-          projectCity="Placentia, CA"
+          projectCity="Boston, MA"
           projectId={contractorId}
           ctaText="Analyze Corrections"
           showcaseOutputId={mode === 'judge-demo' ? SHOWCASE_CONTRACTOR_OUTPUT_ID : undefined}

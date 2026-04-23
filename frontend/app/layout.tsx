@@ -18,7 +18,7 @@ const nunito = Nunito({
 
 export const metadata: Metadata = {
   title: "PermitMonkey | AI-Powered ADU Permit Review",
-  description: "AI permit review assistant for California ADUs. Built with Claude Opus 4.6.",
+  description: "AI permit review assistant for Massachusetts ADUs (post-Chapter 150 of the Acts of 2024). Built with Claude Opus 4.6.",
 }
 
 export default function RootLayout({

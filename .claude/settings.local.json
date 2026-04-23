@@ -4,7 +4,9 @@
       "Bash(rm california-adu *)",
       "Bash(echo \"../../../server/skills/massachusetts-adu\")",
       "Bash(echo \"../../../server/skills/ma-city-research\")",
-      "Read(//c/c/Users/Merritt/permitmonkey/agents-permitmonkey/.claude/**)"
+      "Read(//c/c/Users/Merritt/permitmonkey/agents-permitmonkey/.claude/**)",
+      "Bash(cp /c/Users/Merritt/permitmonkey/.claude/skills/ma-city-research/references/newton.md /c/Users/Merritt/permitmonkey/server/skills/ma-city-research/references/)",
+      "Bash(cp /c/Users/Merritt/permitmonkey/.claude/skills/ma-city-research/references/brookline.md /c/Users/Merritt/permitmonkey/server/skills/ma-city-research/references/)"
     ]
   }
 }

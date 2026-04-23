@@ -52,7 +52,7 @@ export default function LandingPage() {
       {/* Hero */}
       <section className="relative z-10 max-w-4xl mx-auto px-4 pt-4 pb-2 text-center space-y-4 animate-fade-up">
         <p className="text-sm text-muted-foreground font-body tracking-widest uppercase">
-          AI-Powered ADU Permit Review for California
+          AI-Powered ADU Permit Review for Massachusetts
         </p>
         <h1 className="heading-display text-foreground">
           AI Agent Architecture for<br />ADU Permit Review
@@ -102,7 +102,7 @@ export default function LandingPage() {
       <section id="demo" className="relative z-10 max-w-4xl mx-auto px-4 py-10 animate-fade-up stagger-2">
         <h2 className="heading-section text-foreground text-center mb-2">See it in action</h2>
         <p className="text-sm text-muted-foreground font-body text-center mb-6">
-          Corrections analysis on a real Placentia ADU permit &mdash; 14 correction
+          Corrections analysis on a sample Massachusetts ADU permit (using legacy California test fixtures during the MA pivot, see docs/roadmap.md) &mdash; 14 correction
           items parsed, verified, and responded to.
         </p>
         <div className="aspect-video rounded-xl overflow-hidden shadow-[0_12px_48px_rgba(28,25,23,0.12)] border border-border/50">
@@ -177,7 +177,7 @@ export default function LandingPage() {
                     <Badge variant="outline" className="text-[10px]">Vercel Sandbox</Badge>
                   </div>
                   <p className="text-sm text-muted-foreground font-body">
-                    Skills are copied into the sandbox filesystem. The California ADU
+                    Skills are copied into the sandbox filesystem. The Massachusetts ADU
                     skill (28 reference files) uses a decision tree router to load only the
                     3-5 files relevant to each query &mdash; not dumped as one giant prompt.
                     City research and corrections interpreter skills load alongside.
@@ -253,7 +253,7 @@ export default function LandingPage() {
                 <h3 className="heading-card text-foreground">The Builder</h3>
               </div>
               <p className="text-sm text-muted-foreground font-body leading-relaxed">
-                Cameron gets a 14-item corrections letter from the City of Placentia.
+                Cameron gets a 14-item corrections letter from the City of Boston.
                 Each item cites specific code sections. His engineer takes days to parse
                 and respond. PermitMonkey does it in 15 minutes &mdash; reading plans via
                 vision, cross-referencing state and city law, drafting a professional
@@ -268,7 +268,7 @@ export default function LandingPage() {
                 <h3 className="heading-card text-foreground">The Mayor</h3>
               </div>
               <p className="text-sm text-muted-foreground font-body leading-relaxed">
-                Connor Trout, Mayor of Buena Park &mdash; a city of 80,000 with 4-5
+                Connor Trout, Mayor of Worcester &mdash; a city of 80,000 with 4-5
                 building staff &mdash; needs to 10x permit throughput to meet state
                 housing targets. They spend $250K+/year on outside consultants. The same
                 AI that helps contractors respond to corrections can help cities generate
@@ -283,7 +283,7 @@ export default function LandingPage() {
       <section className="relative z-10 max-w-5xl mx-auto px-4 py-12">
         <h2 className="heading-section text-foreground mb-2">28 Files, Not One Prompt</h2>
         <p className="text-sm text-muted-foreground font-body mb-8 max-w-2xl">
-          The California ADU skill encodes the entire HCD ADU Handbook (54 pages of
+          The Massachusetts ADU skill encodes the entire HCD ADU Handbook (54 pages of
           state law) as structured reference files. A 4-step decision tree router
           loads only the 3-5 files relevant to each query.
         </p>
@@ -304,8 +304,8 @@ export default function LandingPage() {
               </p>
               <p>
                 <strong className="text-foreground">Authoritative source.</strong>{' '}
-                HCD ADU Handbook (Jan 2025) + 2026 Addendum. Government Code
-                &sect;&sect; 66310-66342. Current through January 1, 2026.
+                Chapter 150 of the Acts of 2024 + 760 CMR 71.00 (EOHLC) + 780 CMR 10th Edition. Government Code
+                &sect;&sect; 66310-66342. Effective February 2, 2025.sect;&sect;&sect; 66310-66342. Effective February 2, 2025.sect; 1A and 3 (as amended by St. 2024, c. 150, &sect;&sect; 66310-66342. Effective February 2, 2025.sect;&sect;&sect; 66310-66342. Effective February 2, 2025.sect; 7-8). Effective February 2, 2025.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-2 pt-2">
@@ -408,7 +408,7 @@ export default function LandingPage() {
       <section className="relative z-10 max-w-5xl mx-auto px-4 py-10">
         <h2 className="heading-section text-foreground text-center mb-2">480 Cities, 3 Research Modes</h2>
         <p className="text-sm text-muted-foreground font-body text-center mb-8 max-w-2xl mx-auto">
-          California law requires every city to publish ADU regulations online. The
+          Massachusetts municipalities publish zoning bylaws via eCode360, Municode, or city CMS. Our ma-city-research skill handles all three. The
           information always exists &mdash; the skill finds it across 480+ different
           city website architectures.
         </p>
@@ -549,7 +549,7 @@ export default function LandingPage() {
       <section className="relative z-10 max-w-4xl mx-auto px-4 py-10">
         <h2 className="heading-section text-foreground mb-2">What the Agent Produces</h2>
         <p className="text-sm text-muted-foreground font-body mb-6">
-          Real output from a Placentia ADU corrections flow &mdash; 14 items analyzed,
+          Sample output from a Massachusetts ADU corrections flow (using legacy California fixtures during MA pivot) &mdash; 14 items analyzed,
           categorized, and responded to.
         </p>
         <div className="grid gap-4 md:grid-cols-3">
@@ -570,7 +570,7 @@ export default function LandingPage() {
               <h3 className="heading-card text-foreground text-base">Contractor Questions</h3>
               <p className="text-xs text-muted-foreground font-body">
                 Structured questions for on-site data: &ldquo;What is the size of the
-                existing waste/sewer line?&rdquo; with CPC Table 702.1 context and
+                existing waste/sewer line?&rdquo; with 248 CMR (MA Plumbing Code) context and
                 why the agent needs it.
               </p>
             </CardContent>
@@ -581,7 +581,7 @@ export default function LandingPage() {
               <h3 className="heading-card text-foreground text-base">Response Letter</h3>
               <p className="text-xs text-muted-foreground font-body">
                 Professional tone. Item-by-item responses with sheet references. Code
-                citations (CPC, CRC, ASCE 7-16). Technical justifications: sewer capacity
+                citations (248 CMR plumbing, 780 CMR/IRC 2021, ASCE 7-16). Technical justifications: sewer capacity
                 calc, wind load calcs, drainage slopes.
               </p>
             </CardContent>

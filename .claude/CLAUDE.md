@@ -101,3 +101,4 @@ Retired (in `_legacy/` for regression reference):
 *Auto-updates as mistakes are logged. Lead with the date and a one-line mistake description, then the fix.*
 
 - **2026-04-22**: Initial playbook cited "Chapter 358 of the Acts of 2024" for the MA ADU law. Correct citation is **Chapter 150 of the Acts of 2024**, §§7-8. Fix: always verify statute citations via malegislature.gov or mass.gov before committing to a reference. Don't trust memory on statute numbers.
+- **2026-04-22**: Misreported commit stats as "+1,068 / -70,799 net" in user-facing summary. That number came from `git diff --stat` of unstaged working tree, where git sees renames as delete+create separately. Actual committed stats (from `git show --shortstat HEAD`) were +8,241 / -1,789. Fix: always verify commit stats via `git show --shortstat HEAD` after commit; never report pre-staging diff numbers as commit results. Renames are transparent after staging; pre-staging they look like massive deletions.
