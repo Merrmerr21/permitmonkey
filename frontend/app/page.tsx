@@ -178,8 +178,8 @@ export default function LandingPage() {
                   </div>
                   <p className="text-sm text-muted-foreground font-body">
                     Skills are copied into the sandbox filesystem. The Massachusetts ADU
-                    skill (28 reference files) uses a decision tree router to load only the
-                    3-5 files relevant to each query &mdash; not dumped as one giant prompt.
+                    skill (8 reference files + 3-step decision tree) uses a router to load only the
+                    files relevant to each query &mdash; not dumped as one giant prompt.
                     City research and corrections interpreter skills load alongside.
                   </p>
                 </div>
@@ -634,7 +634,7 @@ export default function LandingPage() {
                 <h3 className="heading-card text-foreground text-base">Working</h3>
               </div>
               <ul className="text-xs text-muted-foreground font-body space-y-1.5">
-                <li>Skills architecture (28 reference files)</li>
+                <li>Skills architecture (massachusetts-adu + ma-city-research)</li>
                 <li>Corrections analysis pipeline</li>
                 <li>Response letter with code citations</li>
                 <li>Multi-agent PDF extraction</li>
@@ -666,7 +666,7 @@ export default function LandingPage() {
               <ul className="text-xs text-muted-foreground font-body space-y-1.5">
                 <li>PDF plan redrawing (7,400px plans need larger sandbox)</li>
                 <li>Per-user API keys + multi-tenant</li>
-                <li>Scale city research to 480+ cities</li>
+                <li>Scale city research across all 351 MA municipalities</li>
                 <li>Contractor mobile experience</li>
               </ul>
             </CardContent>

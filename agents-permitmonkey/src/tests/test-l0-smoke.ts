@@ -46,12 +46,12 @@ for await (const msg of q) {
 
     // Check for all 6 expected ADU skills
     const expectedSkills = [
-      'california-adu',
+      'massachusetts-adu',
+      'ma-city-research',
+      'ma-corrections-interpreter',
       'adu-corrections-flow',
       'adu-corrections-complete',
-      'adu-city-research',
       'adu-targeted-page-viewer',
-      'buena-park-adu',
     ];
     const foundSkills = expectedSkills.filter(s => output.includes(s));
     const hasSmokeOk = output.includes('SMOKE_OK');

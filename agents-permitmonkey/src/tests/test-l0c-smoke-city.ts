@@ -18,7 +18,7 @@ const q = query({
   prompt: `List all available skills you can see.
 Specifically confirm you can see these 3 city flow skills:
 1. adu-plan-review
-2. placentia-adu
+2. ma-city-research
 3. adu-corrections-pdf
 Then say SMOKE_CITY_OK.`,
   options: {
@@ -51,18 +51,17 @@ for await (const msg of q) {
 
     // Check for all 9 expected skills (6 existing + 3 new)
     const expectedSkills = [
-      'california-adu',
+      'massachusetts-adu',
+      'ma-corrections-interpreter',
       'adu-corrections-flow',
       'adu-corrections-complete',
-      'adu-city-research',
+      'ma-city-research',
       'adu-targeted-page-viewer',
-      'buena-park-adu',
       'adu-plan-review',
-      'placentia-adu',
       'adu-corrections-pdf',
     ];
 
-    const citySkills = ['adu-plan-review', 'placentia-adu', 'adu-corrections-pdf'];
+    const citySkills = ['adu-plan-review', 'ma-city-research', 'adu-corrections-pdf'];
 
     const foundSkills = expectedSkills.filter(s => output.includes(s));
     const foundCitySkills = citySkills.filter(s => output.includes(s));

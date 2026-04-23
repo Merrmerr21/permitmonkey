@@ -1,8 +1,6 @@
 # PermitMonkey Local Demo — Claude Code
 
-> **Status during MA pivot (April 2026):** This demo still runs against California test fixtures (Placentia, Long Beach) retained at `test-assets/corrections/` and `test-assets/approved/` for regression reference. The California skills it invokes have been retired to `_legacy/server-skills/` but can be temporarily restored for running this demo against historical content. The active production skills (`massachusetts-adu`, `ma-city-research`) target Massachusetts and will have their own demo fixtures once `test-assets/ma/` is populated per `docs/roadmap.md` Phase 0.
->
-> If you want to run this demo today, you may need to move the CA skills temporarily back from `_legacy/server-skills/` to `server/skills/`. Track MA demo readiness at `docs/roadmap.md` → "Test assets — CRITICAL PATH".
+> **Status during MA pivot (April 2026):** The active production skills (`massachusetts-adu`, `ma-city-research`) target Massachusetts. Real MA fixtures are on the critical path at `test-assets/ma/` — until they arrive, the demo commands below exercise the full skill-loading and sandbox pipeline with synthetic MA prompts. California fixtures and skills are retained at `_legacy/` for regression only; do NOT run the MA demo against them. Track fixture readiness at `docs/roadmap.md` → "Test assets — CRITICAL PATH".
 
 Run the full ADU permit analysis locally using Claude Code skills. No server, no Supabase, no sandbox — just Claude Code reading plans and researching codes.
 

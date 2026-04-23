@@ -1,8 +1,8 @@
 /**
- * L1 Skill Invocation Test — california-adu Skill
+ * L1 Skill Invocation Test — massachusetts-adu Skill
  *
- * Validates: Skill tool works in SDK context, reference files load
- * (28 california-adu files), agent writes output to session directory.
+ * Validates: Skill tool works in SDK context, massachusetts-adu reference files
+ * load, agent writes output to session directory.
  *
  * Model: Haiku (testing wiring, not quality)
  * Expected duration: < 3 minutes
@@ -13,20 +13,19 @@ import { query } from '@anthropic-ai/claude-agent-sdk';
 import { createQueryOptions } from '../utils/config.ts';
 import { createSession } from '../utils/session.ts';
 
-console.log('=== L1 Skill Invocation Test: california-adu ===\n');
+console.log('=== L1 Skill Invocation Test: massachusetts-adu ===\n');
 
 const startTime = Date.now();
 const sessionDir = createSession('l1');
 console.log(`  Session: ${sessionDir}\n`);
 
 const q = query({
-  prompt: `Use the california-adu skill to answer this question:
-What are the 2026 California state setback requirements for a DETACHED ADU
-on a single-family residential lot? Include rear and side setback minimums.
+  prompt: `Use the massachusetts-adu skill to answer this question:
+Under 760 CMR 71.00 (MA Protected Use ADU regulation), what is the maximum size of a protected-use ADU, and what is the maximum parking requirement a municipality may impose?
 
 Write your answer as JSON to: ${sessionDir}/test-state-law.json
 
-Format: { "rear_setback_ft": number, "side_setback_ft": number, "source": "string" }`,
+Format: { "max_size_sqft": number, "max_size_pct_of_primary": number, "max_parking_spaces": number, "parking_waiver_transit_distance_mi": number, "source": "string" }`,
   options: {
     ...createQueryOptions({
       model: 'claude-haiku-4-5-20251001',
@@ -43,7 +42,6 @@ for await (const msg of q) {
     console.log('✓ SDK initialized');
   }
 
-  // Log assistant tool calls for visibility
   if (msg.type === 'assistant' && msg.message?.content) {
     for (const block of msg.message.content) {
       if (block.type === 'tool_use') {
@@ -62,16 +60,20 @@ for await (const msg of q) {
       console.log('✓ File written');
       try {
         const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-        console.log(`  Rear setback: ${data.rear_setback_ft} ft`);
-        console.log(`  Side setback: ${data.side_setback_ft} ft`);
+        console.log(`  Max size: ${data.max_size_sqft} sqft / ${data.max_size_pct_of_primary}% of primary`);
+        console.log(`  Max parking: ${data.max_parking_spaces} (waived within ${data.parking_waiver_transit_distance_mi} mi of transit)`);
         console.log(`  Source: ${data.source}`);
 
-        // 2026 California ADU setbacks for detached: 4 ft rear, 4 ft side
-        const correct = data.rear_setback_ft === 4 && data.side_setback_ft === 4;
+        // Per Ch 150 of 2024 + 760 CMR 71.00: 900 sqft or 50%, 1 space max, 0.5 mi transit waiver
+        const correct =
+          data.max_size_sqft === 900 &&
+          data.max_size_pct_of_primary === 50 &&
+          data.max_parking_spaces === 1 &&
+          data.parking_waiver_transit_distance_mi === 0.5;
         if (correct) {
-          console.log('✓ Values correct (4 ft rear, 4 ft side)');
+          console.log('✓ Values correct (900 sqft / 50% / 1 space / 0.5 mi transit)');
         } else {
-          console.log('✗ Values WRONG — expected rear=4, side=4');
+          console.log('✗ Values WRONG — expected 900 sqft, 50%, 1 space, 0.5 mi');
           passed = false;
         }
       } catch (e) {

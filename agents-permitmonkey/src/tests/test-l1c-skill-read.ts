@@ -3,15 +3,10 @@
  *
  * CRITICAL GATE — Tests whether:
  * 1. Main agent can read adu-plan-review skill and its checklist references
- * 2. Main agent can read placentia-adu skill and list its reference files
- * 3. Task subagent can read checklist files via absolute path through symlinks
- *
- * If #3 fails, Phase 2 review subagents must inline checklist content
- * in their prompts (~450 lines per prompt) instead of reading files.
+ * 2. Main agent can read ma-city-research skill and list its city reference files
+ * 3. Task subagent can read checklist files via absolute path
  *
  * Model: Haiku (testing wiring, not output quality)
- * Expected duration: 1-2 minutes
- * Expected cost: ~$0.20-0.50
  */
 import fs from 'fs';
 import path from 'path';
@@ -20,7 +15,7 @@ import { createQueryOptions, PROJECT_ROOT } from '../utils/config.ts';
 import { createSession } from '../utils/session.ts';
 
 const sessionDir = createSession('l1c');
-const checklistPath = `${PROJECT_ROOT}/adu-skill-development/skill/adu-plan-review/references/checklist-cover.md`;
+const checklistPath = `${PROJECT_ROOT}/server/skills/adu-plan-review/references/checklist-cover.md`;
 
 console.log('=== L1c: Skill Read + Checklist Access + Subagent File Access ===\n');
 console.log(`  Session: ${sessionDir}`);
@@ -35,8 +30,8 @@ const q = query({
 1. Read the adu-plan-review skill and tell me how many phases it has.
 2. Read the checklist reference file at:
    ${checklistPath}
-   Count how many major check categories exist (sections like "1. Professional Stamps", "2. Governing Codes", etc.)
-3. Read the placentia-adu skill and list the reference files it contains.
+   Count how many major check categories exist (numbered sections like "1. Professional Stamps", "2. Governing Codes", etc.)
+3. Read the ma-city-research skill and list the city reference files it contains (e.g. boston.md, cambridge.md, ...).
 4. **CRITICAL TEST:** Spawn a Task subagent. The subagent must:
    a. Read the file at: ${checklistPath}
    b. Count the number of major categories
@@ -50,7 +45,7 @@ Format:
 {
   "plan_review_phases": number,
   "checklist_categories": number,
-  "placentia_reference_files": string[]
+  "ma_city_reference_files": string[]
 }
 
 Wait for the subagent to complete before finishing.`,
@@ -76,10 +71,8 @@ for await (const msg of q) {
   }
 
   if (msg.type === 'result') {
-    // Brief pause for file flush
     await new Promise(r => setTimeout(r, 2000));
 
-    // --- Main agent output ---
     const filePath = path.join(sessionDir, 'skill-check.json');
     const fileExists = fs.existsSync(filePath);
     console.log(fileExists ? '\n✓ skill-check.json written' : '\n✗ skill-check.json NOT written');
@@ -89,18 +82,18 @@ for await (const msg of q) {
         const data = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
         console.log(`  Plan review phases: ${data.plan_review_phases} (expected: 5)`);
         console.log(`  Checklist categories: ${data.checklist_categories} (expected: ~7)`);
-        console.log(`  Placentia references: ${data.placentia_reference_files?.length} files (expected: ~12)`);
+        console.log(`  MA city references: ${data.ma_city_reference_files?.length} files (expected: 5)`);
 
         const phasesOk = data.plan_review_phases === 5;
-        const checklistOk = data.checklist_categories >= 5; // flexible on exact count
-        const placentiaOk = data.placentia_reference_files?.length >= 8;
+        const checklistOk = data.checklist_categories >= 5;
+        const cityOk = data.ma_city_reference_files?.length >= 5;
 
-        if (phasesOk && checklistOk && placentiaOk) {
+        if (phasesOk && checklistOk && cityOk) {
           console.log('  ✓ Main agent checks PASSED');
         } else {
           if (!phasesOk) console.log('  ✗ Phase count wrong');
           if (!checklistOk) console.log('  ✗ Checklist categories too few');
-          if (!placentiaOk) console.log('  ✗ Placentia references too few');
+          if (!cityOk) console.log('  ✗ MA city references too few');
           passed = false;
         }
       } catch (e) {
@@ -111,7 +104,6 @@ for await (const msg of q) {
       passed = false;
     }
 
-    // --- CRITICAL: Subagent file access ---
     const subagentPath = path.join(sessionDir, 'subagent-check.json');
     const subagentExists = fs.existsSync(subagentPath);
     console.log(`\n${subagentExists ? '✓' : '✗'} subagent-check.json ${subagentExists ? 'written' : 'NOT written — SUBAGENT FILE ACCESS FAILED'}`);
@@ -128,8 +120,6 @@ for await (const msg of q) {
       }
     } else {
       console.log('\n✗ SUBAGENT CANNOT READ CHECKLIST FILES');
-      console.log('  → Fallback: Inline checklist content in subagent prompts');
-      console.log('  → This adds ~450 lines per subagent prompt but guarantees access');
       passed = false;
     }
 
