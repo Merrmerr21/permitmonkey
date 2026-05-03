@@ -166,8 +166,34 @@ export class SubagentTracker {
 
 // --- Standard Message Handler ---
 
+type ToolInput = {
+  description?: string;
+  prompt?: string;
+  task_id?: string;
+  file_path?: string;
+  command?: string;
+  pattern?: string;
+  query?: string;
+  url?: string;
+  skill?: string;
+};
+
+type ToolUseBlock = {
+  type: 'tool_use';
+  id: string;
+  name: string;
+  input?: ToolInput;
+};
+
+type ContentBlock = ToolUseBlock | { type: string };
+
+export type ProgressMessage =
+  | { type: 'system'; model?: string; tools?: unknown[] }
+  | { type: 'assistant'; message?: { content?: ContentBlock[] } }
+  | { type: 'result'; subtype?: string; total_cost_usd?: number; num_turns?: number };
+
 export function handleProgressMessage(
-  msg: any,
+  msg: ProgressMessage,
   startTime: number,
   tracker?: SubagentTracker,
 ): void {
@@ -215,7 +241,7 @@ export function handleProgressMessage(
   }
 }
 
-function formatToolDetail(block: any): string {
+function formatToolDetail(block: ToolUseBlock): string {
   const input = block.input;
   if (!input) return '';
 
