@@ -18,6 +18,15 @@ Three flows:
 - Agent SDK runs in Vercel Sandbox; don't propose patterns that assume persistent filesystem across runs.
 - Uploaded plans and corrections letters may contain PII (owner names, contractor license numbers, addresses). Treat every upload as confidential. No logs, no debug prints, no external tool calls that include raw plan bytes.
 
+## Editing Discipline (Karpathy)
+
+Source: forrestchang/andrej-karpathy-skills CLAUDE.md @ main. These rules sit on top of the harness defaults and bias toward caution over speed on non-trivial edits.
+
+- **Think before coding.** State assumptions explicitly. If multiple interpretations exist, surface them — don't pick silently. If something is unclear, ask before implementing.
+- **Simplicity first.** Minimum code that solves the problem. No features beyond what was asked, no abstractions for single-use code, no error handling for impossible scenarios. If 200 lines could be 50, rewrite.
+- **Surgical changes.** Touch only what the request requires. Don't "improve" adjacent code, comments, or formatting. Match existing style. Remove orphans your changes created; leave pre-existing dead code alone unless asked.
+- **Goal-driven execution.** Translate vague tasks into verifiable goals ("add validation" → "tests for invalid inputs, then make them pass"). For multi-step work, state the plan with per-step verification.
+
 ## Opus 4.7 Calibration
 
 - Default effort `xhigh` for corrections-response work

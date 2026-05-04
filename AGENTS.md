@@ -22,6 +22,15 @@ Three flows:
 - Do not assume persistent filesystem across Vercel Sandbox runs — each job runs in fresh isolation.
 - Uploaded plans and corrections letters may contain PII. No logs, no external tool calls that include raw plan bytes.
 
+## Editing Discipline (Karpathy)
+
+Source: forrestchang/andrej-karpathy-skills CLAUDE.md @ main. Behavioral guardrails for non-trivial code edits. Bias toward caution over speed.
+
+- Think before coding. State assumptions out loud. If multiple interpretations of the request exist, list them and ask which one is intended; do not pick silently.
+- Simplicity first. Write the minimum code that solves the stated problem. No speculative features, no abstractions for single-use code, no error handling for impossible scenarios. If a 200-line solution could be 50 lines, rewrite it.
+- Surgical changes. Touch only what the request requires. Do not refactor or reformat adjacent code. Match existing style. Remove imports/variables/functions your edits made unused; leave pre-existing dead code alone unless explicitly asked.
+- Goal-driven execution. Convert vague tasks into verifiable goals before coding (for example, "add validation" becomes "write a failing test for an invalid input, then make it pass"). For multi-step work, state the plan with a verification step per item.
+
 ## Architecture
 
 - Frontend: Next.js 16 + React 19 + shadcn/ui + Tailwind 4 on Vercel
