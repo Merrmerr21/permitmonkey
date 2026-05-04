@@ -159,10 +159,12 @@ function parseArgs(argv: string[]): CliOptions {
 }
 
 function defaultCannedMarkdown(): string {
+  // Excerpt is verbatim from server/skills/massachusetts-adu/references/chapter-150-of-2024.md
+  // so Method 1 (skill reference lookup) verifies in mock mode without network access.
   return (
-    'The ADU is by-right under MGL Ch 40A §3 as amended. ' +
-    '[source: https://malegislature.gov/Laws/SessionLaws/Acts/2024/Chapter150 | retrieved: 2026-04-22 | citation: St. 2024, c. 150, §8] ' +
-    'No owner-occupancy may be required.'
+    'The proposed ADU is by-right under Massachusetts state law. ' +
+    'This is the legal definition that every municipal bylaw must now work from. ' +
+    '[source: https://malegislature.gov/Laws/SessionLaws/Acts/2024/Chapter150 | retrieved: 2026-04-22 | citation: St. 2024, c. 150, §8]'
   );
 }
 

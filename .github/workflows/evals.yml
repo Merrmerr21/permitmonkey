@@ -46,8 +46,13 @@ jobs:
           cache: 'npm'
           cache-dependency-path: server/package-lock.json
       - run: npm ci
-      - name: run harness in mock mode
-        run: npm run eval
+      - name: run harness in mock mode (strict gate)
+        # --strict fails CI if citation_precision_p50 < 0.95 OR
+        # verdict_accuracy < 0.9. All four mock fixtures currently score
+        # precision=1.0 / verdict=true, so the gate has full headroom.
+        # Drop --strict only if a regression diagnosis is in flight; restore
+        # immediately after.
+        run: npm run eval -- --strict
       - name: upload report
         if: always()
         uses: actions/upload-artifact@v4
