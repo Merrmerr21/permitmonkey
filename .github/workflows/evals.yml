@@ -1,0 +1,57 @@
+name: evals
+
+on:
+  push:
+    paths:
+      - 'server/evals/**'
+      - 'server/src/services/citation-verification.ts'
+      - 'server/skills/**'
+      - '.github/workflows/evals.yml'
+  pull_request:
+    paths:
+      - 'server/evals/**'
+      - 'server/src/services/citation-verification.ts'
+      - 'server/skills/**'
+  workflow_dispatch:
+
+jobs:
+  extractor-tests:
+    name: citation extractor tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: server/package-lock.json
+      - run: npm ci
+      - run: npm run eval:test
+
+  harness-mock:
+    name: harness end-to-end (mock mode)
+    runs-on: ubuntu-latest
+    needs: extractor-tests
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: server/package-lock.json
+      - run: npm ci
+      - name: run harness in mock mode
+        run: npm run eval
+      - name: upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-report-${{ github.sha }}
+          path: server/evals/reports/
+          retention-days: 30

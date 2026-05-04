@@ -75,3 +75,6 @@ scripts/
 
 # Sales / private artifacts (per docs)
 SALES_PACKAGE.md
+
+# Eval harness reports (local artifacts; uploaded via CI artifact, not committed)
+server/evals/reports/
