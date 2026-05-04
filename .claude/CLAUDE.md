@@ -105,6 +105,14 @@ Retired (in `_legacy/` for regression reference):
 - `california-adu` — CA HCD Handbook + Gov Code §§66310-66342
 - `adu-city-research` (CA variant)
 
+## Changelog Discipline
+
+Maintain [`CHANGELOG.md`](../CHANGELOG.md) at the repo root. After any working session that ships user-visible, behavioural, or architectural change, add a top-level entry under `## [Unreleased]` (or open a new dated section if a release was cut). Group entries under: `Added`, `Changed`, `Fixed`, `Removed`, `Security`, `Docs`, `Infra`. Reference commit short SHAs (`abc1234`) so the entry stays linkable. One sentence per bullet, written so a non-engineer reading from cold can understand what shipped.
+
+Don't list every commit — only what a reasonable person would want to know about: new flows, new skills, new reference files, regulatory citation changes, eval-harness milestones, breaking architectural decisions, security fixes, documentation that future Claude sessions need to find.
+
+The changelog is the second source of truth (git log is the first) for reconstructing project state cold. Treat it as a hand-off artifact for future Claude sessions and for buyer due diligence.
+
 ## Lab Notes — What Not To Do
 
 *Auto-updates as mistakes are logged. Lead with the date and a one-line mistake description, then the fix.*

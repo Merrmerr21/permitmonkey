@@ -78,6 +78,12 @@ Self-annealing: diagnose → fix (try hard before escalating) → update script 
 - Prefer rewind over corrective re-prompts
 - Pre-convert HTML/PDF to markdown before loading
 
+## Changelog Discipline
+
+Maintain `CHANGELOG.md` at the repo root. After any working session that ships user-visible, behavioural, or architectural change, add a top-level entry under `## [Unreleased]`. Group under Added / Changed / Fixed / Removed / Security / Docs / Infra. Reference commit short SHAs. One sentence per bullet. Don't list every commit — only what a reasonable person would want to know.
+
+The changelog is the second source of truth (git log is the first) for reconstructing project state cold. It's a hand-off artifact for future agent sessions and for buyer due diligence.
+
 ## Diversification
 
 When this file is updated, mirror changes to `.claude/CLAUDE.md`.
