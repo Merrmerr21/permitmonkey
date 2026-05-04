@@ -1,8 +1,8 @@
 ---
 name: boston-adu
 version: "1.0"
-description: "City-level ADU regulations for Boston, Massachusetts. This skill should be used when answering ADU questions specific to Boston — local zoning code provisions (Article 26A and successor neighborhood articles post-Ch. 150 of 2024), dimensional standards, BPDA/ISD process, Boston Fire Department review, Landmarks Commission jurisdiction over historic districts (Beacon Hill, Back Bay, South End, Bay Village, Fort Point Channel, Mission Hill Triangle, St. Botolph), Specialized Opt-In Energy Code, and anything that differs from or adds to Massachusetts state ADU law (MGL Ch 40A §§1A/3 + 760 CMR 71.00). This skill layers on top of the massachusetts-adu state law skill. Load state law first, then use this skill for Boston-specific requirements."
-source: "Boston Zoning Code (Article 26A and neighborhood-specific articles), City of Boston ISD/BPDA published guidance, MGL Ch 40A §§1A/3 as amended by St. 2024, c. 150, §§7-8, 760 CMR 71.00 (EOHLC)"
+description: "City-level ADU regulations for Boston, Massachusetts. This skill should be used when answering ADU questions specific to Boston — local zoning code provisions (Boston operates under a special-act zoning framework with city-wide articles plus neighborhood-specific articles such as Article 51 Brighton, Article 56 Hyde Park; ADU-enabling amendments are being adopted neighborhood-by-neighborhood through BPDA's Neighborhood Housing Zoning initiative, starting with PLAN: Mattapan adopted February 2024), dimensional standards, BPDA/ISD process, Boston Fire Department review, Landmarks Commission jurisdiction over historic districts, Specialized Opt-In Energy Code, and anything that differs from or adds to Massachusetts state ADU law. This skill layers on top of the massachusetts-adu state law skill. Load state law first, then use this skill for Boston-specific requirements."
+source: "Boston Zoning Code (hosted on Municode at library.municode.com/ma/boston/codes/redevelopment_authority; structure: neighborhood-specific articles plus city-wide articles like 80 development review), BPDA Neighborhood Housing Zoning initiative published guidance, MGL Ch 40A §§1A/3 as amended by St. 2024, c. 150, §§7-8, 760 CMR 71.00 (EOHLC)"
 authority: "City of Boston Inspectional Services Department (ISD) + Boston Planning & Development Agency (BPDA)"
 law_as_of: "2026-05-03 (760 CMR 71.00 effective Feb 2, 2025; Boston implementing zoning amendments tracked at bostonplans.org)"
 ---
@@ -13,7 +13,7 @@ This skill contains Boston's city-level ADU rules: the local ordinance, dimensio
 
 **How this skill relates to state law**: The `massachusetts-adu` skill covers the state floor (MGL Ch 40A §§1A and 3 as amended by St. 2024, c. 150, §§7-8; 760 CMR 71.00 Protected Use ADU regulation). This skill covers what Boston adds, matches, or operates alongside. **Always load state law context first**, then layer this skill on top for Boston-specific questions.
 
-**What this covers**: Boston Zoning Code (Article 26A and successor neighborhood articles post-Ch. 150), 780 CMR (9th edition) and Specialized Opt-In Energy Code as applied to ADUs in Boston, BPDA/ISD permit process, Boston Fire Department review, Landmarks Commission jurisdiction over locally-designated historic districts, local fee schedule, and short-term rental ordinance (Sec. 9-14).
+**What this covers**: Boston Zoning Code (city-wide articles plus neighborhood-specific articles; ADU-enabling amendments rolling out per-neighborhood through BPDA's Neighborhood Housing Zoning initiative — Mattapan adopted Feb 2024; Roslindale, West Roxbury, Hyde Park drafts in progress as of 2026-05-03), 780 CMR (9th edition) and Specialized Opt-In Energy Code as applied to ADUs in Boston, BPDA/ISD permit process, Boston Fire Department review, Landmarks Commission jurisdiction over locally-designated historic districts, local fee schedule, and short-term rental ordinance (Sec. 9-14).
 
 **What this does NOT cover**: State-level ADU law (use `massachusetts-adu` skill), MBTA Communities Act under MGL Ch 40A §3A, Chapter 40B comprehensive permits, federal requirements, or project-specific engineering.
 
@@ -36,7 +36,7 @@ This skill contains Boston's city-level ADU rules: the local ordinance, dimensio
 | Building code editions, 780 CMR amendments | `building-codes.md` |
 | Stretch / Specialized Opt-In Energy Code | `energy-stretch-code.md` |
 | ISD permit submittal, plan sheets, inspections | `permit-process.md` |
-| Zoning sub-districts (R1 / R2 / R3 / etc.) | `zoning-residential.md` |
+| Zoning sub-districts and dimensional standards | `zoning-residential.md` |
 | EOHLC compliance, 760 CMR 71.00 application | `eohlc-compliance.md` |
 | Ch. 150 implementation status in Boston | `context-housing-150-2024.md` |
 
@@ -54,7 +54,7 @@ If the question involves any of these topics, also load `eohlc-compliance.md` an
 
 ### STEP 3: Need More Information?
 
-Boston's implementation of Ch. 150 is actively evolving. Verify Article 26A and successor article text for the project's specific neighborhood at the Boston Zoning Code home page before citing dimensional values. For Landmarks-jurisdiction lots, see the Landmarks Commission map for current district boundaries. The Boston Zoning Viewer (GIS) is the primary lookup for sub-district and overlay status by parcel.
+Boston's implementation of Ch. 150 is actively evolving and **proceeds neighborhood-by-neighborhood**, not citywide. Confirm the project's neighborhood, then look up the governing Article on Municode (https://library.municode.com/ma/boston/codes/redevelopment_authority) before citing dimensional values. As of 2026-05-03, only Mattapan (PLAN: Mattapan, adopted Feb 2024) has a completed ADU-enabling amendment; Roslindale, West Roxbury, and Hyde Park are in Phase 1 with drafts pending. For all other neighborhoods, ADU rules follow the existing pre-Ch. 150 article (subject to MGL Ch 40A §3 / Ch. 150 preemption analysis if state law applies — see Section 8 caveat in `eohlc-compliance.md`). For Landmarks-jurisdiction lots, see the Landmarks Commission map for current district boundaries. The Boston Zoning Viewer (GIS) at https://maps.bostonplans.org/zoningviewer/ is the primary lookup for sub-district and overlay status by parcel.
 
 ---
 
@@ -89,7 +89,7 @@ Key numbers where Boston differs from or matches state law. Boston-specific valu
 
 - **Permit authorities**: Inspectional Services Department (ISD) issues building permits; Boston Planning & Development Agency (BPDA) handles zoning, design review, and Article 80 review for larger projects; Zoning Board of Appeal (ZBA) hears variances and appeals
 - **Fire service**: Boston Fire Department (BFD), direct city service — reviews ADU plans for sprinklers, access, and water supply
-- **Zoning framework**: Article 26A (city-wide ADU provisions) plus neighborhood-specific articles (e.g., Article 51 Brighton, Article 56 Hyde Park) — ADU rules may vary by neighborhood article
+- **Zoning framework**: city-wide articles (e.g., Article 80 Development Review) plus neighborhood-specific articles (e.g., Article 51 Brighton, Article 56 Hyde Park) — ADU-enabling amendments are rolling out neighborhood-by-neighborhood through BPDA's Neighborhood Housing Zoning initiative (Mattapan adopted Feb 2024; Roslindale / West Roxbury / Hyde Park drafts in progress as of 2026-05-03)
 - **Building code**: 780 CMR (9th edition) with Boston amendments
 - **Energy code**: Specialized Opt-In Code adopted (stricter than baseline Stretch Code) — all-electric heating or renewable offset, higher envelope R-values, solar-ready provisions, HERS ratings typically 45–55
 - **MBTA proximity**: Extensive subway, commuter rail, and bus coverage means most Boston lots qualify for the 0-parking exemption under MGL Ch 40A §3 — measurement is walking distance via existing pedestrian infrastructure
@@ -119,7 +119,7 @@ The 12 reference files for this skill (filenames lock the topology; content arri
 - `ordinance-adu-standards.md` — dimensional standards: size caps, height, setbacks, separation, design
 - `permit-process.md` — ISD/BPDA submittal, plan sheets, Article 80 thresholds, inspection sequence
 - `transit-parking.md` — MBTA proximity test (deterministic GeoJSON lookup with LLM interpretation), exemption logic
-- `zoning-residential.md` — Boston residential sub-districts (R1 / R2 / R3 / etc.), Article 26A definitions, lot coverage, FAR
+- `zoning-residential.md` — Boston residential zoning framework, neighborhood-article structure, per-neighborhood ADU implementation status, dimensional-lookup workflow via Municode + Zoning Viewer
 
 **Substitution from the Placentia template**: Boston's `historic-districts.md` replaces Placentia's `utilities-grading.md` slot. Boston Landmarks Commission jurisdiction is the local differentiator that drives most non-state-preempted corrections. Boston utilities (BWSC water and sewer, no comparable grading code or WQMP/LID complex) are simpler than Placentia's GSWC and Title 8 grading regime and do not warrant a dedicated reference file.
 
