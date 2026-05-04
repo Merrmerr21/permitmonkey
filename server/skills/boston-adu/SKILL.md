@@ -13,7 +13,7 @@ This skill contains Boston's city-level ADU rules: the local ordinance, dimensio
 
 **How this skill relates to state law**: The `massachusetts-adu` skill covers the state floor (MGL Ch 40A §§1A and 3 as amended by St. 2024, c. 150, §§7-8; 760 CMR 71.00 Protected Use ADU regulation). This skill covers what Boston adds, matches, or operates alongside. **Always load state law context first**, then layer this skill on top for Boston-specific questions.
 
-**What this covers**: Boston Zoning Code (city-wide articles plus neighborhood-specific articles; ADU-enabling amendments rolling out per-neighborhood through BPDA's Neighborhood Housing Zoning initiative — Mattapan adopted Feb 2024; Roslindale, West Roxbury, Hyde Park drafts in progress as of 2026-05-03), 780 CMR (9th edition) and Specialized Opt-In Energy Code as applied to ADUs in Boston, BPDA/ISD permit process, Boston Fire Department review, Landmarks Commission jurisdiction over locally-designated historic districts, local fee schedule, and short-term rental ordinance (Sec. 9-14).
+**What this covers**: Boston Zoning Code (city-wide articles plus neighborhood-specific articles; ADU-enabling amendments rolling out per-neighborhood through BPDA's Neighborhood Housing Zoning initiative — Mattapan adopted Feb 2024; Roslindale, West Roxbury, Hyde Park drafts in progress as of 2026-05-03), 780 CMR (10th Edition, effective Oct 2023) and Specialized Opt-In Energy Code as applied to ADUs in Boston, BPDA/ISD permit process, Boston Fire Department review, Landmarks Commission jurisdiction over locally-designated historic districts, local fee schedule, and short-term rental ordinance (Sec. 9-14).
 
 **What this does NOT cover**: State-level ADU law (use `massachusetts-adu` skill), MBTA Communities Act under MGL Ch 40A §3A, Chapter 40B comprehensive permits, federal requirements, or project-specific engineering.
 
@@ -74,7 +74,7 @@ Key numbers where Boston differs from or matches state law. Boston-specific valu
 | Side setback | — | Varies by sub-district — see `zoning-residential.md` | TBD |
 | Rear setback | — | Varies by sub-district — see `zoning-residential.md` | TBD |
 | Lot coverage / FAR | — | Varies by sub-district — see `zoning-residential.md` | TBD |
-| Building code edition | — | 780 CMR (9th ed.) — see `building-codes.md` | State-set + Boston amendments |
+| Building code edition | — | 780 CMR (10th Edition, effective Oct 2023) — see `building-codes.md` | State-set; no Boston amendments verified |
 | Energy code | Stretch Energy Code (baseline) | Specialized Opt-In Code (net-zero / near-net-zero) | More stringent than state minimum |
 | Fire sprinklers | 780 CMR triggers govern | Same triggers; BFD reviews — see `fire-boston.md` | Matches state triggers |
 | Short-term rental | Cities may restrict per Ch. 150 | Licensed under Sec. 9-14; some districts prohibit | Matches state-reserved authority |
@@ -90,7 +90,7 @@ Key numbers where Boston differs from or matches state law. Boston-specific valu
 - **Permit authorities**: Inspectional Services Department (ISD) issues building permits; Boston Planning & Development Agency (BPDA) handles zoning, design review, and Article 80 review for larger projects; Zoning Board of Appeal (ZBA) hears variances and appeals
 - **Fire service**: Boston Fire Department (BFD), direct city service — reviews ADU plans for sprinklers, access, and water supply
 - **Zoning framework**: city-wide articles (e.g., Article 80 Development Review) plus neighborhood-specific articles (e.g., Article 51 Brighton, Article 56 Hyde Park) — ADU-enabling amendments are rolling out neighborhood-by-neighborhood through BPDA's Neighborhood Housing Zoning initiative (Mattapan adopted Feb 2024; Roslindale / West Roxbury / Hyde Park drafts in progress as of 2026-05-03)
-- **Building code**: 780 CMR (9th edition) with Boston amendments
+- **Building code**: 780 CMR (10th Edition, effective Oct 2023) with Boston amendments
 - **Energy code**: Specialized Opt-In Code adopted (stricter than baseline Stretch Code) — all-electric heating or renewable offset, higher envelope R-values, solar-ready provisions, HERS ratings typically 45–55
 - **MBTA proximity**: Extensive subway, commuter rail, and bus coverage means most Boston lots qualify for the 0-parking exemption under MGL Ch 40A §3 — measurement is walking distance via existing pedestrian infrastructure
 - **Water and sewer**: Boston Water and Sewer Commission (BWSC)
@@ -108,7 +108,7 @@ Key numbers where Boston differs from or matches state law. Boston-specific valu
 
 The 12 reference files for this skill (filenames lock the topology; content arrives in subsequent Phase 1 commits):
 
-- `building-codes.md` — 780 CMR (9th ed.) editions and Boston amendments applicable to ADUs
+- `building-codes.md` — 780 CMR (10th Edition) application in Boston, Specialized Opt-In Energy Code posture, common ADU correction topics
 - `context-housing-150-2024.md` — Ch. 150 §§7-8 implementation status in Boston, BPDA published guidance
 - `energy-stretch-code.md` — Specialized Opt-In Energy Code requirements applied to ADUs in Boston
 - `eohlc-compliance.md` — 760 CMR 71.00 application in Boston, EOHLC technical assistance letters
