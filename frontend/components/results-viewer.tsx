@@ -13,6 +13,7 @@ import type { VerifiedCitation } from '@/lib/citations/types'
 import { CitationPanelProvider } from '@/components/citation-panel-context'
 import { CitationPanel } from '@/components/citation-panel'
 import { MarkdownWithCitations } from '@/components/markdown-with-citations'
+import { verifyCitationsAction } from '@/app/actions/verify-citations'
 
 interface ResultsViewerProps {
   projectId: string
@@ -26,6 +27,7 @@ export function ResultsViewer({ projectId, flowType, pinnedOutputId }: ResultsVi
   const [output, setOutput] = useState<Output | null>(null)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<TabKey>('')
+  const [verifiedByTab, setVerifiedByTab] = useState<Record<string, VerifiedCitation[]>>({})
   const supabase = useMemo(() => createClient(), [])
 
   useEffect(() => {
@@ -88,14 +90,41 @@ export function ResultsViewer({ projectId, flowType, pinnedOutputId }: ResultsVi
   }
 
   const activeMarkdown = getContent(activeTab) || 'No content available for this tab.'
-  const citations: VerifiedCitation[] = extractCitations(activeMarkdown).map(c => ({
-    ...c,
-    // Phase A: extract-only — no verifyCitation() call yet. All pills render
-    // as 'unverified' so the contractor knows to click through to the source.
-    // Phase B will wire a server action / route handler that runs Method 1
-    // (skill reference) + Method 2 (canonical URL fetch) before this point.
-    verification: { status: 'unverified' as const },
-  }))
+
+  // Phase A starting state: every extracted tag renders as 'pending' until
+  // the server action returns. Phase B replaces this with verified statuses
+  // from verifyCitationsAction() — Method 1 (skill reference) + Method 2
+  // (canonical URL fetch). Falls back to 'pending' if verification is still
+  // in flight, 'unverified' if the action throws.
+  const citations: VerifiedCitation[] =
+    verifiedByTab[activeTab] ??
+    extractCitations(activeMarkdown).map((c) => ({
+      ...c,
+      verification: { status: 'pending' as const },
+    }))
+
+  useEffect(() => {
+    if (!activeTab || verifiedByTab[activeTab]) return
+    if (!activeMarkdown || activeMarkdown === 'No content available for this tab.') return
+    let cancelled = false
+    verifyCitationsAction(activeMarkdown)
+      .then((verified) => {
+        if (cancelled) return
+        setVerifiedByTab((prev) => ({ ...prev, [activeTab]: verified }))
+      })
+      .catch((err) => {
+        if (cancelled) return
+        console.warn('verifyCitationsAction failed:', err)
+        const fallback = extractCitations(activeMarkdown).map((c) => ({
+          ...c,
+          verification: { status: 'unverified' as const, error: 'verification_action_failed' },
+        }))
+        setVerifiedByTab((prev) => ({ ...prev, [activeTab]: fallback }))
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [activeTab, activeMarkdown, verifiedByTab])
 
   return (
     <CitationPanelProvider>
