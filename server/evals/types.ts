@@ -16,17 +16,32 @@ export interface Fixture {
     prompt: string;
     plans_path?: string;
     correction_letter_path?: string;
+    eligibility?: EligibilityFixtureInput;
   };
   ground_truth: {
     expected_verdict?: 'approved' | 'corrections' | 'denied';
     expected_citations: ExpectedCitation[];
     expected_response_topics?: string[];
   };
+  /** Per-fixture canned markdown for mock-mode runs. Falls back to the runner's default when absent. */
+  mock_output?: string;
   metadata: {
     created: string;
     last_verified: string;
     domain: string;
   };
+}
+
+export interface EligibilityFixtureInput {
+  address: string;
+  city: string;
+  lot_size_sqft: number;
+  primary_dwelling_sqft: number;
+  zoning_district?: string;
+  proposed_adu_type?: 'detached' | 'attached' | 'conversion' | 'undecided';
+  proposed_adu_sqft?: number;
+  within_half_mile_transit?: boolean;
+  in_historic_district?: boolean;
 }
 
 export interface ExpectedCitation {

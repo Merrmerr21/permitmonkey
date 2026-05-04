@@ -30,7 +30,7 @@ export class MockRunner implements Runner {
     await new Promise((r) => setTimeout(r, 5));
     return {
       fixture_id: fixture.id,
-      raw_markdown: this.cannedMarkdown,
+      raw_markdown: fixture.mock_output ?? this.cannedMarkdown,
       duration_ms: Date.now() - start,
       cost_usd: 0,
       turns: 1,
@@ -49,7 +49,13 @@ export class AgentRunner implements Runner {
       cost_usd: null,
       turns: 0,
       agent_errors: [
-        'AgentRunner not yet wired — invoke runCorrectionsAnalysis() in a follow-up commit once a Boston fixture exists in test-assets/ma/boston/.',
+        // Cross-package wiring (server/ → agents-permitmonkey/) needs an npm workspace
+        // setup or a build-artifact bridge. Kind-routed dispatch landed in fixtures —
+        // - eligibility-check → runMAEligibility
+        // - corrections-letter → runCorrectionsAnalysis
+        // - plan-review → runPlanReview
+        // — but actual import remains pending the workspace decision.
+        `AgentRunner not yet wired for kind=${fixture.kind}. Mock mode covers the scoring pipeline; agent mode lands when the cross-package import path is decided.`,
       ],
     };
   }
