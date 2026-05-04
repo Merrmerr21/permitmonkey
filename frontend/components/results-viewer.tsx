@@ -1,15 +1,18 @@
 'use client'
 
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
 import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { AduMiniature } from '@/components/adu-miniature'
 import { Loader2Icon, ClockIcon, CpuIcon, DollarSignIcon, ArrowLeftIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { Output, FlowType } from '@/types/database'
+import { extractCitations } from '@/lib/citations/extract'
+import type { VerifiedCitation } from '@/lib/citations/types'
+import { CitationPanelProvider } from '@/components/citation-panel-context'
+import { CitationPanel } from '@/components/citation-panel'
+import { MarkdownWithCitations } from '@/components/markdown-with-citations'
 
 interface ResultsViewerProps {
   projectId: string
@@ -84,7 +87,18 @@ export function ResultsViewer({ projectId, flowType, pinnedOutputId }: ResultsVi
     return `${minutes}m ${seconds}s`
   }
 
+  const activeMarkdown = getContent(activeTab) || 'No content available for this tab.'
+  const citations: VerifiedCitation[] = extractCitations(activeMarkdown).map(c => ({
+    ...c,
+    // Phase A: extract-only — no verifyCitation() call yet. All pills render
+    // as 'unverified' so the contractor knows to click through to the source.
+    // Phase B will wire a server action / route handler that runs Method 1
+    // (skill reference) + Method 2 (canonical URL fetch) before this point.
+    verification: { status: 'unverified' as const },
+  }))
+
   return (
+    <CitationPanelProvider>
     <div className="max-w-5xl mx-auto space-y-6">
       {/* Back arrow + Header */}
       <div className="animate-fade-up">
@@ -154,13 +168,16 @@ export function ResultsViewer({ projectId, flowType, pinnedOutputId }: ResultsVi
       {/* Content — full width */}
       <Card className="shadow-[0_8px_32px_rgba(28,25,23,0.08)] border-border/50">
         <CardContent className="p-8">
-          <div className="prose-permitmonkey">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
-              {getContent(activeTab) || 'No content available for this tab.'}
-            </ReactMarkdown>
-          </div>
+          <MarkdownWithCitations
+            citations={citations}
+            className="prose-permitmonkey"
+          >
+            {activeMarkdown}
+          </MarkdownWithCitations>
         </CardContent>
       </Card>
     </div>
+    <CitationPanel />
+    </CitationPanelProvider>
   )
 }
