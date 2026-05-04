@@ -69,3 +69,9 @@ scripts/
 *~
 .vercel
 .env*.local
+
+# Claude Code session-local state
+.claude/scheduled_tasks.lock
+
+# Sales / private artifacts (per docs)
+SALES_PACKAGE.md

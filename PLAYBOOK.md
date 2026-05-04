@@ -1,5 +1,7 @@
 # PermitMonkey Master Playbook — V1.0 (MA Edition)
 
+> **Scope:** This document is the *project-specific* doctrine — MA strategy, ICP, regulatory primer, distribution plan. For the *general* operating manual (agent topology, prompt-cache discipline, eval pipelines, skill design, distribution patterns), see [`docs/master-ai-playbook.md`](docs/master-ai-playbook.md). On-demand index at [`.claude/skills/ai-playbook-lookup/SKILL.md`](.claude/skills/ai-playbook-lookup/SKILL.md).
+
 Tailored from Castle Capital Master Claude Code Playbook V3.3 + V3.4 Addendum. Keeps the universal Claude Code operational patterns (context management, effort levels, sub-agents, skills, session handoffs, multi-agent coordination, Claude Design, distribution). Drops the Castle Capital verticals (trading, MemoAI, QuestKey, ContextOps). Pivots the regulatory domain from California to Massachusetts.
 
 **What this document is:** The operating manual for building and shipping PermitMonkey as an ADU permit assistant for Massachusetts. Read top-down the first time. After that, treat it as a reference — the TOC is the index.
