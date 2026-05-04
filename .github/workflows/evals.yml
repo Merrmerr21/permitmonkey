@@ -55,3 +55,23 @@ jobs:
           name: eval-report-${{ github.sha }}
           path: server/evals/reports/
           retention-days: 30
+
+  provenance-lint:
+    name: provenance lint (warn-only)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: server/package-lock.json
+      - run: npm ci
+      - name: run provenance lint
+        # Warn-only for now — runs without --strict so it doesn't fail CI
+        # while existing skill content is being incrementally tagged.
+        # Switch to --strict once the violation count hits zero on main.
+        run: npm run lint:provenance
