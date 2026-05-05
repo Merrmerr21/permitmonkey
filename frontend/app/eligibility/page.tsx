@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { CheckCircle2Icon, AlertTriangleIcon, XCircleIcon } from 'lucide-react';
+import { EmailCapture } from './email-capture';
 
 type Verdict = 'likely_eligible' | 'needs_review' | 'not_eligible';
 
@@ -257,6 +258,8 @@ export default function EligibilityPage() {
               </CardContent>
             </Card>
 
+            <EmailCapture city={result.city ?? null} verdict={result.verdict} />
+
             <Card className="border-primary/40 bg-primary/5">
               <CardContent className="p-6">
                 <p className="font-body text-foreground">{result.upgrade_cta}</p>
@@ -318,7 +321,7 @@ export default function EligibilityPage() {
           <p>&copy; 2026 PermitMonkey. Massachusetts ADU permit assistant.</p>
           <div className="flex items-center gap-4">
             <Link href="/" className="hover:text-foreground transition">Home</Link>
-            <Link href="/#pricing" className="hover:text-foreground transition">Pricing</Link>
+            <Link href="/pricing" className="hover:text-foreground transition">Pricing</Link>
             <a href="mailto:hello@permitmonkey.ai" className="hover:text-foreground transition">Contact</a>
           </div>
         </div>

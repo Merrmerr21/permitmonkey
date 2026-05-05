@@ -17,6 +17,10 @@ const nextConfig: NextConfig = {
     // GitHub copy and the deployed page never drift.
     "/privacy": ["../PRIVACY.md"],
     "/terms": ["../TERMS.md"],
+    // AEO articles are sourced from frontend/content/articles/*.md and read
+    // at request time by /articles and /articles/[slug].
+    "/articles": ["./content/articles/**/*.md"],
+    "/articles/[slug]": ["./content/articles/**/*.md"],
   },
   // Several <Image quality="85"> usages exist in landing-page hero artwork.
   // Next.js 16 requires every quality value to be declared up-front.

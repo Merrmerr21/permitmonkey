@@ -1,3 +1,5 @@
+import fs from 'node:fs/promises'
+import path from 'node:path'
 import type { MetadataRoute } from 'next'
 
 /**
@@ -12,34 +14,33 @@ function getBaseUrl(): string {
   return 'http://localhost:3000'
 }
 
-export default function sitemap(): MetadataRoute.Sitemap {
+async function articleSlugs(): Promise<string[]> {
+  try {
+    const dir = path.join(process.cwd(), 'content', 'articles')
+    const files = await fs.readdir(dir)
+    return files.filter((f) => f.endsWith('.md')).map((f) => f.replace(/\.md$/, ''))
+  } catch {
+    return []
+  }
+}
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = getBaseUrl()
   const now = new Date()
+  const articles = await articleSlugs()
 
   return [
-    {
-      url: `${base}/`,
+    { url: `${base}/`, lastModified: now, changeFrequency: 'weekly', priority: 1.0 },
+    { url: `${base}/eligibility`, lastModified: now, changeFrequency: 'monthly', priority: 0.9 },
+    { url: `${base}/pricing`, lastModified: now, changeFrequency: 'monthly', priority: 0.7 },
+    { url: `${base}/articles`, lastModified: now, changeFrequency: 'weekly', priority: 0.7 },
+    ...articles.map((slug) => ({
+      url: `${base}/articles/${slug}`,
       lastModified: now,
-      changeFrequency: 'weekly',
-      priority: 1.0,
-    },
-    {
-      url: `${base}/eligibility`,
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.9,
-    },
-    {
-      url: `${base}/privacy`,
-      lastModified: now,
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
-    {
-      url: `${base}/terms`,
-      lastModified: now,
-      changeFrequency: 'yearly',
-      priority: 0.3,
-    },
+      changeFrequency: 'monthly' as const,
+      priority: 0.6,
+    })),
+    { url: `${base}/privacy`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
+    { url: `${base}/terms`, lastModified: now, changeFrequency: 'yearly', priority: 0.3 },
   ]
 }
