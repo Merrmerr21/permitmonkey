@@ -14,6 +14,11 @@ const nextConfig: NextConfig = {
   outputFileTracingIncludes: {
     "/**": ["../server/skills/**/*.md"],
   },
+  // Several <Image quality="85"> usages exist in landing-page hero artwork.
+  // Next.js 16 requires every quality value to be declared up-front.
+  images: {
+    qualities: [75, 85],
+  },
 };
 
 export default nextConfig;

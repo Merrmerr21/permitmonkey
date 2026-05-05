@@ -106,7 +106,7 @@ function Hero() {
               </Button>
             </Link>
             <a href="#provenance">
-              <Button variant="outline" size="lg" className="rounded-full px-7 py-5 font-body font-bold text-base border-primary/30">
+              <Button variant="outline" size="lg" className="rounded-full px-7 py-5 font-body font-bold text-base bg-background/90 border-2 border-primary/40 hover:bg-background hover:border-primary/60 backdrop-blur-sm">
                 See how citations work
               </Button>
             </a>
@@ -158,23 +158,46 @@ function DemoVideoSection() {
   return (
     <section id="demo" className="relative max-w-5xl mx-auto px-6 lg:px-10 py-12 animate-fade-up stagger-2">
       <div className="text-center mb-6">
-        <p className="eyebrow mb-2">Watch it run</p>
+        <p className="eyebrow mb-2">Sample output</p>
         <h2 className="font-display font-bold text-3xl md:text-4xl tracking-tight text-foreground">
           Corrections analysis, end to end.
         </h2>
         <p className="text-sm md:text-base text-foreground/65 font-body mt-3 max-w-2xl mx-auto">
           A real Massachusetts ADU permit corrections letter, parsed and responded to in
-          under fifteen minutes. The same skill stack that ships with every Pro plan.
+          under fifteen minutes. Every cited claim links back to a verifiable source.
         </p>
       </div>
-      <div className="aspect-video rounded-2xl overflow-hidden card-float">
-        <iframe
-          src="https://www.youtube.com/embed/jHwBkFSvyk0"
-          title="PermitMonkey demo"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          className="w-full h-full"
-        />
+      <div className="rounded-2xl card-float bg-card border border-border overflow-hidden">
+        <div className="bg-muted/30 border-b border-border px-5 py-3 flex items-center gap-2 text-xs font-body text-foreground/60">
+          <span className="w-2.5 h-2.5 rounded-full bg-red-400/80" />
+          <span className="w-2.5 h-2.5 rounded-full bg-amber-400/80" />
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/80" />
+          <span className="ml-3 truncate">response_letter.md — Boston, Back Bay parcel</span>
+        </div>
+        <div className="p-6 md:p-8 font-body text-sm md:text-[15px] text-foreground/85 leading-relaxed space-y-4">
+          <p className="text-foreground font-medium">Re: Correction #3 — Off-Street Parking Requirement</p>
+          <p>
+            We respectfully decline this correction. The state-level parking exemption applies to this parcel.
+          </p>
+          <p>
+            No additional parking space shall be required for an accessory dwelling located not more than 0.5 miles from
+            a commuter rail station, subway station, ferry terminal or bus station.{' '}
+            <span className="landing-pill">MGL Ch 40A § 3 ↗</span>
+          </p>
+          <p>
+            When a local provision conflicts with the state statute or regulation, the local provision is unenforceable
+            to the extent of the conflict.{' '}
+            <span className="landing-pill">St. 2024, c. 150, § 8 ↗</span>
+          </p>
+          <p>
+            Treat the parking exemption as the default for Boston ADU work, not the exception.{' '}
+            <span className="landing-pill-coral">760 CMR 71.00 ↗</span>
+          </p>
+          <p className="text-foreground/60 text-xs pt-2 border-t border-border/50">
+            Walking distance from the parcel front door to the head house of MBTA Hynes Convention Center
+            station was measured at 0.41 mi via Google Maps Walking Directions on 2026-04-30.
+          </p>
+        </div>
       </div>
       <div className="flex justify-center gap-3 mt-4 text-xs font-body text-foreground/60">
         <span className="inline-flex items-center gap-1.5 bg-muted/40 rounded-full px-3 py-1">
@@ -217,10 +240,10 @@ function CityCoverageStrip() {
 
 function StatsStrip() {
   const stats = [
-    { num: '9 / 12', label: 'Boston deep-skill reference files filled, with inline provenance tags on every material claim.' },
-    { num: '100%', label: 'Of cited claims are programmatically verified against either skill references or the canonical source URL.' },
-    { num: '<15min', label: 'Typical end-to-end response generation, from upload to draft response letter.' },
-    { num: '3', label: 'Production flows: corrections interpreter, permit checklist, city pre-screening.' },
+    { num: '24 / 24', label: 'Reference files across the Massachusetts state-law and Boston city deep skills, every one carrying inline provenance tags.' },
+    { num: '100%', label: 'Of cited claims are programmatically verified against either skill references or the canonical source URL on every CI run.' },
+    { num: '<15min', label: 'Typical end-to-end response generation, from contractor upload to draft response letter ready for review.' },
+    { num: '3 flows', label: 'Corrections interpreter, permit checklist, and city pre-screening — each pinned by an audit-graded eval fixture.' },
   ]
   return (
     <section className="max-w-7xl mx-auto px-6 lg:px-10 pt-20 pb-12">
@@ -228,7 +251,7 @@ function StatsStrip() {
         {stats.map((s) => (
           <div key={s.num} className="p-8 bg-background/70 backdrop-blur-sm">
             <p className="stat-num text-4xl md:text-5xl">{s.num}</p>
-            <p className="mt-3 text-sm font-body text-foreground/70 leading-relaxed">{s.label}</p>
+            <p className="mt-3 text-sm font-body text-foreground/85 leading-relaxed">{s.label}</p>
           </div>
         ))}
       </div>

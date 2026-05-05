@@ -1,13 +1,12 @@
 /**
  * Design sandbox — Provenance UI demo.
  *
- * Renders a sample corrections-response markdown with inline citation tags,
- * substitutes them with <CitationPill> components, and demonstrates all
- * five verification states. Used for design review and component
- * regression detection. Not linked from production navigation.
+ * Renders the five citation states as five separate labeled rows so a
+ * designer can see each one independently. Each row contains a single
+ * representative claim + pill. Click a pill to open the panel.
  *
- * To integrate into the corrections-response viewer in a follow-up commit:
- *   1. Replace this page's hard-coded citations with results from
+ * To integrate into the corrections-response viewer in production:
+ *   1. Replace the hard-coded statuses below with results from
  *      verifyCitation() invoked in a server action or route handler.
  *   2. Wrap the existing <ResultsViewer> markdown rendering with
  *      <CitationPanelProvider> + <MarkdownWithCitations> + <CitationPanel>.
@@ -19,49 +18,67 @@ import { CitationPanelProvider } from '@/components/citation-panel-context'
 import { CitationPanel } from '@/components/citation-panel'
 import { MarkdownWithCitations } from '@/components/markdown-with-citations'
 
-const SAMPLE_MARKDOWN = `# Response to City Corrections — 14 Maple Street, Mattapan
+interface DemoRow {
+  status: CitationStatus
+  label: string
+  blurb: string
+  markdown: string
+  matchedReference?: string
+  error?: string
+}
 
-## Item 1 — Owner-occupancy condition
-
-The corrections letter conditions the ADU permit on owner-occupancy of the primary dwelling. **State law preempts this condition.** Per MGL Ch 40A §3 as amended by St. 2024, c. 150, §8, no municipality may require the property owner to occupy either the primary dwelling or the ADU. [source: https://malegislature.gov/Laws/SessionLaws/Acts/2024/Chapter150 | retrieved: 2026-04-22 | citation: St. 2024, c. 150, §8] We respectfully request the city remove this condition.
-
-## Item 2 — Parking exemption
-
-The proposed ADU sits within 0.5 miles walking distance of Forest Hills Station (Orange Line / commuter rail / bus). State law requires zero parking for ADUs in this proximity zone. [source: https://malegislature.gov/Laws/SessionLaws/Acts/2024/Chapter150 | retrieved: 2026-04-22 | citation: MGL Ch 40A §3] The walking-distance measurement is documented in Attachment B (Google Maps walking directions, dated 2026-05-01).
-
-## Item 3 — Article 80 review
-
-The corrections letter references Article 80 of the Boston Zoning Code as a procedural review step. Article 80 Small Project Review thresholds at 20,000 square feet and Large Project Review at 50,000 square feet. [source: https://www.bostonplans.org/projects/development-review/what-is-article-80 | retrieved: 2026-05-03 | citation: Boston Zoning Code Article 80] The proposed ADU is 712 square feet, far below either threshold, and does not trigger Article 80 review.
-
-## Item 4 — Building code edition
-
-The correction cites 780 CMR 9th Edition. The current Massachusetts State Building Code is 780 CMR 10th Edition, effective October 2023, adopting IRC 2021 with Massachusetts amendments. [source: https://www.mass.gov/state-building-code | retrieved: 2026-04-22 | citation: 780 CMR (10th Edition)] The plans were prepared under the 10th Edition; we request the corrections be updated to reference the current edition.
-
-## Item 5 — Stretch energy code (advisory)
-
-Boston has adopted the Specialized Opt-In Energy Code (225 CMR 22 Appendix RC), which requires net-zero or near-net-zero performance for new ADU construction. [source: https://www.example.gov/specialized-not-real | retrieved: 2026-05-03 | citation: 225 CMR 22 Appendix RC] The plans demonstrate compliance via heat-pump heating, HRV ventilation, and solar-ready provisions on Sheet A-301.
-`
+const DEMO_ROWS: DemoRow[] = [
+  {
+    status: 'verified-skill',
+    label: 'Verified · Skill reference',
+    blurb: 'Method 1 succeeded — the cited excerpt was found verbatim in a server-side skill reference file. Most reliable state.',
+    markdown:
+      'No additional parking space shall be required for an accessory dwelling located not more than 0.5 miles from a commuter rail station, subway station, ferry terminal or bus station. [source: https://malegislature.gov/Laws/SessionLaws/Acts/2024/Chapter150 | retrieved: 2026-04-22 | citation: MGL Ch 40A §3]',
+    matchedReference: 'massachusetts-adu/references/chapter-150-of-2024.md',
+  },
+  {
+    status: 'verified-url',
+    label: 'Verified · Canonical URL',
+    blurb: 'Method 1 missed but Method 2 fetched the canonical source URL and matched the excerpt after HTML strip.',
+    markdown:
+      'Boston regulates short-term rentals under Sec. 9-14 of the City of Boston Code. [source: https://www.boston.gov/departments/inspectional-services/short-term-rentals | retrieved: 2026-05-01 | citation: City of Boston Code §9-14]',
+  },
+  {
+    status: 'unverified',
+    label: 'Unverified',
+    blurb: 'Both methods returned "not found." The agent emitted the citation but neither verifier could locate the excerpt. The pill warns the user to check manually.',
+    markdown:
+      'Cambridge Historical Commission review applies to the proposed Old Cambridge ADU exterior modifications. [source: https://www.cambridgema.gov/historic | retrieved: 2026-05-04 | citation: Cambridge Historical Commission jurisdiction]',
+    error: 'method1: excerpt_not_in_skill_references; method2: excerpt_not_found',
+  },
+  {
+    status: 'broken',
+    label: 'Broken source',
+    blurb: 'Method 2 fetched the URL and got a 404 (or the skill path no longer exists). Hard fail — the agent should not be relying on this citation.',
+    markdown:
+      'Boston has adopted the Specialized Opt-In Energy Code (225 CMR 22 Appendix RC). [source: https://www.example.gov/specialized-not-real | retrieved: 2026-05-03 | citation: 225 CMR 22 Appendix RC]',
+    error: 'url_404',
+  },
+  {
+    status: 'pending',
+    label: 'Pending',
+    blurb: 'Verification is in flight (server action running). The pill renders muted with a soft pulse until a result arrives.',
+    markdown:
+      'Boston ADU dimensional standards are governed by per-neighborhood Articles under the special-act zoning enabling framework. [source: https://library.municode.com/ma/boston/codes/redevelopment_authority | retrieved: 2026-05-05 | citation: Boston Zoning Code per-neighborhood Articles]',
+  },
+]
 
 const NOW_DEMO = new Date().toISOString().slice(0, 10)
 
 export default function CitationsSandboxPage() {
-  const extracted = extractCitations(SAMPLE_MARKDOWN)
-
-  // Demo: assign deterministic statuses cycling through all 5 variants so a
-  // designer can see each state without running the verifier. In production
-  // each citation gets its real verification from verifyCitation().
-  const demoStatuses: CitationStatus[] = [
-    'verified-url',
-    'verified-skill',
-    'verified-url',
-    'verified-skill',
-    'broken',
-  ]
-
-  const verified: VerifiedCitation[] = extracted.map((c, i) => ({
-    ...c,
-    verification: buildDemoVerification(c.authority, demoStatuses[i] ?? 'pending'),
-  }))
+  const rows = DEMO_ROWS.map((row) => {
+    const extracted = extractCitations(row.markdown)
+    const verified: VerifiedCitation[] = extracted.map((c) => ({
+      ...c,
+      verification: buildVerification(row.status, row.matchedReference, row.error),
+    }))
+    return { ...row, verified }
+  })
 
   return (
     <CitationPanelProvider>
@@ -75,40 +92,68 @@ export default function CitationsSandboxPage() {
               Clickable inline citations
             </h1>
             <p className="font-body text-base text-muted-foreground max-w-2xl">
-              Click any pill below to open the citation panel. Five states demo: verified
-              against skill reference, verified against canonical source, unverified,
-              broken source, and pending. The verifier is not invoked on this page —
-              statuses are pre-assigned for design review. Production integration runs{' '}
+              Five citation states, one per row. Click any pill to open the side panel.
+              Statuses are pre-assigned for design review — production renders the same
+              components after running{' '}
               <code className="font-mono text-xs px-1 py-0.5 rounded bg-muted">verifyCitation()</code>{' '}
-              before render.
+              on each tag.
             </p>
             <p className="font-body text-sm text-muted-foreground mt-4">
               Last refreshed: {NOW_DEMO}
             </p>
           </div>
 
-          <article className="rounded-lg bg-card border border-border/50 shadow-[0_8px_32px_rgba(28,25,23,0.08)] p-8">
-            <MarkdownWithCitations
-              citations={verified}
-              className="font-body text-base leading-relaxed text-card-foreground prose-headings:font-display prose-headings:tracking-tight"
-            >
-              {SAMPLE_MARKDOWN}
-            </MarkdownWithCitations>
-          </article>
+          <div className="rounded-lg bg-card border border-border/50 shadow-[0_4px_16px_rgba(28,25,23,0.06)] p-5 mb-8">
+            <p className="font-body text-sm font-semibold text-foreground mb-3">Status legend</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs font-body text-muted-foreground">
+              <p><span className="inline-block w-2 h-2 rounded-full bg-primary mr-2 align-middle" /> Verified · skill reference (Method 1)</p>
+              <p><span className="inline-block w-2 h-2 rounded-full bg-primary mr-2 align-middle" /> Verified · canonical URL (Method 2)</p>
+              <p><span className="inline-block w-2 h-2 rounded-full bg-amber-500 mr-2 align-middle" /> Unverified — agent emitted; verifier missed</p>
+              <p><span className="inline-block w-2 h-2 rounded-full bg-red-500 mr-2 align-middle" /> Broken — 404 / dead skill path</p>
+              <p className="sm:col-span-2"><span className="inline-block w-2 h-2 rounded-full bg-muted-foreground/50 mr-2 align-middle" /> Pending — verification in flight</p>
+            </div>
+          </div>
 
-          <div className="mt-10 grid gap-3 text-sm font-body text-muted-foreground">
+          <div className="space-y-6">
+            {rows.map((row, i) => (
+              <article
+                key={row.status + i}
+                className="rounded-lg bg-card border border-border/50 shadow-[0_4px_16px_rgba(28,25,23,0.04)] p-6"
+              >
+                <header className="mb-3">
+                  <p className="text-[11px] uppercase tracking-widest text-muted-foreground">
+                    State {i + 1} of {rows.length}
+                  </p>
+                  <h2 className="font-display text-xl font-bold tracking-tight text-foreground mt-0.5">
+                    {row.label}
+                  </h2>
+                  <p className="font-body text-sm text-muted-foreground mt-2">
+                    {row.blurb}
+                  </p>
+                </header>
+                <div className="border-t border-border/40 pt-4">
+                  <MarkdownWithCitations
+                    citations={row.verified}
+                    className="font-body text-[15px] leading-relaxed text-card-foreground"
+                  >
+                    {row.markdown}
+                  </MarkdownWithCitations>
+                </div>
+              </article>
+            ))}
+          </div>
+
+          <div className="mt-10 text-sm font-body text-muted-foreground">
             <p>
-              <strong className="text-foreground">Status legend.</strong> Verified
-              citations render in moss green. Unverified renders amber. Broken sources
-              render autumn red. Pending verifications pulse muted.
-            </p>
-            <p>
-              <strong className="text-foreground">Wire-up status.</strong> Components
-              live at <code className="font-mono text-xs px-1 py-0.5 rounded bg-muted">frontend/components/citation-pill.tsx</code>,
-              {' '}<code className="font-mono text-xs px-1 py-0.5 rounded bg-muted">citation-panel.tsx</code>,
-              {' '}<code className="font-mono text-xs px-1 py-0.5 rounded bg-muted">markdown-with-citations.tsx</code>.
-              Phase B brings caching, async re-verification via Supabase Realtime, and
-              the compact pill variant for marketing pages.
+              <strong className="text-foreground">Wire-up.</strong> Components live at{' '}
+              <code className="font-mono text-xs px-1 py-0.5 rounded bg-muted">frontend/components/citation-pill.tsx</code>,{' '}
+              <code className="font-mono text-xs px-1 py-0.5 rounded bg-muted">citation-panel.tsx</code>,{' '}
+              <code className="font-mono text-xs px-1 py-0.5 rounded bg-muted">markdown-with-citations.tsx</code>.
+              Verification logic at{' '}
+              <code className="font-mono text-xs px-1 py-0.5 rounded bg-muted">frontend/lib/citations/verify.ts</code>{' '}
+              and{' '}
+              <code className="font-mono text-xs px-1 py-0.5 rounded bg-muted">server/src/services/citation-verification.ts</code>{' '}
+              (the same shape on both sides).
             </p>
           </div>
         </div>
@@ -118,42 +163,21 @@ export default function CitationsSandboxPage() {
   )
 }
 
-function buildDemoVerification(authority: string, status: CitationStatus) {
+function buildVerification(
+  status: CitationStatus,
+  matchedReference?: string,
+  error?: string,
+) {
   switch (status) {
     case 'verified-skill':
-      return {
-        status,
-        matched_reference: matchedReferenceFor(authority),
-      }
+      return { status, matched_reference: matchedReference ?? 'massachusetts-adu/references/dimensional-summary.md' }
     case 'verified-url':
       return { status }
     case 'unverified':
-      return {
-        status,
-        error: 'method1: excerpt_not_in_skill_references; method2: excerpt_not_found',
-      }
+      return { status, error: error ?? 'method1: excerpt_not_in_skill_references; method2: excerpt_not_found' }
     case 'broken':
-      return {
-        status,
-        error: 'url_404',
-      }
+      return { status, error: error ?? 'url_404' }
     case 'pending':
       return { status }
   }
-}
-
-function matchedReferenceFor(authority: string): string {
-  if (authority.includes('Article 80')) {
-    return 'boston-adu/references/permit-process.md'
-  }
-  if (authority.includes('780 CMR')) {
-    return 'boston-adu/references/building-codes.md'
-  }
-  if (authority.includes('40A')) {
-    return 'massachusetts-adu/references/chapter-150-of-2024.md'
-  }
-  if (authority.includes('CMR 22')) {
-    return 'boston-adu/references/building-codes.md'
-  }
-  return 'massachusetts-adu/references/dimensional-summary.md'
 }
