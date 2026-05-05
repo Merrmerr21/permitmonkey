@@ -106,7 +106,7 @@ Key numbers where Boston differs from or matches state law. Boston-specific valu
 
 ## Reference File Catalog
 
-The 12 reference files for this skill (filenames lock the topology; content arrives in subsequent Phase 1 commits):
+The 12 reference files for this skill (all 12 now landed; `ordinance-adu-standards.md` is honest about Municode-blocked verification gaps and marks neighborhood-Article values as TBD pending browser access):
 
 - `building-codes.md` — 780 CMR (10th Edition) application in Boston, Specialized Opt-In Energy Code posture, common ADU correction topics
 - `context-housing-150-2024.md` — Ch. 150 §§7-8 implementation status in Boston, BPDA published guidance
