@@ -90,16 +90,18 @@ When you update this CLAUDE.md, also update AGENTS.md (at project root) with equ
 - Treat 120K tokens as the voluntary reset trigger. Past that, use the session-handoff protocol (PLAYBOOK.md §10) and `/clear`.
 - Prefer `/rewind` (double-Esc) over "that didn't work, try X" — the re-read tax on a failed branch compounds across every subsequent turn.
 
-## Skills Registry (target state after pivot)
+## Skills Registry (post-pivot, current as of 2026-05-05)
 
 Active:
-- `massachusetts-adu` — state law + 760 CMR 71.00 + EOHLC guidance
-- `ma-city-research` — three-mode city bylaw research for MA municipalities
+- `massachusetts-adu` — state law + 760 CMR 71.00 + EOHLC guidance (12/12 refs)
+- `boston-adu` — Boston-specific zoning, transit-parking, energy posture (12/12 refs)
+- `adu-plan-review` — five sheet-type checklists + cover (6 refs)
+- `ma-city-research` — three-mode city bylaw research for MA municipalities (5 refs: Boston, Cambridge, Somerville, Newton, Brookline)
 - `ma-corrections-interpreter` — workflow skill for the corrections multi-step
+- `adu-eligibility-checker` — free-tool backing skill
 - `permitmonkey-ops` — operator skill
 - `pdf-extraction` — plan sheet reading with vision
 - `permit-response-writer` — professional response letter patterns
-- `adu-eligibility-checker` — free-tool backing skill
 
 Retired (in `_legacy/` for regression reference):
 - `california-adu` — CA HCD Handbook + Gov Code §§66310-66342

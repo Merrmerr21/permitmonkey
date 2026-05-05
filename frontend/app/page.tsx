@@ -562,8 +562,8 @@ function SiteFooter() {
         <FooterCol title="Trust" items={[
           { label: 'Provenance UI', href: '#provenance' },
           { label: 'Eval benchmark', href: '#' },
-          { label: 'Citation methodology', href: '#' },
-          { label: 'Lab notes', href: '#' },
+          { label: 'Privacy', href: '/privacy' },
+          { label: 'Terms', href: '/terms' },
         ]} />
       </div>
       <div className="border-t border-background/10">

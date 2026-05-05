@@ -55,14 +55,16 @@ Don't propose:
 
 Domain knowledge lives in `.claude/skills/` as markdown reference files. Each skill has a `SKILL.md` with frontmatter (name, description) and optional `references/` and `decision-tree/` subdirectories. The frontmatter loads ~60 tokens; body loads on demand when the agent decides it's relevant.
 
-Active skills after pivot:
-- `massachusetts-adu` — state law, regulations, EOHLC guidance
-- `ma-city-research` — three-mode research for MA municipalities
+Active skills (current as of 2026-05-05):
+- `massachusetts-adu` — state law, regulations, EOHLC guidance (12/12 refs)
+- `boston-adu` — Boston-specific zoning, transit-parking, energy posture (12/12 refs)
+- `adu-plan-review` — five sheet-type checklists + cover (6 refs)
+- `ma-city-research` — three-mode research for MA municipalities (5 refs: Boston, Cambridge, Somerville, Newton, Brookline)
 - `ma-corrections-interpreter` — workflow for the corrections multi-step
+- `adu-eligibility-checker` — free-tool backing skill
 - `permitmonkey-ops` — operator knowledge
 - `pdf-extraction` — plan sheet vision
 - `permit-response-writer` — response letter patterns
-- `adu-eligibility-checker` — free-tool backing skill
 
 Retired to `_legacy/`:
 - `california-adu`

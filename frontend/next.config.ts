@@ -13,11 +13,32 @@ const nextConfig: NextConfig = {
   outputFileTracingRoot: path.resolve(__dirname, ".."),
   outputFileTracingIncludes: {
     "/**": ["../server/skills/**/*.md"],
+    // Render /privacy and /terms from the canonical repo-root markdown so the
+    // GitHub copy and the deployed page never drift.
+    "/privacy": ["../PRIVACY.md"],
+    "/terms": ["../TERMS.md"],
   },
   // Several <Image quality="85"> usages exist in landing-page hero artwork.
   // Next.js 16 requires every quality value to be declared up-front.
   images: {
     qualities: [75, 85],
+  },
+  async headers() {
+    return [
+      {
+        source: '/:path*',
+        headers: [
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'X-Content-Type-Options', value: 'nosniff' },
+          { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+          {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
+          },
+          { key: 'X-DNS-Prefetch-Control', value: 'on' },
+        ],
+      },
+    ];
   },
 };
 

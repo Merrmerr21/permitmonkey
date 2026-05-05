@@ -140,17 +140,22 @@ Retired California skills live in `_legacy/` for regression testing and historic
 
 ### Prerequisites
 
-- Node.js 20+
+- Node.js 22+ (Dockerfile pins `node:22-slim`; mismatch breaks `tsc` ESM resolution)
 - Supabase project (for database + storage)
 - Anthropic API key (for Claude Opus)
 - Vercel account (for sandbox)
+
+Each package has a checked-in `.env.example` documenting required keys. Copy it
+to the appropriate local file (`.env.local` for frontend, `.env` for server and
+agents) and fill in real values. The `.env*` ignore rules keep your secrets out
+of git.
 
 ### Frontend
 
 ```bash
 cd frontend
 npm install
-cp .env.example .env.local  # Fill in Supabase + API keys
+cp .env.example .env.local  # Fill in Supabase + Cloud Run URL
 npm run dev
 ```
 
@@ -159,9 +164,22 @@ npm run dev
 ```bash
 cd server
 npm install
-cp .env.example .env  # Fill in API keys
+cp .env.example .env  # Fill in Anthropic + Supabase + Vercel Sandbox
 npm run dev
 ```
+
+### Agents
+
+```bash
+cd agents-permitmonkey
+npm install
+cp .env.example .env  # Just ANTHROPIC_API_KEY for local CLI runs
+npm run build
+```
+
+Local eval runs proxy through `agents-permitmonkey/dist/cli.js` via the
+subprocess bridge in [`server/evals/runner.ts`](server/evals/runner.ts), so the
+agents package needs to be built before `npm run evals` in `server/` will pass.
 
 ## Test Data Attribution
 
