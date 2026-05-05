@@ -5,7 +5,10 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "eval": "tsx evals/run.ts",
+    "eval:test": "node --experimental-strip-types --test evals/citation-extractor.test.ts src/services/citation-verification.test.ts src/services/injection-prescan.test.ts",
+    "lint:provenance": "tsx evals/provenance-lint.ts"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.0",

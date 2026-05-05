@@ -1,0 +1,35 @@
+{
+  "id": "corrections-boston-accessibility-out-of-scope",
+  "kind": "corrections-letter",
+  "description": "Boston correction-response scenario: ISD includes a 521 CMR accessibility variance request as a correction item on a conversion ADU at a single-family parcel where the project cost is well under 30% of fair cash value. Pins content from the new `accessibility-521-cmr.md` reference under the strict gate — the fourth and final new state-skill ref to be pinned. Agent's job: cite the single-family default, confirm the work-cost threshold isn't crossed, and decline the correction with a professional reference to the scope rule.",
+  "input": {
+    "prompt": "Draft a response to a Boston ISD corrections letter that asks for a 521 CMR accessibility variance application for a basement-conversion ADU at a single-family parcel (47 Marlborough St, Boston). The primary dwelling FCV is $1.2M; the conversion project budget is $180K. The conversion does not create any public-accessible path; the ADU has a private rear entrance through the existing yard."
+  },
+  "ground_truth": {
+    "expected_verdict": "corrections",
+    "expected_citations": [
+      {
+        "authority": "521 CMR (MAAB scoping for one- and two-family dwellings)",
+        "source_url": "https://www.mass.gov/regulations/521-CMR-architectural-access-board",
+        "must_appear": true
+      },
+      {
+        "authority": "521 CMR Section 3.3 — work-cost-threshold scoping",
+        "source_url": "https://www.mass.gov/doc/521-cmr-1-introduction/download",
+        "must_appear": false
+      }
+    ],
+    "expected_response_topics": [
+      "single-family default — 521 CMR generally silent",
+      "work-cost threshold (30% of FCV) not crossed",
+      "no public-accessible path created",
+      "request release of accessibility correction"
+    ]
+  },
+  "mock_output": "Re: Building Permit Application — Response to Correction #2 (Accessibility Variance)\n\nWe respectfully request that Correction #2 be released. The proposed conversion ADU does not trigger 521 CMR scoping for two independent reasons.\n\n## Reason 1 — Single-Family Scope\n\nThe parcel is a single-family residential property and the ADU is accessory to that single-family primary dwelling. No portion of the project creates a public-accessible path; the ADU has a private rear entrance through the existing yard.\n\nFor most ADUs accessory to a single-family primary, **521 CMR is silent** and the ADU does not need to be accessible. [source: https://www.mass.gov/regulations/521-CMR-architectural-access-board | retrieved: 2026-05-04 | citation: 521 CMR (MAAB scoping for one- and two-family dwellings)]\n\nWe note that rental of an ADU does not change this scoping outcome:\n\nRental of an ADU does not automatically trigger 521 CMR for residential properties with fewer than 4 units. [source: https://www.mass.gov/regulations/521-CMR-architectural-access-board | retrieved: 2026-05-04 | citation: 521 CMR rental scoping for properties with <4 units]\n\n## Reason 2 — Work-Cost Threshold Not Crossed\n\nThe primary dwelling fair cash value is $1.2M per the most recent City of Boston assessment. The proposed conversion budget is $180K, which is 15% of FCV — well below the 30% threshold that historically triggers full retroactive accessibility scoping under 521 CMR.\n\nConversion ADUs (basement, attic, garage) often raise the work-cost threshold question if the project total exceeds 30% of property fair cash value. [source: https://www.mass.gov/doc/521-cmr-1-introduction/download | retrieved: 2026-05-04 | citation: 521 CMR Section 3.3 — work-cost-threshold scoping]\n\nGet the assessor's value early. We confirm the assessment and ratio analysis are attached as Exhibit C.\n\n## Variance Path (Documented For The Record)\n\nIf the building department's reading of scope ultimately differs from ours and a variance is required, the standard procedure is documented:\n\nIf 521 CMR scoping suggests accessibility applies but the ADU layout cannot reasonably accommodate it (e.g., conversion ADU in a basement with limited headroom and structural constraints), the project applies for a MAAB variance. [source: https://www.mass.gov/orgs/architectural-access-board | retrieved: 2026-05-04 | citation: 521 CMR variance procedure via MAAB]\n\nWe are prepared to file the variance application within 5 business days of any determination that scope does apply, but we do not believe it is required on this project.\n\n## Summary\n\nPlease release Correction #2. The other corrections in the letter are accepted and addressed in the revised plan set submitted herewith.\n",
+  "metadata": {
+    "created": "2026-05-05",
+    "last_verified": "2026-05-05",
+    "domain": "boston-adu-accessibility-scoping"
+  }
+}

@@ -1,0 +1,82 @@
+name: evals
+
+on:
+  push:
+    paths:
+      - 'server/evals/**'
+      - 'server/src/services/citation-verification.ts'
+      - 'server/skills/**'
+      - '.github/workflows/evals.yml'
+  pull_request:
+    paths:
+      - 'server/evals/**'
+      - 'server/src/services/citation-verification.ts'
+      - 'server/skills/**'
+  workflow_dispatch:
+
+jobs:
+  extractor-tests:
+    name: citation extractor tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: server/package-lock.json
+      - run: npm ci
+      - run: npm run eval:test
+
+  harness-mock:
+    name: harness end-to-end (mock mode)
+    runs-on: ubuntu-latest
+    needs: extractor-tests
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: server/package-lock.json
+      - run: npm ci
+      - name: run harness in mock mode (strict gate)
+        # --strict fails CI if citation_precision_p50 < 0.95 OR
+        # verdict_accuracy < 0.9. All four mock fixtures currently score
+        # precision=1.0 / verdict=true, so the gate has full headroom.
+        # Drop --strict only if a regression diagnosis is in flight; restore
+        # immediately after.
+        run: npm run eval -- --strict
+      - name: upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-report-${{ github.sha }}
+          path: server/evals/reports/
+          retention-days: 30
+
+  provenance-lint:
+    name: provenance lint (warn-only)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: server
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: server/package-lock.json
+      - run: npm ci
+      - name: run provenance lint
+        # Warn-only for now — runs without --strict so it doesn't fail CI
+        # while existing skill content is being incrementally tagged.
+        # Switch to --strict once the violation count hits zero on main.
+        run: npm run lint:provenance

@@ -83,10 +83,19 @@ export default function EligibilityPage() {
           <span className="heading-card text-primary">PermitMonkey</span>
           <Badge variant="outline" className="text-[10px] tracking-wide">Massachusetts</Badge>
         </Link>
+        <div className="flex items-center gap-2 text-sm font-body">
+          <Link href="/" className="hidden sm:inline-block px-3 py-1.5 rounded-full text-foreground/70 hover:text-foreground hover:bg-muted/50 transition">Home</Link>
+          <Link href="/#pricing" className="hidden sm:inline-block px-3 py-1.5 rounded-full text-foreground/70 hover:text-foreground hover:bg-muted/50 transition">Pricing</Link>
+          <Link href="/login" className="px-3 py-1.5 rounded-full text-foreground/70 hover:text-foreground hover:bg-muted/50 transition">Sign in</Link>
+        </div>
       </nav>
 
       <main className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
         <div className="py-10">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-body font-semibold mb-4">
+            <CheckCircle2Icon className="h-3.5 w-3.5" />
+            Free · No email required for instant verdict
+          </span>
           <h1 className="heading-display text-4xl md:text-5xl text-foreground">
             Is your MA lot ADU-eligible?
           </h1>
@@ -108,6 +117,7 @@ export default function EligibilityPage() {
                   placeholder="123 Main St, Cambridge, MA 02138"
                   required
                 />
+                <p className="text-xs text-muted-foreground mt-1">Currently supports Massachusetts addresses. Boston, Cambridge, Somerville, Newton, and Brookline have full coverage; other MA cities use state-law-only analysis.</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -120,6 +130,7 @@ export default function EligibilityPage() {
                     onChange={(e) => setLotSize(e.target.value)}
                     required
                   />
+                  <p className="text-xs text-muted-foreground mt-1">Find on your tax assessor record or property deed.</p>
                 </div>
                 <div>
                   <Label htmlFor="primary">Primary dwelling size (sqft)</Label>
@@ -131,6 +142,7 @@ export default function EligibilityPage() {
                     onChange={(e) => setPrimarySize(e.target.value)}
                     required
                   />
+                  <p className="text-xs text-muted-foreground mt-1">Gross floor area of the existing main house.</p>
                 </div>
               </div>
               <div>
@@ -257,7 +269,60 @@ export default function EligibilityPage() {
             <p className="text-xs text-muted-foreground font-body italic">{result.disclaimer}</p>
           </div>
         )}
+
+        <section className="mt-16 border-t border-border pt-12">
+          <h2 className="heading-card text-2xl text-foreground mb-6">How this tool works</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+              <h3 className="font-body font-semibold text-foreground">1. State law floor</h3>
+              <p className="text-sm font-body text-muted-foreground mt-1">
+                Chapter 150 of the Acts of 2024 made ADUs by-right in single-family zones statewide. Maximum size: lesser of 900 sqft or 50% of your primary. Up to 1 parking space; zero within 0.5 mi of MBTA service.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-body font-semibold text-foreground">2. City overlay</h3>
+              <p className="text-sm font-body text-muted-foreground mt-1">
+                State law preempts USE — local bylaws still govern FORM (setbacks, height, lot coverage, FAR). For five covered Massachusetts cities we surface the most common gotchas; for others we analyze against the state floor and flag the gap.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-body font-semibold text-foreground">3. Verdict in &lt;10 seconds</h3>
+              <p className="text-sm font-body text-muted-foreground mt-1">
+                Three outcomes: <span className="font-semibold">likely eligible</span>, <span className="font-semibold">needs review</span>, or <span className="font-semibold">not eligible</span>. Every claim links to the controlling statute, regulation, or city bylaw. Non-binding — verify with your city building department before committing.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="mt-12">
+          <h2 className="heading-card text-2xl text-foreground mb-4">Common questions</h2>
+          <div className="space-y-4">
+            <div>
+              <h3 className="font-body font-semibold text-foreground">Does the city know my address from this check?</h3>
+              <p className="text-sm font-body text-muted-foreground mt-1">No. The eligibility check runs on our server only. We do not share your address or any other form data with municipalities, utility companies, or third parties.</p>
+            </div>
+            <div>
+              <h3 className="font-body font-semibold text-foreground">What if my city is not in your covered list?</h3>
+              <p className="text-sm font-body text-muted-foreground mt-1">You still get a verdict — based on Massachusetts state law only. The result will be marked &ldquo;state law only&rdquo; and you should verify local dimensional rules before designing.</p>
+            </div>
+            <div>
+              <h3 className="font-body font-semibold text-foreground">My city is requiring owner-occupancy or extra parking. Is that legal?</h3>
+              <p className="text-sm font-body text-muted-foreground mt-1">Generally no — Chapter 150 of 2024 preempts owner-occupancy requirements and caps parking at 1 space (zero near MBTA). If your city is asserting more, you may have a preemption claim. Our paid corrections-interpretation service drafts the response with full citations.</p>
+            </div>
+          </div>
+        </section>
       </main>
+
+      <footer className="border-t border-border mt-16">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs font-body text-muted-foreground">
+          <p>&copy; 2026 PermitMonkey. Massachusetts ADU permit assistant.</p>
+          <div className="flex items-center gap-4">
+            <Link href="/" className="hover:text-foreground transition">Home</Link>
+            <Link href="/#pricing" className="hover:text-foreground transition">Pricing</Link>
+            <a href="mailto:hello@permitmonkey.ai" className="hover:text-foreground transition">Contact</a>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }

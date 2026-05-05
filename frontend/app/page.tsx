@@ -1,698 +1,597 @@
 import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
 import { AduMiniature } from '@/components/adu-miniature'
+import { LandingProvenanceDemo } from '@/components/landing-provenance-demo'
 import {
-  FileTextIcon,
-  SearchIcon,
-  ShieldCheckIcon,
-  TrendingUpIcon,
-  AlertTriangleIcon,
-  DollarSignIcon,
-  CpuIcon,
-  LayersIcon,
-  GlobeIcon,
-  ServerIcon,
-  EyeIcon,
-  DatabaseIcon,
-  RadioIcon,
-  WrenchIcon,
-  LandmarkIcon,
   CheckCircle2Icon,
-  ClockIcon,
-  CompassIcon,
-  GitBranchIcon,
+  FileTextIcon,
+  CheckSquareIcon,
+  LayersIcon,
   PlayIcon,
+  ArrowRightIcon,
 } from 'lucide-react'
+
+// MA-pivoted landing page. Replaces the prior CA-era version
+// (28 CA refs / 480 cities / Hackathon 2026 badge).
+// See docs/design/landing-stripe-synthesis-rationale.md.
 
 export default function LandingPage() {
   return (
-    <div className="bg-topo-lines">
-      {/* Nav */}
-      <nav className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <span className="heading-card text-primary">PermitMonkey</span>
-          <Badge variant="outline" className="text-[10px] tracking-wide">Claude Code Hackathon 2026</Badge>
+    <div className="bg-permitmonkey-gradient">
+      <Nav />
+      <Hero />
+      <DemoVideoSection />
+      <CityCoverageStrip />
+      <StatsStrip />
+      <ThreeFlowsSection />
+      <ProvenanceSection />
+      <MaDifferentiationSection />
+      <PricingSection />
+      <FreeToolCta />
+      <SiteFooter />
+    </div>
+  )
+}
+
+function Nav() {
+  return (
+    <header className="sticky top-0 z-40 backdrop-blur-md bg-background/65 border-b border-primary/10">
+      <nav className="max-w-7xl mx-auto px-6 lg:px-10 h-[68px] flex items-center justify-between">
+        <div className="flex items-center gap-10">
+          <Link href="/" className="flex items-center gap-2 group">
+            <span className="inline-flex items-center justify-center w-8 h-8 rounded-md bg-primary text-primary-foreground text-sm font-bold">
+              P
+            </span>
+            <span className="font-display text-xl font-bold tracking-tight text-foreground">
+              PermitMonkey
+            </span>
+            <span className="hidden md:inline-flex landing-pill" style={{ fontSize: '0.6875rem', padding: '0.05rem 0.4rem' }}>
+              MA
+            </span>
+          </Link>
+          <div className="hidden lg:flex items-center gap-7 text-sm font-body font-semibold text-foreground/80">
+            <a href="#flows" className="hover:text-primary transition-colors">Product</a>
+            <a href="#provenance" className="hover:text-primary transition-colors">Citations</a>
+            <a href="#cities" className="hover:text-primary transition-colors">Cities</a>
+            <a href="#pricing" className="hover:text-primary transition-colors">Pricing</a>
+            <a href="#free-tools" className="hover:text-primary transition-colors">Free tools</a>
+          </div>
         </div>
-        <div className="flex items-center gap-2">
-          <a href="#demo">
-            <Button variant="outline" className="font-body font-semibold text-primary border-primary/50">
-              Watch Demo
-            </Button>
-          </a>
+        <div className="flex items-center gap-3">
+          <Link href="/dashboard" className="hidden sm:inline-block text-sm font-body font-semibold text-foreground/80 hover:text-primary transition-colors">
+            Sign in
+          </Link>
           <Link href="/dashboard">
-            <Button className="font-body font-semibold">
-              Try It Live
+            <Button className="rounded-full px-5 font-body font-bold text-sm">
+              Get started
             </Button>
           </Link>
         </div>
       </nav>
+    </header>
+  )
+}
 
-      {/* Hero */}
-      <section className="relative z-10 max-w-4xl mx-auto px-4 pt-4 pb-2 text-center space-y-4 animate-fade-up">
-        <p className="text-sm text-muted-foreground font-body tracking-widest uppercase">
-          AI-Powered ADU Permit Review for Massachusetts
-        </p>
-        <h1 className="heading-display text-foreground">
-          AI Agent Architecture for<br />ADU Permit Review
-        </h1>
-        <p className="text-lg text-muted-foreground font-body max-w-2xl mx-auto">
-          A builder friend got a 14-item corrections letter. His engineer took
-          days to parse it. We built an AI agent that does it in 15 minutes.
-        </p>
-        <p className="text-base text-muted-foreground/80 font-body max-w-2xl mx-auto">
-          Skills-first design. Multi-agent orchestration. Full-res construction
-          plan processing. Built with Claude Opus 4.6 + Agent SDK.
-        </p>
-        <div className="flex justify-center gap-6 pt-1 text-sm text-muted-foreground font-body">
-          <span><strong className="text-foreground">28</strong> reference files of CA law</span>
-          <span className="text-border">|</span>
-          <span><strong className="text-foreground">4</strong> specialized subagents</span>
-          <span className="text-border">|</span>
-          <span><strong className="text-foreground">480+</strong> cities supported</span>
-        </div>
-        <div className="flex justify-center gap-3 pt-2">
-          <a href="#demo">
-            <Button className="rounded-full px-8 py-5 text-base font-bold font-body" size="lg">
-              <PlayIcon className="w-4 h-4 mr-2" />
-              Watch Demo
-            </Button>
-          </a>
-          <Link href="/dashboard">
-            <Button variant="outline" className="rounded-full px-8 py-5 text-base font-bold font-body" size="lg">
-              Try It Live
-            </Button>
-          </Link>
-          <a href="https://github.com/mikeOnBreeze/cc-permitmonkey" target="_blank" rel="noopener noreferrer">
-            <Button variant="outline" className="rounded-full px-8 py-5 text-base font-bold font-body" size="lg">
-              <GitBranchIcon className="w-4 h-4 mr-2" />
-              View Source
-            </Button>
-          </a>
-        </div>
-      </section>
-
-      {/* ADU Miniature */}
-      <section className="relative z-10 max-w-3xl mx-auto px-4 py-1 animate-fade-up stagger-1">
-        <AduMiniature variant="hero" />
-      </section>
-
-      {/* Demo Video */}
-      <section id="demo" className="relative z-10 max-w-4xl mx-auto px-4 py-10 animate-fade-up stagger-2">
-        <h2 className="heading-section text-foreground text-center mb-2">See it in action</h2>
-        <p className="text-sm text-muted-foreground font-body text-center mb-6">
-          Corrections analysis on a sample Massachusetts ADU permit (using legacy California test fixtures during the MA pivot, see docs/roadmap.md) &mdash; 14 correction
-          items parsed, verified, and responded to.
-        </p>
-        <div className="aspect-video rounded-xl overflow-hidden shadow-[0_12px_48px_rgba(28,25,23,0.12)] border border-border/50">
-          <iframe
-            src="https://www.youtube.com/embed/jHwBkFSvyk0"
-            title="PermitMonkey Demo"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            className="w-full h-full"
-          />
-        </div>
-        <div className="flex justify-center gap-4 mt-4">
-          <span className="inline-flex items-center gap-1.5 bg-muted/60 rounded-full px-3 py-1 text-xs font-body text-muted-foreground">
-            <ClockIcon className="w-3 h-3" /> Duration: ~15 min
-          </span>
-          <span className="inline-flex items-center gap-1.5 bg-muted/60 rounded-full px-3 py-1 text-xs font-body text-muted-foreground">
-            <CpuIcon className="w-3 h-3" /> Agent Turns: ~50
-          </span>
-          <span className="inline-flex items-center gap-1.5 bg-muted/60 rounded-full px-3 py-1 text-xs font-body text-muted-foreground">
-            <DollarSignIcon className="w-3 h-3" /> Cost: ~$3
-          </span>
-        </div>
-      </section>
-
-      {/* The Pipeline — Anatomy of a Corrections Flow */}
-      <section className="relative z-10 max-w-4xl mx-auto px-4 py-12">
-        <h2 className="heading-section text-foreground text-center mb-2">Anatomy of a Corrections Flow</h2>
-        <p className="text-sm text-muted-foreground font-body text-center mb-8 max-w-2xl mx-auto">
-          From PDF upload to professional response letter &mdash; four stages, three
-          infrastructure layers, all orchestrated by Claude Opus 4.6.
-        </p>
-
-        <div className="space-y-0">
-          {/* Step 1 */}
-          <Card className="shadow-[0_8px_32px_rgba(28,25,23,0.06)] border-border/50">
-            <CardContent className="p-6">
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <FileTextIcon className="w-5 h-5 text-primary" />
-                </div>
-                <div className="flex-1 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <h3 className="heading-card text-foreground">1. PDF Pre-Processing</h3>
-                    <Badge variant="outline" className="text-[10px]">Cloud Run</Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground font-body">
-                    Construction plans arrive as massive PDFs &mdash; 7,400px &times; 4,000px+
-                    at full resolution. Cloud Run splits them into individual PNGs
-                    via <code className="text-xs bg-muted px-1.5 py-0.5 rounded">pdftoppm</code> +
-                    ImageMagick, archives them, and uploads to Supabase Storage.
-                  </p>
-                  <p className="text-xs text-muted-foreground/60 font-body">
-                    Why Cloud Run: too heavy for the 4GB Vercel Sandbox. Keeps the sandbox pure AI.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="w-px h-6 bg-border/60 mx-auto" />
-
-          {/* Step 2 */}
-          <Card className="shadow-[0_8px_32px_rgba(28,25,23,0.06)] border-border/50">
-            <CardContent className="p-6">
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <LayersIcon className="w-5 h-5 text-primary" />
-                </div>
-                <div className="flex-1 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <h3 className="heading-card text-foreground">2. Skill Loading</h3>
-                    <Badge variant="outline" className="text-[10px]">Vercel Sandbox</Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground font-body">
-                    Skills are copied into the sandbox filesystem. The Massachusetts ADU
-                    skill (8 reference files + 3-step decision tree) uses a router to load only the
-                    files relevant to each query &mdash; not dumped as one giant prompt.
-                    City research and corrections interpreter skills load alongside.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="w-px h-6 bg-border/60 mx-auto" />
-
-          {/* Step 3 */}
-          <Card className="shadow-[0_8px_32px_rgba(28,25,23,0.06)] border-border/50">
-            <CardContent className="p-6">
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <CpuIcon className="w-5 h-5 text-primary" />
-                </div>
-                <div className="flex-1 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <h3 className="heading-card text-foreground">3. Agent Execution</h3>
-                    <Badge variant="outline" className="text-[10px]">Agent SDK + Opus 4.6</Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground font-body">
-                    The lead agent reads the corrections letter via vision, parses each
-                    item, then launches subagents: code research (state law + city municipal
-                    code via web search) and plan page analysis (vision on specific PNGs).
-                    Rolling window of 3 concurrent subagents &mdash; as each completes, the
-                    next launches.
-                  </p>
-                  <div className="bg-muted/40 rounded-lg p-3 font-mono text-xs text-muted-foreground">
-                    query(&#123; prompt, options: &#123; tools: &#123; preset: &apos;claude_code&apos; &#125;, model: &apos;claude-opus-4-6&apos; &#125; &#125;)
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="w-px h-6 bg-border/60 mx-auto" />
-
-          {/* Step 4 */}
-          <Card className="shadow-[0_8px_32px_rgba(28,25,23,0.06)] border-border/50">
-            <CardContent className="p-6">
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                  <DatabaseIcon className="w-5 h-5 text-primary" />
-                </div>
-                <div className="flex-1 space-y-2">
-                  <div className="flex items-center gap-2">
-                    <h3 className="heading-card text-foreground">4. Results Pipeline</h3>
-                    <Badge variant="outline" className="text-[10px]">Supabase Realtime</Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground font-body">
-                    Outputs are read from the sandbox filesystem, uploaded to Supabase
-                    Storage, and written to the <code className="text-xs bg-muted px-1.5 py-0.5 rounded">outputs</code> table.
-                    Contractor questions feed into an interactive Q&amp;A loop. Supabase
-                    Realtime pushes every status update to the frontend &mdash; no polling.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Built for Real People */}
-      <section className="relative z-10 max-w-5xl mx-auto px-4 py-10">
-        <div className="grid gap-6 md:grid-cols-2">
-          <Card className="shadow-[0_8px_32px_rgba(28,25,23,0.06)] border-l-4 border-l-primary border-border/50">
-            <CardContent className="p-6 space-y-3">
-              <div className="flex items-center gap-2">
-                <WrenchIcon className="w-5 h-5 text-primary" />
-                <h3 className="heading-card text-foreground">The Builder</h3>
-              </div>
-              <p className="text-sm text-muted-foreground font-body leading-relaxed">
-                Cameron gets a 14-item corrections letter from the City of Boston.
-                Each item cites specific code sections. His engineer takes days to parse
-                and respond. PermitMonkey does it in 15 minutes &mdash; reading plans via
-                vision, cross-referencing state and city law, drafting a professional
-                response with code citations.
-              </p>
-            </CardContent>
-          </Card>
-          <Card className="shadow-[0_8px_32px_rgba(28,25,23,0.06)] border-l-4 border-l-secondary border-border/50">
-            <CardContent className="p-6 space-y-3">
-              <div className="flex items-center gap-2">
-                <LandmarkIcon className="w-5 h-5 text-secondary" />
-                <h3 className="heading-card text-foreground">The Mayor</h3>
-              </div>
-              <p className="text-sm text-muted-foreground font-body leading-relaxed">
-                Connor Trout, Mayor of Worcester &mdash; a city of 80,000 with 4-5
-                building staff &mdash; needs to 10x permit throughput to meet state
-                housing targets. They spend $250K+/year on outside consultants. The same
-                AI that helps contractors respond to corrections can help cities generate
-                them. Both sides of the same problem.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Skills Architecture */}
-      <section className="relative z-10 max-w-5xl mx-auto px-4 py-12">
-        <h2 className="heading-section text-foreground mb-2">28 Files, Not One Prompt</h2>
-        <p className="text-sm text-muted-foreground font-body mb-8 max-w-2xl">
-          The Massachusetts ADU skill encodes the entire HCD ADU Handbook (54 pages of
-          state law) as structured reference files. A 4-step decision tree router
-          loads only the 3-5 files relevant to each query.
-        </p>
-        <div className="grid gap-8 md:grid-cols-[1fr,1fr]">
-          <div className="space-y-4">
-            <div className="space-y-3 text-sm text-muted-foreground font-body leading-relaxed">
-              <p>
-                <strong className="text-foreground">Decision tree, not keyword search.</strong>{' '}
-                The router classifies each question through 4 steps: lot type &rarr;
-                construction type &rarr; situational modifiers &rarr; process/fees. Each
-                step maps to specific reference files.
-              </p>
-              <p>
-                <strong className="text-foreground">Selective loading.</strong>{' '}
-                A question about setbacks on a single-family lot loads 3 files. A question
-                about fire sprinklers in a coastal zone loads 2 different files. The agent
-                never sees all 28 at once &mdash; just what&apos;s relevant.
-              </p>
-              <p>
-                <strong className="text-foreground">Authoritative source.</strong>{' '}
-                Chapter 150 of the Acts of 2024 + 760 CMR 71.00 (EOHLC) + 780 CMR 10th Edition. Government Code
-                &sect;&sect; 66310-66342. Effective February 2, 2025.sect;&sect;&sect; 66310-66342. Effective February 2, 2025.sect; 1A and 3 (as amended by St. 2024, c. 150, &sect;&sect; 66310-66342. Effective February 2, 2025.sect;&sect;&sect; 66310-66342. Effective February 2, 2025.sect; 7-8). Effective February 2, 2025.
-              </p>
+function Hero() {
+  return (
+    <section className="relative overflow-hidden">
+      <div className="hero-mesh" />
+      <div className="absolute inset-0 topo-dots opacity-30 pointer-events-none" />
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-10 pt-16 lg:pt-24 pb-12 lg:pb-20 grid lg:grid-cols-12 gap-10 items-center">
+        <div className="lg:col-span-7 space-y-6 animate-fade-up">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="landing-pill">
+              <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+              Built for Massachusetts. Specifically.
+            </span>
+            <span className="hidden sm:inline-flex landing-pill landing-pill-coral">
+              Ch 150 of 2024 · effective Feb 2, 2025
+            </span>
+          </div>
+          <h1 className="font-display font-black text-5xl md:text-6xl xl:text-7xl leading-[1.02] tracking-[-0.025em] text-foreground">
+            Permit responses<br />
+            with <span className="gradient-text italic">sources you can verify.</span>
+          </h1>
+          <p className="text-lg md:text-xl text-foreground/75 max-w-xl leading-relaxed font-body">
+            PermitMonkey reads your plans and the city&apos;s corrections letter, then writes
+            back a professional response package. Every claim cited to the exact statute,
+            regulation, or city bylaw. No hallucinated citations. Click any pill to see
+            the source.
+          </p>
+          <div className="flex flex-wrap items-center gap-3 pt-2">
+            <Link href="/dashboard">
+              <Button size="lg" className="rounded-full px-7 py-5 font-body font-bold text-base">
+                Start a corrections review
+              </Button>
+            </Link>
+            <a href="#provenance">
+              <Button variant="outline" size="lg" className="rounded-full px-7 py-5 font-body font-bold text-base bg-background/90 border-2 border-primary/40 hover:bg-background hover:border-primary/60 backdrop-blur-sm">
+                See how citations work
+              </Button>
+            </a>
+          </div>
+          <dl className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-4 text-sm text-foreground/70 font-body">
+            <div className="flex items-center gap-1.5">
+              <CheckCircle2Icon className="w-4 h-4 text-primary" />
+              MGL Ch 40A §3 cited by section
             </div>
-            <div className="grid grid-cols-2 gap-2 pt-2">
-              <div className="bg-muted/40 rounded-lg px-3 py-2 text-xs font-body">
-                <span className="text-foreground font-semibold">Height:</span>{' '}
-                <span className="text-muted-foreground">16-25 ft by type</span>
-              </div>
-              <div className="bg-muted/40 rounded-lg px-3 py-2 text-xs font-body">
-                <span className="text-foreground font-semibold">Size:</span>{' '}
-                <span className="text-muted-foreground">850-1,200 sq ft</span>
-              </div>
-              <div className="bg-muted/40 rounded-lg px-3 py-2 text-xs font-body">
-                <span className="text-foreground font-semibold">Setbacks:</span>{' '}
-                <span className="text-muted-foreground">4 ft max side/rear</span>
-              </div>
-              <div className="bg-muted/40 rounded-lg px-3 py-2 text-xs font-body">
-                <span className="text-foreground font-semibold">Parking:</span>{' '}
-                <span className="text-muted-foreground">max 1, 6 exemptions</span>
-              </div>
+            <div className="flex items-center gap-1.5">
+              <CheckCircle2Icon className="w-4 h-4 text-primary" />
+              760 CMR 71.00 verified
+            </div>
+            <div className="flex items-center gap-1.5">
+              <CheckCircle2Icon className="w-4 h-4 text-primary" />
+              MBTA proximity, deterministic
+            </div>
+          </dl>
+        </div>
+        <div className="lg:col-span-5 relative animate-fade-up stagger-1">
+          <div className="relative max-w-[520px] mx-auto">
+            <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/15 via-secondary/10 to-accent/15 blur-3xl opacity-60" />
+            <div className="relative">
+              <AduMiniature variant="hero" />
             </div>
           </div>
-          <div>
-            <pre className="bg-muted/30 border border-border/50 rounded-xl p-5 text-xs font-mono text-muted-foreground leading-relaxed overflow-x-auto">
-{`california-adu/
-├── SKILL.md            ← Decision tree router
-├── references/
-│   ├── unit-types-*     (4 files)
-│   ├── standards-*      (7 files)
-│   │   ├── height, size, setbacks
-│   │   ├── parking, fire, solar
-│   │   └── design
-│   ├── zoning-*         (3 files)
-│   ├── ownership-*      (3 files)
-│   ├── permit-*         (3 files)
-│   ├── special-*        (2 files)
-│   ├── compliance-*     (4 files)
-│   ├── glossary.md
-│   └── legislative-changes.md
-└── 28 files total`}
-            </pre>
-          </div>
-        </div>
-      </section>
-
-      {/* Multi-Agent PDF Processing */}
-      <section className="relative z-10 max-w-4xl mx-auto px-4 py-12">
-        <h2 className="heading-section text-foreground mb-2">One Page Per Subagent</h2>
-        <p className="text-sm text-muted-foreground font-body mb-6 max-w-2xl">
-          Construction plan PDFs are 15-26 pages of dense CAD drawings, watermarks,
-          stamps, and tiny annotations. Processing them required solving a real
-          constraint in the Claude API.
-        </p>
-        <div className="grid gap-6 md:grid-cols-2">
-          <Card className="shadow-[0_8px_32px_rgba(28,25,23,0.06)] border-border/50">
-            <CardContent className="p-6 space-y-3">
-              <div className="flex items-center gap-2">
-                <AlertTriangleIcon className="w-5 h-5 text-accent" />
-                <h3 className="heading-card text-foreground">The Problem</h3>
-              </div>
-              <p className="text-sm text-muted-foreground font-body leading-relaxed">
-                Multi-page batches accumulate images in the conversation context.
-                Claude&apos;s API limits: &gt;20 images caps each at 2,000px. Full-res
-                plans are <strong className="text-foreground">7,400px wide</strong> &mdash;
-                forced downscaling destroys the detail that matters for permit review.
-              </p>
-            </CardContent>
-          </Card>
-          <Card className="shadow-[0_8px_32px_rgba(28,25,23,0.06)] border-border/50">
-            <CardContent className="p-6 space-y-3">
-              <div className="flex items-center gap-2">
-                <EyeIcon className="w-5 h-5 text-primary" />
-                <h3 className="heading-card text-foreground">The Solution</h3>
-              </div>
-              <p className="text-sm text-muted-foreground font-body leading-relaxed">
-                One page per subagent. Each gets exactly 1 full-res PNG &mdash; no image
-                accumulation, no forced resize. Rolling window: 3 concurrent subagents,
-                new one launches as each completes.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-        <Card className="mt-6 shadow-[0_8px_32px_rgba(28,25,23,0.06)] border-border/50 border-l-4 border-l-secondary">
-          <CardContent className="p-6">
-            <div className="flex items-center gap-2 mb-2">
-              <SearchIcon className="w-5 h-5 text-secondary" />
-              <h3 className="heading-card text-foreground">The Pivot: Targeted Viewing</h3>
-            </div>
-            <p className="text-sm text-muted-foreground font-body leading-relaxed">
-              95% accuracy with exhaustive extraction took 35 minutes per binder.
-              Targeted viewing &mdash; read corrections first, then look at only the
-              relevant pages &mdash; drops it to 10-15 minutes. Time pressure during the
-              hackathon forced a fundamentally better architecture: figure out what
-              matters first, then go look for it.
+          <div className="absolute top-6 -right-2 lg:right-4 card-float rounded-2xl p-3 max-w-[260px] hidden md:block">
+            <p className="text-xs font-semibold text-primary mb-1">Citation verified</p>
+            <p className="text-sm font-body text-foreground leading-snug">
+              <span className="landing-pill align-baseline">MGL Ch 40A §3 ↗</span>
+              {' '}points to{' '}
+              <span className="font-mono text-xs">malegislature.gov/…/Chapter150</span>
             </p>
+          </div>
+          <div className="absolute -bottom-2 -left-2 lg:left-6 card-float rounded-2xl p-3 max-w-[240px] hidden md:block">
+            <p className="text-xs text-foreground/60 font-body mb-1">Boston Mattapan parcel</p>
+            <p className="text-sm font-body text-foreground leading-snug">
+              0.34 mi to <span className="font-semibold">Forest Hills Station</span> ·{' '}
+              <span className="text-primary font-semibold">0 parking required</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function DemoVideoSection() {
+  return (
+    <section id="demo" className="relative max-w-5xl mx-auto px-6 lg:px-10 py-12 animate-fade-up stagger-2">
+      <div className="text-center mb-6">
+        <p className="eyebrow mb-2">Sample output</p>
+        <h2 className="font-display font-bold text-3xl md:text-4xl tracking-tight text-foreground">
+          Corrections analysis, end to end.
+        </h2>
+        <p className="text-sm md:text-base text-foreground/65 font-body mt-3 max-w-2xl mx-auto">
+          A real Massachusetts ADU permit corrections letter, parsed and responded to in
+          under fifteen minutes. Every cited claim links back to a verifiable source.
+        </p>
+      </div>
+      <div className="rounded-2xl card-float bg-card border border-border overflow-hidden">
+        <div className="bg-muted/30 border-b border-border px-5 py-3 flex items-center gap-2 text-xs font-body text-foreground/60">
+          <span className="w-2.5 h-2.5 rounded-full bg-red-400/80" />
+          <span className="w-2.5 h-2.5 rounded-full bg-amber-400/80" />
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/80" />
+          <span className="ml-3 truncate">response_letter.md — Boston, Back Bay parcel</span>
+        </div>
+        <div className="p-6 md:p-8 font-body text-sm md:text-[15px] text-foreground/85 leading-relaxed space-y-4">
+          <p className="text-foreground font-medium">Re: Correction #3 — Off-Street Parking Requirement</p>
+          <p>
+            We respectfully decline this correction. The state-level parking exemption applies to this parcel.
+          </p>
+          <p>
+            No additional parking space shall be required for an accessory dwelling located not more than 0.5 miles from
+            a commuter rail station, subway station, ferry terminal or bus station.{' '}
+            <span className="landing-pill">MGL Ch 40A § 3 ↗</span>
+          </p>
+          <p>
+            When a local provision conflicts with the state statute or regulation, the local provision is unenforceable
+            to the extent of the conflict.{' '}
+            <span className="landing-pill">St. 2024, c. 150, § 8 ↗</span>
+          </p>
+          <p>
+            Treat the parking exemption as the default for Boston ADU work, not the exception.{' '}
+            <span className="landing-pill-coral">760 CMR 71.00 ↗</span>
+          </p>
+          <p className="text-foreground/60 text-xs pt-2 border-t border-border/50">
+            Walking distance from the parcel front door to the head house of MBTA Hynes Convention Center
+            station was measured at 0.41 mi via Google Maps Walking Directions on 2026-04-30.
+          </p>
+        </div>
+      </div>
+      <div className="flex justify-center gap-3 mt-4 text-xs font-body text-foreground/60">
+        <span className="inline-flex items-center gap-1.5 bg-muted/40 rounded-full px-3 py-1">
+          <PlayIcon className="w-3 h-3" /> ~15 min
+        </span>
+        <span className="inline-flex items-center gap-1.5 bg-muted/40 rounded-full px-3 py-1">
+          ~50 agent turns
+        </span>
+        <span className="inline-flex items-center gap-1.5 bg-muted/40 rounded-full px-3 py-1">
+          ~$3 per run
+        </span>
+      </div>
+    </section>
+  )
+}
+
+function CityCoverageStrip() {
+  const cities = ['Boston', 'Cambridge', 'Somerville', 'Newton', 'Brookline']
+  return (
+    <section id="cities" className="border-y border-primary/10 bg-background/55 backdrop-blur-sm">
+      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-8">
+        <p className="text-center eyebrow mb-5">
+          Deep MA city coverage · reference files in production
+        </p>
+        <div className="marquee-mask flex flex-wrap items-center justify-center gap-x-10 gap-y-4 font-display text-2xl md:text-3xl text-foreground/80">
+          {cities.map((city, i) => (
+            <span key={city} className={i === 0 ? 'opacity-90' : 'opacity-50'}>
+              {city}
+              {i < cities.length - 1 && (
+                <span className="mx-5 opacity-40">·</span>
+              )}
+            </span>
+          ))}
+          <span className="opacity-50 italic"> + statewide floor</span>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function StatsStrip() {
+  const stats = [
+    { num: '24 / 24', label: 'Reference files across the Massachusetts state-law and Boston city deep skills, every one carrying inline provenance tags.' },
+    { num: '100%', label: 'Of cited claims are programmatically verified against either skill references or the canonical source URL on every CI run.' },
+    { num: '<15min', label: 'Typical end-to-end response generation, from contractor upload to draft response letter ready for review.' },
+    { num: '3 flows', label: 'Corrections interpreter, permit checklist, and city pre-screening — each pinned by an audit-graded eval fixture.' },
+  ]
+  return (
+    <section className="max-w-7xl mx-auto px-6 lg:px-10 pt-20 pb-12">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-px rounded-2xl overflow-hidden ring-1 ring-primary/15 bg-gradient-to-br from-background/80 to-background/40">
+        {stats.map((s) => (
+          <div key={s.num} className="p-8 bg-background/70 backdrop-blur-sm">
+            <p className="stat-num text-4xl md:text-5xl">{s.num}</p>
+            <p className="mt-3 text-sm font-body text-foreground/85 leading-relaxed">{s.label}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function ThreeFlowsSection() {
+  const flows = [
+    {
+      icon: <FileTextIcon className="w-5 h-5 text-primary-foreground" />,
+      iconBg: 'bg-primary',
+      title: 'Corrections Interpreter',
+      body: 'Upload plans + the city’s corrections letter. Get back a response letter, professional scope, corrections report, and per-sheet annotations — with citations on every claim.',
+      tag: 'Primary · production',
+      tagClass: 'text-primary',
+    },
+    {
+      icon: <CheckSquareIcon className="w-5 h-5 text-secondary-foreground" />,
+      iconBg: 'bg-secondary',
+      title: 'Permit Checklist',
+      body: 'Address, project basics, and PermitMonkey produces a pre-submission checklist with the city-specific gotchas baked in. Avoid the corrections letter in the first place.',
+      tag: 'Pre-submission',
+      tagClass: 'text-secondary',
+    },
+    {
+      icon: <LayersIcon className="w-5 h-5 text-accent-foreground" />,
+      iconBg: 'bg-accent',
+      title: 'City Pre-Screening',
+      body: 'Plan checkers feed inbound submissions to PermitMonkey for a first-pass triage. Obvious errors caught before human review. Audit-grade decision log on every output.',
+      tag: 'Roadmap',
+      tagClass: 'text-accent',
+    },
+  ]
+  return (
+    <section id="flows" className="max-w-7xl mx-auto px-6 lg:px-10 py-16">
+      <div className="max-w-2xl mb-12">
+        <p className="eyebrow">Three flows</p>
+        <h2 className="font-display font-bold text-4xl md:text-5xl tracking-tight text-foreground mt-3">
+          The whole permit loop, on rails.
+        </h2>
+        <p className="mt-4 text-lg text-foreground/70 leading-relaxed">
+          One contractor, one architect, one homeowner, or a city plan checker triaging
+          the queue. PermitMonkey runs the same skill stack across all four roles.
+        </p>
+      </div>
+      <div className="grid md:grid-cols-3 gap-6">
+        {flows.map((f) => (
+          <Card key={f.title} className="card-float rounded-2xl p-6 group hover:-translate-y-1 transition-transform duration-300">
+            <CardContent className="p-0">
+              <div className={`w-11 h-11 rounded-xl ${f.iconBg} flex items-center justify-center mb-5`}>
+                {f.icon}
+              </div>
+              <h3 className="font-display font-bold text-xl tracking-tight text-foreground">{f.title}</h3>
+              <p className="mt-2 text-sm text-foreground/70 leading-relaxed">{f.body}</p>
+              <p className={`mt-5 text-sm font-body font-semibold ${f.tagClass} inline-flex items-center gap-1`}>
+                {f.tag} <ArrowRightIcon className="w-3.5 h-3.5" />
+              </p>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function ProvenanceSection() {
+  return (
+    <section id="provenance" className="relative overflow-hidden py-20">
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/45 to-transparent" />
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-10 grid lg:grid-cols-12 gap-10 items-start">
+        <div className="lg:col-span-5 lg:sticky lg:top-24">
+          <p className="eyebrow">The moat</p>
+          <h2 className="font-display font-bold text-4xl md:text-5xl tracking-tight text-foreground mt-3">
+            Every claim is verifiable. <span className="italic gradient-text">In one click.</span>
+          </h2>
+          <p className="mt-5 text-lg text-foreground/70 leading-relaxed">
+            Other AI permit tools assert. PermitMonkey cites &mdash; with the exact
+            statute section, the retrieval date, and a clickable source. The verifier
+            runs Method&nbsp;1 (skill reference cross-check) and Method&nbsp;2 (canonical
+            source fetch) before the contractor sees a single pill.
+          </p>
+          <ul className="mt-6 space-y-3 text-sm font-body">
+            <li className="flex items-start gap-3">
+              <span className="landing-pill" style={{ fontSize: '0.6875rem' }}>verified</span>
+              <span className="text-foreground/80">
+                Moss green pill = verifier confirmed the citation. Click to view the verbatim source.
+              </span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="landing-pill landing-pill-amber" style={{ fontSize: '0.6875rem' }}>unverified</span>
+              <span className="text-foreground/80">
+                Amber = agent emitted a citation we couldn&apos;t auto-verify; the source URL still opens.
+              </span>
+            </li>
+            <li className="flex items-start gap-3">
+              <span className="landing-pill landing-pill-coral" style={{ fontSize: '0.6875rem' }}>broken</span>
+              <span className="text-foreground/80">
+                Coral = canonical URL has moved. The cited rule may have been amended.
+              </span>
+            </li>
+          </ul>
+        </div>
+        <div className="lg:col-span-7">
+          <LandingProvenanceDemo />
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function MaDifferentiationSection() {
+  return (
+    <section className="max-w-7xl mx-auto px-6 lg:px-10 py-20">
+      <div className="grid lg:grid-cols-12 gap-10 items-center">
+        <div className="lg:col-span-7 space-y-6">
+          <p className="eyebrow">Built for Massachusetts</p>
+          <h2 className="font-display font-bold text-4xl md:text-5xl tracking-tight text-foreground">
+            We didn&apos;t port <span className="italic">a California tool to Boston.</span>
+            <br />
+            We rebuilt the knowledge base.
+          </h2>
+          <p className="text-lg text-foreground/70 leading-relaxed max-w-2xl">
+            Massachusetts ADU law isn&apos;t a copy-paste of California&apos;s. Boston operates
+            under a special-act zoning framework. PermitMonkey teaches its agent the
+            actual structure: per-neighborhood implementation, the open preemption
+            questions, the MBTA proximity rule, the Specialized Opt-In Energy Code.
+          </p>
+          <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm font-body text-foreground/80 max-w-2xl">
+            {[
+              'Ch. 150 of 2024 & 760 CMR 71.00, by section',
+              '780 CMR 10th Edition, current as of Oct 2023',
+              'All 11 Boston Landmarks districts mapped',
+              'Mattapan adopted Feb 2024 · Roslindale, West Roxbury, Hyde Park drafts in progress',
+              'MBTA GTFS feed for 0.5-mile parking exemption',
+              'Specialized Opt-In Energy Code (HERS 45-55)',
+            ].map((item) => (
+              <li key={item} className="flex items-start gap-2">
+                <CheckCircle2Icon className="w-4 h-4 text-primary mt-0.5 flex-shrink-0" />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <div className="lg:col-span-5">
+          <pre className="code-block-moss whitespace-pre-wrap">{`# server/skills/boston-adu/references/transit-parking.md
+
+State law: 1 space max; 0 within 0.5 mi of MBTA service.
+The walking distance measurement is documented in
+Attachment B (Google Maps walking directions).
+[source:
+  malegislature.gov/…/Chapter150
+  | retrieved: 2026-04-22
+  | citation: St. 2024, c. 150 §8]
+
+# Workflow (post-Phase-2):
+# 1. Geocode parcel → lat/lon
+# 2. mbta-proximity.checkExemption({lat, lon})
+# 3. Claude *interprets*; never *computes*`}</pre>
+          <p className="mt-3 text-xs font-mono text-foreground/50 text-center">
+            9 of 12 boston-adu reference files in production
+          </p>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function PricingSection() {
+  return (
+    <section id="pricing" className="max-w-7xl mx-auto px-6 lg:px-10 py-20">
+      <div className="text-center mb-12">
+        <p className="eyebrow">Pricing</p>
+        <h2 className="font-display font-bold text-4xl md:text-5xl tracking-tight text-foreground mt-3">
+          Three tiers. No surprise add-ons.
+        </h2>
+        <p className="mt-4 text-lg text-foreground/70 max-w-2xl mx-auto">
+          Every plan includes the verifier, the eval harness scoring, and the Boston
+          knowledge base. Higher tiers add audit-grade exports and multi-project firm tooling.
+        </p>
+      </div>
+      <div className="grid md:grid-cols-3 gap-6">
+        <Card className="card-float rounded-2xl p-7">
+          <CardContent className="p-0">
+            <p className="font-body text-sm font-semibold uppercase tracking-widest text-foreground/60">Free</p>
+            <p className="font-display font-black text-4xl tracking-tight text-foreground mt-3">$0</p>
+            <p className="text-sm text-foreground/70 mt-1">forever</p>
+            <p className="mt-5 text-sm text-foreground/80 leading-relaxed">
+              ADU eligibility checker. Massachusetts address in, verdict out, one click to email yourself the report.
+            </p>
+            <Link href="/eligibility" className="block mt-6">
+              <Button variant="outline" className="w-full rounded-full">Try the checker</Button>
+            </Link>
           </CardContent>
         </Card>
-      </section>
-
-      {/* City Code Research */}
-      <section className="relative z-10 max-w-5xl mx-auto px-4 py-10">
-        <h2 className="heading-section text-foreground text-center mb-2">480 Cities, 3 Research Modes</h2>
-        <p className="text-sm text-muted-foreground font-body text-center mb-8 max-w-2xl mx-auto">
-          Massachusetts municipalities publish zoning bylaws via eCode360, Municode, or city CMS. Our ma-city-research skill handles all three. The
-          information always exists &mdash; the skill finds it across 480+ different
-          city website architectures.
-        </p>
-        <div className="grid gap-6 md:grid-cols-3">
-          <Card className="shadow-[0_8px_32px_rgba(28,25,23,0.06)] border-border/50">
-            <CardContent className="p-6 space-y-3">
-              <div className="flex items-center gap-2">
-                <SearchIcon className="w-5 h-5 text-primary" />
-                <Badge variant="outline" className="text-[10px]">~30 sec</Badge>
-              </div>
-              <h3 className="heading-card text-foreground">Discovery</h3>
-              <p className="text-muted-foreground font-body text-sm">
-                WebSearch finds key URLs: ADU page, municipal code platform
-                (ecode360, Municode, QCode), standard detail PDFs, information bulletins.
-              </p>
-            </CardContent>
-          </Card>
-          <Card className="shadow-[0_8px_32px_rgba(28,25,23,0.06)] border-border/50">
-            <CardContent className="p-6 space-y-3">
-              <div className="flex items-center gap-2">
-                <GlobeIcon className="w-5 h-5 text-primary" />
-                <Badge variant="outline" className="text-[10px]">~60-90 sec</Badge>
-              </div>
-              <h3 className="heading-card text-foreground">Targeted Extraction</h3>
-              <p className="text-muted-foreground font-body text-sm">
-                WebFetch pulls specific content from discovered URLs &mdash; ordinance
-                text, standard detail requirements, submittal checklists.
-              </p>
-            </CardContent>
-          </Card>
-          <Card className="shadow-[0_8px_32px_rgba(28,25,23,0.06)] border-border/50">
-            <CardContent className="p-6 space-y-3">
-              <div className="flex items-center gap-2">
-                <EyeIcon className="w-5 h-5 text-primary" />
-                <Badge variant="outline" className="text-[10px]">~2-3 min</Badge>
-              </div>
-              <h3 className="heading-card text-foreground">Browser Fallback</h3>
-              <p className="text-muted-foreground font-body text-sm">
-                Chrome MCP for cities with difficult websites (e.g., ecode360 law
-                database requires actual click navigation). Only used when Modes 1-2
-                have gaps.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Infrastructure */}
-      <section className="relative z-10 max-w-4xl mx-auto px-4 py-12">
-        <h2 className="heading-section text-foreground text-center mb-2">Why Three Layers</h2>
-        <p className="text-sm text-muted-foreground font-body text-center mb-8 max-w-2xl mx-auto">
-          Agent runs take 10-30 minutes. That single constraint shaped the entire
-          infrastructure.
-        </p>
-
-        <div className="space-y-0">
-          <Card className="shadow-[0_8px_32px_rgba(28,25,23,0.06)] border-border/50">
-            <CardContent className="p-5">
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-muted/60 flex items-center justify-center">
-                  <GlobeIcon className="w-4 h-4 text-foreground" />
-                </div>
-                <div>
-                  <h3 className="heading-card text-foreground text-base">Next.js on Vercel</h3>
-                  <p className="text-sm text-muted-foreground font-body mt-1">
-                    Frontend + API routes. Dual auth: Supabase sessions for browser users,
-                    Bearer tokens for agent API access.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="w-px h-4 bg-border/60 mx-auto" />
-
-          <Card className="shadow-[0_8px_32px_rgba(28,25,23,0.06)] border-border/50">
-            <CardContent className="p-5">
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-muted/60 flex items-center justify-center">
-                  <ServerIcon className="w-4 h-4 text-foreground" />
-                </div>
-                <div>
-                  <h3 className="heading-card text-foreground text-base">Cloud Run (GCP)</h3>
-                  <p className="text-sm text-muted-foreground font-body mt-1">
-                    Persistent orchestrator process. Serverless functions timeout at 60-300s
-                    &mdash; useless for 10-30 min agent runs. Also handles PDF
-                    pre-processing (pdftoppm + ImageMagick need system packages).
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="w-px h-4 bg-border/60 mx-auto" />
-
-          <Card className="shadow-[0_8px_32px_rgba(28,25,23,0.06)] border-border/50">
-            <CardContent className="p-5">
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-muted/60 flex items-center justify-center">
-                  <CpuIcon className="w-4 h-4 text-foreground" />
-                </div>
-                <div>
-                  <h3 className="heading-card text-foreground text-base">Vercel Sandbox</h3>
-                  <p className="text-sm text-muted-foreground font-body mt-1">
-                    Isolated, ephemeral execution environment. Agent SDK needs filesystem
-                    access (<code className="text-xs bg-muted px-1 py-0.5 rounded">claude_code</code> preset).
-                    Detached mode for connection resilience &mdash; GCP&apos;s load balancer
-                    kills idle connections at ~5 min.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <div className="w-px h-4 bg-border/60 mx-auto" />
-
-          <Card className="shadow-[0_8px_32px_rgba(28,25,23,0.06)] border-border/50">
-            <CardContent className="p-5">
-              <div className="flex items-start gap-4">
-                <div className="flex-shrink-0 w-9 h-9 rounded-lg bg-muted/60 flex items-center justify-center">
-                  <RadioIcon className="w-4 h-4 text-foreground" />
-                </div>
-                <div>
-                  <h3 className="heading-card text-foreground text-base">Supabase</h3>
-                  <p className="text-sm text-muted-foreground font-body mt-1">
-                    Realtime subscriptions push agent status to the frontend without polling.
-                    Storage for uploaded plans and generated outputs. Postgres for projects,
-                    messages, outputs, and contractor answers.
-                  </p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* What the Agent Produces */}
-      <section className="relative z-10 max-w-4xl mx-auto px-4 py-10">
-        <h2 className="heading-section text-foreground mb-2">What the Agent Produces</h2>
-        <p className="text-sm text-muted-foreground font-body mb-6">
-          Sample output from a Massachusetts ADU corrections flow (using legacy California fixtures during MA pivot) &mdash; 14 items analyzed,
-          categorized, and responded to.
-        </p>
-        <div className="grid gap-4 md:grid-cols-3">
-          <Card className="shadow-[0_8px_32px_rgba(28,25,23,0.06)] border-border/50">
-            <CardContent className="p-5 space-y-2">
-              <ShieldCheckIcon className="w-6 h-6 text-primary" />
-              <h3 className="heading-card text-foreground text-base">Corrections Analysis</h3>
-              <p className="text-xs text-muted-foreground font-body">
-                Each item categorized: 5 auto-fixable, 2 need contractor input,
-                6 need professional engineer. Code references verified against state
-                and city law.
-              </p>
-            </CardContent>
-          </Card>
-          <Card className="shadow-[0_8px_32px_rgba(28,25,23,0.06)] border-border/50">
-            <CardContent className="p-5 space-y-2">
-              <FileTextIcon className="w-6 h-6 text-primary" />
-              <h3 className="heading-card text-foreground text-base">Contractor Questions</h3>
-              <p className="text-xs text-muted-foreground font-body">
-                Structured questions for on-site data: &ldquo;What is the size of the
-                existing waste/sewer line?&rdquo; with 248 CMR (MA Plumbing Code) context and
-                why the agent needs it.
-              </p>
-            </CardContent>
-          </Card>
-          <Card className="shadow-[0_8px_32px_rgba(28,25,23,0.06)] border-border/50">
-            <CardContent className="p-5 space-y-2">
-              <SearchIcon className="w-6 h-6 text-primary" />
-              <h3 className="heading-card text-foreground text-base">Response Letter</h3>
-              <p className="text-xs text-muted-foreground font-body">
-                Professional tone. Item-by-item responses with sheet references. Code
-                citations (248 CMR plumbing, 780 CMR/IRC 2021, ASCE 7-16). Technical justifications: sewer capacity
-                calc, wind load calcs, drainage slopes.
-              </p>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Stats Strip */}
-      <section className="relative z-10 max-w-5xl mx-auto px-4 py-10">
-        <div className="grid gap-8 md:grid-cols-4 text-center">
-          <div className="space-y-1">
-            <TrendingUpIcon className="w-5 h-5 text-primary mx-auto mb-1" />
-            <p className="text-2xl font-bold font-display text-foreground">429,503</p>
-            <p className="text-xs text-muted-foreground font-body">
-              ADU permits in CA since 2018
+        <Card className="card-float rounded-2xl p-7 ring-2 ring-primary">
+          <CardContent className="p-0">
+            <div className="flex items-center justify-between">
+              <p className="font-body text-sm font-semibold uppercase tracking-widest text-primary">Pro</p>
+              <span className="landing-pill" style={{ fontSize: '0.6875rem' }}>Recommended</span>
+            </div>
+            <p className="font-display font-black text-4xl tracking-tight text-foreground mt-3">
+              $99<span className="text-lg text-foreground/60">/mo</span>
             </p>
-          </div>
-          <div className="space-y-1">
-            <AlertTriangleIcon className="w-5 h-5 text-accent mx-auto mb-1" />
-            <p className="text-2xl font-bold font-display text-foreground">90%+</p>
-            <p className="text-xs text-muted-foreground font-body">
-              require corrections on first submission
+            <p className="text-sm text-foreground/70 mt-1">solo contractor or architect</p>
+            <p className="mt-5 text-sm text-foreground/80 leading-relaxed">
+              Corrections interpreter and permit checklist. Unlimited projects. Verified citations on every output.
             </p>
-          </div>
-          <div className="space-y-1">
-            <DollarSignIcon className="w-5 h-5 text-secondary mx-auto mb-1" />
-            <p className="text-2xl font-bold font-display text-foreground">$250M+</p>
-            <p className="text-xs text-muted-foreground font-body">
-              VC invested in permit tech
+            <Link href="/dashboard" className="block mt-6">
+              <Button className="w-full rounded-full">Start free trial</Button>
+            </Link>
+          </CardContent>
+        </Card>
+        <Card className="card-float rounded-2xl p-7">
+          <CardContent className="p-0">
+            <p className="font-body text-sm font-semibold uppercase tracking-widest text-foreground/60">Firm</p>
+            <p className="font-display font-black text-4xl tracking-tight text-foreground mt-3">
+              $499<span className="text-lg text-foreground/60">/mo</span>
             </p>
-          </div>
-          <div className="space-y-1">
-            <ClockIcon className="w-5 h-5 text-primary mx-auto mb-1" />
-            <p className="text-2xl font-bold font-display text-foreground">$30,000</p>
-            <p className="text-xs text-muted-foreground font-body">
-              cost of a 6-month permit delay
+            <p className="text-sm text-foreground/70 mt-1">design-build firms</p>
+            <p className="mt-5 text-sm text-foreground/80 leading-relaxed">
+              Multi-project workspace, audit log export, custom plan-sheet annotation styles. SLA on response time.
             </p>
-          </div>
-        </div>
-      </section>
+            <a href="mailto:hello@permitmonkey.com" className="block mt-6">
+              <Button variant="outline" className="w-full rounded-full">Talk to founder</Button>
+            </a>
+          </CardContent>
+        </Card>
+      </div>
+    </section>
+  )
+}
 
-      {/* Status */}
-      <section className="relative z-10 max-w-5xl mx-auto px-4 py-10">
-        <h2 className="heading-section text-foreground text-center mb-8">Where It Stands</h2>
-        <div className="grid gap-6 md:grid-cols-3">
-          <Card className="shadow-[0_8px_32px_rgba(28,25,23,0.06)] border-l-4 border-l-success border-border/50">
-            <CardContent className="p-5 space-y-3">
-              <div className="flex items-center gap-2">
-                <CheckCircle2Icon className="w-5 h-5 text-success" />
-                <h3 className="heading-card text-foreground text-base">Working</h3>
-              </div>
-              <ul className="text-xs text-muted-foreground font-body space-y-1.5">
-                <li>Skills architecture (massachusetts-adu + ma-city-research)</li>
-                <li>Corrections analysis pipeline</li>
-                <li>Response letter with code citations</li>
-                <li>Multi-agent PDF extraction</li>
-                <li>City code research (3-mode)</li>
-                <li>Cloud Run + Vercel Sandbox deployment</li>
-                <li>API key auth (dual: Bearer + session)</li>
-              </ul>
-            </CardContent>
-          </Card>
-          <Card className="shadow-[0_8px_32px_rgba(28,25,23,0.06)] border-l-4 border-l-warning border-border/50">
-            <CardContent className="p-5 space-y-3">
-              <div className="flex items-center gap-2">
-                <ClockIcon className="w-5 h-5 text-warning" />
-                <h3 className="heading-card text-foreground text-base">In Progress</h3>
-              </div>
-              <ul className="text-xs text-muted-foreground font-body space-y-1.5">
-                <li>Cloud deployment stability (detached mode solved 5-min timeout)</li>
-                <li>City-side review flow UI polish</li>
-                <li>Processing time optimization (35 &rarr; 15 min via targeted viewing)</li>
-              </ul>
-            </CardContent>
-          </Card>
-          <Card className="shadow-[0_8px_32px_rgba(28,25,23,0.06)] border-l-4 border-l-info border-border/50">
-            <CardContent className="p-5 space-y-3">
-              <div className="flex items-center gap-2">
-                <CompassIcon className="w-5 h-5 text-info" />
-                <h3 className="heading-card text-foreground text-base">Roadmap</h3>
-              </div>
-              <ul className="text-xs text-muted-foreground font-body space-y-1.5">
-                <li>PDF plan redrawing (7,400px plans need larger sandbox)</li>
-                <li>Per-user API keys + multi-tenant</li>
-                <li>Scale city research across all 351 MA municipalities</li>
-                <li>Contractor mobile experience</li>
-              </ul>
-            </CardContent>
-          </Card>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="relative z-10 border-t border-border/30 py-8 text-center space-y-2">
-        <p className="text-sm text-muted-foreground font-body">
-          Built in 7 days &middot; Solo builder &middot; Huntington Beach, CA
+function FreeToolCta() {
+  return (
+    <section
+      id="free-tools"
+      className="relative overflow-hidden bg-gradient-to-b from-primary to-primary/90"
+    >
+      <div
+        className="absolute inset-0 opacity-30 pointer-events-none"
+        style={{
+          background:
+            'radial-gradient(900px 400px at 20% 0%, rgba(242, 139, 110, 0.30), transparent 60%), radial-gradient(700px 400px at 80% 100%, rgba(217, 189, 137, 0.30), transparent 60%)',
+        }}
+      />
+      <div className="relative max-w-7xl mx-auto px-6 lg:px-10 py-20 text-center">
+        <h2 className="font-display font-bold text-4xl md:text-5xl text-primary-foreground tracking-tight">
+          Is your lot ADU-eligible?
+        </h2>
+        <p className="mt-4 text-lg text-primary-foreground/85 max-w-xl mx-auto leading-relaxed">
+          Type a Massachusetts address. Get a verdict in under ten seconds. State law floor +
+          your city&apos;s local rules. Free.
         </p>
-        <p className="text-xs text-muted-foreground/70 font-body">
-          Claude Opus 4.6 &middot; Claude Code &middot; Agent SDK &middot; Vercel Sandbox
-        </p>
-        <p className="text-xs text-muted-foreground/50 font-body">
-          <a
-            href="https://github.com/mikeOnBreeze/cc-permitmonkey"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline hover:text-primary transition-colors"
+        <form className="mt-8 max-w-xl mx-auto flex flex-col sm:flex-row gap-3 items-stretch">
+          <input
+            type="text"
+            placeholder="14 Maple Street, Boston, MA 02126"
+            className="flex-1 rounded-full px-6 py-3.5 bg-background/95 border border-background/20 text-foreground placeholder:text-foreground/40 font-body focus:outline-none focus:ring-2 focus:ring-secondary"
+          />
+          <button
+            type="submit"
+            className="rounded-full px-7 py-3.5 bg-accent hover:bg-accent/90 text-accent-foreground font-bold transition-colors"
           >
-            github.com/mikeOnBreeze/cc-permitmonkey
-          </a>
+            Check eligibility
+          </button>
+        </form>
+        <p className="mt-4 text-xs font-body text-primary-foreground/60">
+          No login required · we email the report when you want it
         </p>
-      </footer>
+      </div>
+    </section>
+  )
+}
+
+function SiteFooter() {
+  return (
+    <footer className="bg-foreground text-background">
+      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-14 grid md:grid-cols-5 gap-8">
+        <div className="md:col-span-2 space-y-3">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex items-center justify-center w-8 h-8 rounded-md bg-primary text-primary-foreground text-sm font-bold">
+              P
+            </span>
+            <span className="font-display text-xl font-bold tracking-tight">PermitMonkey</span>
+          </div>
+          <p className="text-sm text-background/60 max-w-sm leading-relaxed">
+            AI permit assistant for Massachusetts ADUs. Defensible response packages,
+            citations you can verify yourself.
+          </p>
+          <p className="text-xs text-background/40 pt-2">
+            Boston, MA · pivoted from a CA hackathon project (cc-crossbeam by @breezwoods)
+          </p>
+        </div>
+        <FooterCol title="Product" items={[
+          { label: 'Corrections', href: '#flows' },
+          { label: 'Checklist', href: '#flows' },
+          { label: 'City pre-screen', href: '#flows' },
+          { label: 'Eligibility checker', href: '/eligibility' },
+        ]} />
+        <FooterCol title="Cities" items={[
+          { label: 'Boston', href: '#cities' },
+          { label: 'Cambridge', href: '#cities' },
+          { label: 'Somerville', href: '#cities' },
+          { label: 'Newton', href: '#cities' },
+          { label: 'Brookline', href: '#cities' },
+        ]} />
+        <FooterCol title="Trust" items={[
+          { label: 'Provenance UI', href: '#provenance' },
+          { label: 'Eval benchmark', href: '#' },
+          { label: 'Privacy', href: '/privacy' },
+          { label: 'Terms', href: '/terms' },
+        ]} />
+      </div>
+      <div className="border-t border-background/10">
+        <div className="max-w-7xl mx-auto px-6 lg:px-10 py-5 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-background/40">
+          <p>
+            © 2026 PermitMonkey. Citations to MGL, CMR, and EOHLC are the work of the
+            Massachusetts state government.
+          </p>
+          <p className="font-mono">built on Claude Opus 4.7 · Agent SDK</p>
+        </div>
+      </div>
+    </footer>
+  )
+}
+
+function FooterCol({ title, items }: { title: string; items: { label: string; href: string }[] }) {
+  return (
+    <div>
+      <p className="text-xs uppercase tracking-widest font-semibold text-background/40 mb-3">{title}</p>
+      <ul className="space-y-2 text-sm text-background/80">
+        {items.map((item) => (
+          <li key={item.label}>
+            <Link href={item.href} className="hover:text-background transition-colors">
+              {item.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
     </div>
   )
 }
