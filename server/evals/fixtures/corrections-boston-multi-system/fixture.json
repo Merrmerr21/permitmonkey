@@ -1,0 +1,45 @@
+{
+  "id": "corrections-boston-multi-system",
+  "kind": "corrections-letter",
+  "description": "Boston multi-system corrections scenario — pins content from three of the four new state-skill references (225 CMR 22 energy, 527 CMR 12 electrical, 248 CMR plumbing) under the strict gate. Contractor receives a Boston correction letter with four items: wall R-value R-19 below Specialized Opt-In Code, ADU sub-panel needs separate electrical permit, CO alarm omitted on a mixed-fuel ADU, new water service to detached ADU not coordinated with BWSC. Agent's job: acknowledge ALL four corrections, explain what each means, draft revised submission. Tests Flow 1 in the dominant mode (corrections accepted, not disputed) — distinct from the parking-preemption fixture which exercises the rare dispute mode. Mock-mode output quotes verbatim sentences from `stretch-energy-code-225-cmr-22.md`, `fire-prevention-527-cmr.md`, and `plumbing-248-cmr.md` so all four citations verify via Method 1 without network access.",
+  "input": {
+    "prompt": "Draft a response to a Boston ISD corrections letter for a detached ADU at 47 Marlborough St, Boston (Back Bay). The four corrections are: (1) wall R-value listed as R-19 but Specialized Opt-In Code requires R-21 cavity + R-5 continuous; (2) new ADU sub-panel proposed without showing a separate electrical permit application; (3) CO alarm omitted on a mixed-fuel ADU; (4) new 1\" copper water service to detached ADU not coordinated with BWSC."
+  },
+  "ground_truth": {
+    "expected_verdict": "corrections",
+    "expected_citations": [
+      {
+        "authority": "225 CMR 22 Appendix RC",
+        "source_url": "https://www.mass.gov/info-details/specialized-stretch-code",
+        "must_appear": true
+      },
+      {
+        "authority": "527 CMR 12 Massachusetts Electrical Code",
+        "source_url": "https://www.mass.gov/regulations/527-CMR-12-massachusetts-electrical-code",
+        "must_appear": true
+      },
+      {
+        "authority": "MGL Ch 148 §26F½",
+        "source_url": "https://malegislature.gov/Laws/GeneralLaws/PartI/TitleXX/Chapter148/Section26F1~2",
+        "must_appear": false
+      },
+      {
+        "authority": "248 CMR (water service coordination)",
+        "source_url": "https://www.mass.gov/regulations/248-CMR",
+        "must_appear": false
+      }
+    ],
+    "expected_response_topics": [
+      "envelope R-21 cavity + R-5 continuous required for Specialized Opt-In",
+      "separate electrical permit filed alongside building permit",
+      "CO alarm required for mixed-fuel dwelling unit per MGL Ch 148 §26F½",
+      "BWSC coordination required for new water service (6-12 week lead time)"
+    ]
+  },
+  "mock_output": "Re: Building Permit Application — Response to Corrections Letter\n\nWe accept all four corrections in the letter dated 2026-05-01. The following revisions are submitted with this response.\n\n## Correction #1 — Wall R-Value\n\nThe original submission listed wall R-19 cavity insulation. Boston has adopted the Specialized Opt-In Code, which requires a tighter envelope.\n\nIf the city has adopted the Specialized Opt-In Code, treat it as the operative code for ADU envelope and systems compliance. [source: https://www.mass.gov/info-details/specialized-stretch-code | retrieved: 2026-05-04 | citation: 225 CMR 22 Appendix RC]\n\nThe revised wall assembly is R-21 cavity (mineral wool) plus R-5 continuous exterior insulation, yielding an effective R-value of approximately R-26 — see revised section A-A on Sheet A5 attached.\n\n## Correction #2 — Separate Electrical Permit\n\nWe acknowledge the requirement to file the electrical permit separately from the building permit.\n\nANY new wiring (new circuits, new panel, sub-panel for ADU, dedicated branches for heat pump or HVAC, kitchen fixture wiring) requires permit and inspection by the local wiring inspector. [source: https://www.mass.gov/regulations/527-CMR-12-massachusetts-electrical-code | retrieved: 2026-05-04 | citation: 527 CMR 12 Massachusetts Electrical Code]\n\nOur licensed master electrician will file the electrical permit application with ISD this week; the permit number will be transmitted to the building inspector before any wiring is concealed.\n\n## Correction #3 — Carbon Monoxide Alarm\n\nThe original plan set did not show a CO alarm in the ADU. The revised Sheet E1 adds a hardwired-with-battery-backup CO alarm in the bedroom hallway within 10 feet of the bedroom door.\n\nApplies to dwelling units with fuel-burning appliances OR an attached enclosed garage. [source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleXX/Chapter148/Section26F1~2 | retrieved: 2026-05-04 | citation: MGL Ch 148 §26F½]\n\nThe ADU has a gas-fired tankless water heater, which is the trigger.\n\n## Correction #4 — Water Service Coordination\n\nThe new 1\" copper water service to the detached ADU was shown on the original submission but not coordinated with BWSC.\n\nThis is a MWRA / municipal water department coordination — start early; permits can take 6-12 weeks. [source: https://www.mass.gov/regulations/248-CMR | retrieved: 2026-05-04 | citation: 248 CMR plumbing — water service coordination]\n\nWe submitted the BWSC tap application on 2026-05-02; receipt #BWSC-2026-04471 is attached. The estimated tap completion is 2026-07-15. Plumbing rough inspection will be scheduled after the tap is complete.\n\n## Summary\n\nAll four corrections accepted; revised plan sheets and supporting documentation submitted herewith. We are ready for re-review.\n",
+  "metadata": {
+    "created": "2026-05-04",
+    "last_verified": "2026-05-04",
+    "domain": "boston-adu-corrections-multi-system"
+  }
+}
