@@ -1,16 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/server'
 import { createHash } from 'node:crypto'
-
-const VALID_SOURCES = [
-  'eligibility_checker',
-  'pricing_page',
-  'newsletter',
-  'cold_outreach_response',
-] as const
-type LeadSource = (typeof VALID_SOURCES)[number]
-
-const VALID_VERDICTS = ['likely_eligible', 'needs_review', 'not_eligible'] as const
+import {
+  isEmail,
+  pickString,
+  normalizeSource,
+  normalizeVerdict,
+} from '@/lib/leads-validation'
 
 interface LeadInput {
   email?: unknown
@@ -20,19 +16,6 @@ interface LeadInput {
   utm_source?: unknown
   utm_medium?: unknown
   utm_campaign?: unknown
-}
-
-function isEmail(value: unknown): value is string {
-  if (typeof value !== 'string') return false
-  if (value.length > 254) return false
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
-}
-
-function pickString(value: unknown, max = 120): string | null {
-  if (typeof value !== 'string') return null
-  const trimmed = value.trim()
-  if (trimmed.length === 0 || trimmed.length > max) return null
-  return trimmed
 }
 
 function hashIp(ip: string | null): string | null {
@@ -55,14 +38,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'invalid_email' }, { status: 400 })
   }
 
-  const sourceRaw = typeof body.source === 'string' ? body.source : 'eligibility_checker'
-  const source: LeadSource = (VALID_SOURCES as readonly string[]).includes(sourceRaw)
-    ? (sourceRaw as LeadSource)
-    : 'eligibility_checker'
-
-  const verdictRaw = pickString(body.verdict, 32)
-  const verdict =
-    verdictRaw && (VALID_VERDICTS as readonly string[]).includes(verdictRaw) ? verdictRaw : null
+  const source = normalizeSource(body.source)
+  const verdict = normalizeVerdict(body.verdict)
 
   const ip =
     (req.headers.get('x-forwarded-for') ?? '').split(',')[0]?.trim() ||

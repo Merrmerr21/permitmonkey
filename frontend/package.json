@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --experimental-strip-types --test lib/eligibility.test.ts"
+    "test": "node --experimental-strip-types --test lib/eligibility.test.ts lib/leads-validation.test.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.8.0",
