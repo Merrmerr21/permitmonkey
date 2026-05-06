@@ -1,5 +1,10 @@
+import path from 'node:path';
 import { NextRequest, NextResponse } from 'next/server';
 import { evaluateEligibility, type EligibilityInput } from '@/lib/eligibility';
+import { verifyCitation } from '@/lib/citations/verify';
+import type { CitationVerification } from '@/lib/citations/types';
+
+const SKILL_REFERENCES_ROOT = path.resolve(process.cwd(), '..', 'server', 'skills');
 
 const RATE_LIMIT_PER_HOUR = 5;
 const WINDOW_MS = 60 * 60 * 1000;
@@ -61,7 +66,31 @@ export async function POST(request: NextRequest) {
     }
 
     const result = evaluateEligibility(body as EligibilityInput);
-    return NextResponse.json(result);
+
+    // Run each cited authority through the same verifier the corrections
+    // viewer + articles use. Method 1 walks server/skills/ for a substring
+    // match against the excerpt; Method 2 falls back to a canonical URL
+    // fetch. Failures degrade gracefully — citation still renders, just
+    // with the unverified status.
+    const verifications: CitationVerification[] = await Promise.all(
+      result.citations.map(async (c) => {
+        try {
+          return await verifyCitation(
+            { source_url: c.source_url, excerpt: c.excerpt },
+            SKILL_REFERENCES_ROOT,
+          );
+        } catch {
+          return { status: 'unverified' };
+        }
+      }),
+    );
+
+    const citationsWithVerification = result.citations.map((c, i) => ({
+      ...c,
+      verification: verifications[i],
+    }));
+
+    return NextResponse.json({ ...result, citations: citationsWithVerification });
   } catch (err) {
     console.error('eligibility route error:', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

@@ -7,8 +7,14 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { CheckCircle2Icon, AlertTriangleIcon, XCircleIcon } from 'lucide-react';
+import { CheckCircle2Icon, AlertTriangleIcon, XCircleIcon, ShieldCheckIcon, GlobeIcon } from 'lucide-react';
 import { EmailCapture } from './email-capture';
+
+interface CitationVerification {
+  status: 'verified-skill' | 'verified-url' | 'unverified' | 'broken' | 'pending';
+  matched_reference?: string;
+  error_code?: string;
+}
 
 type Verdict = 'likely_eligible' | 'needs_review' | 'not_eligible';
 
@@ -22,7 +28,13 @@ interface Result {
   city_covered: boolean;
   city_gotchas: string[];
   next_steps: string[];
-  citations: Array<{ authority: string; source_url: string; relevance: string }>;
+  citations: Array<{
+    authority: string;
+    source_url: string;
+    relevance: string;
+    excerpt?: string;
+    verification?: CitationVerification;
+  }>;
   upgrade_cta: string;
   disclaimer: string;
 }
@@ -244,14 +256,25 @@ export default function EligibilityPage() {
 
             <Card>
               <CardContent className="p-6">
-                <h3 className="heading-card text-foreground mb-3">Citations</h3>
-                <ul className="space-y-2 font-body text-sm list-disc pl-5">
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="heading-card text-foreground">Citations</h3>
+                  <span className="text-xs font-mono text-muted-foreground">verified at request time</span>
+                </div>
+                <ul className="space-y-3 font-body text-sm">
                   {result.citations.map((c, i) => (
-                    <li key={i}>
-                      <a href={c.source_url} target="_blank" rel="noreferrer" className="text-primary underline">
-                        {c.authority}
-                      </a>
-                      <span className="text-muted-foreground"> — {c.relevance}</span>
+                    <li key={i} className="border-l-2 border-primary/20 pl-3">
+                      <div className="flex items-start gap-2 flex-wrap">
+                        <a href={c.source_url} target="_blank" rel="noreferrer" className="text-primary underline font-medium">
+                          {c.authority}
+                        </a>
+                        <CitationVerificationBadge verification={c.verification} />
+                      </div>
+                      <p className="text-muted-foreground mt-1">{c.relevance}</p>
+                      {c.verification?.matched_reference && (
+                        <p className="text-xs font-mono text-muted-foreground/70 mt-1">
+                          matched: {c.verification.matched_reference}
+                        </p>
+                      )}
                     </li>
                   ))}
                 </ul>
@@ -327,5 +350,43 @@ export default function EligibilityPage() {
         </div>
       </footer>
     </div>
+  );
+}
+
+function CitationVerificationBadge({ verification }: { verification?: CitationVerification }) {
+  if (!verification) {
+    return null;
+  }
+  const { status } = verification;
+
+  if (status === 'verified-skill') {
+    return (
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-50 text-green-700 text-xs font-semibold border border-green-200">
+        <ShieldCheckIcon className="w-3 h-3" />
+        Verified · skill
+      </span>
+    );
+  }
+  if (status === 'verified-url') {
+    return (
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-green-50 text-green-700 text-xs font-semibold border border-green-200">
+        <GlobeIcon className="w-3 h-3" />
+        Verified · URL
+      </span>
+    );
+  }
+  if (status === 'broken') {
+    return (
+      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-50 text-red-700 text-xs font-semibold border border-red-200">
+        <XCircleIcon className="w-3 h-3" />
+        Source moved
+      </span>
+    );
+  }
+  return (
+    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 text-xs font-semibold border border-amber-200">
+      <AlertTriangleIcon className="w-3 h-3" />
+      Manual check
+    </span>
   );
 }
