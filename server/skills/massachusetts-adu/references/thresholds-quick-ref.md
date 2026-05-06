@@ -4,11 +4,15 @@ Numbers-only card. The agent should be able to answer common threshold questions
 
 ## Size Limits (State Floor)
 
+State floor sizes per [source: https://malegislature.gov/Laws/SessionLaws/Acts/2024/Chapter150 | retrieved: 2026-04-22 | citation: St. 2024, c. 150 §7 amends MGL Ch 40A §1A]:
+
 | Metric | Limit | Source |
 |--------|-------|--------|
 | Max ADU size (absolute) | **900 sq ft** | MGL Ch 40A §1A as amended by St. 2024, c. 150, §7 |
 | Max ADU size (relative) | **50% of primary dwelling's gross floor area** | Same |
 | Effective cap | **Lesser of the two** | Same |
+
+[source: https://malegislature.gov/Laws/SessionLaws/Acts/2024/Chapter150 | retrieved: 2026-04-22 | citation: St. 2024, c. 150, §7 amends MGL Ch 40A §1A — 900 sq ft / 50% absolute cap]
 
 Examples:
 - Primary 1,200 sq ft → ADU cap 600 sq ft (50% is less than 900)
@@ -19,10 +23,14 @@ Examples:
 
 ## Parking (State Ceiling)
 
+State ceiling per [source: https://malegislature.gov/Laws/SessionLaws/Acts/2024/Chapter150 | retrieved: 2026-04-22 | citation: St. 2024, c. 150 §8 amends MGL Ch 40A §3]:
+
 | Scenario | Max Parking Required | Source |
 |----------|---------------------|--------|
 | Standard | **1 additional space** | MGL Ch 40A §3 as amended by St. 2024, c. 150, §8 |
 | Within 0.5 mi of transit (commuter rail, subway, ferry, bus station) | **0 additional spaces** | Same |
+
+[source: https://malegislature.gov/Laws/SessionLaws/Acts/2024/Chapter150 | retrieved: 2026-04-22 | citation: St. 2024, c. 150, §8 amends MGL Ch 40A §3 — 1-space cap, 0 near transit]
 
 Cities cannot require MORE than this. They may require less.
 
@@ -30,11 +38,15 @@ Open interpretive question: does "bus station" include standard bus stops? Conse
 
 ## Occupancy
 
+Occupancy preemption per [source: https://malegislature.gov/Laws/SessionLaws/Acts/2024/Chapter150 | retrieved: 2026-04-22 | citation: St. 2024, c. 150 §7 amends MGL Ch 40A §3 — owner-occupancy / family-only restrictions preempted]:
+
 | Rule | Status | Source |
 |------|--------|--------|
 | Owner occupancy of primary or ADU | **Cannot be required** | MGL Ch 40A §3 as amended |
 | Family relationship (e.g., "in-law apartment" only) | **Cannot be required** | Implicit — the statute says "accessory dwelling unit" period |
 | Short-term rental | **May be restricted or prohibited by city** | Explicit in statute |
+
+[source: https://malegislature.gov/Laws/SessionLaws/Acts/2024/Chapter150 | retrieved: 2026-04-22 | citation: St. 2024, c. 150, §7 amending MGL Ch 40A §3 — owner-occupancy / family-only restrictions preempted]
 
 ## Zoning Classification
 
@@ -64,6 +76,8 @@ Open interpretive question: does "bus station" include standard bus stops? Conse
 
 ## Building Code
 
+State building-code framework per [source: https://www.mass.gov/state-building-code | retrieved: 2026-04-22 | citation: 780 CMR 10th Edition with IRC 2021 / IBC 2021 base, effective Oct 2023]:
+
 | Code | Edition / Version |
 |------|-------------------|
 | MA State Building Code | 780 CMR 10th Edition (Oct 2023) |
@@ -71,9 +85,13 @@ Open interpretive question: does "bus station" include standard bus stops? Conse
 | Base Building Code | IBC 2021 with MA amendments |
 | Base Energy Code | IECC 2021 with MA amendments |
 
+[source: https://www.mass.gov/state-building-code | retrieved: 2026-04-22 | citation: 780 CMR 10th Edition with IRC 2021 / IBC 2021 base, effective Oct 2023]
+
 Most MA municipalities have adopted either the Stretch Energy Code or Specialized Opt-In Code (more stringent than base).
 
 ## Common Numeric Values (Reference)
+
+Numeric values per [source: https://www.mass.gov/state-building-code | retrieved: 2026-04-22 | citation: 780 CMR 10th Edition incorporating IRC 2021 R310 (egress) and R302.3 (fire separation)]:
 
 | Item | Value |
 |------|-------|
@@ -85,3 +103,5 @@ Most MA municipalities have adopted either the Stretch Energy Code or Specialize
 | MA frost depth (typical) | 48 in |
 | Fire separation attached ADU | 1 hour (R302.3) |
 | Fire separation <3 ft from lot line | 1 hour exterior wall |
+
+[source: https://www.mass.gov/state-building-code | retrieved: 2026-04-22 | citation: 780 CMR 10th Edition with IRC 2021 R310 (egress) and R302.3 (fire separation)]

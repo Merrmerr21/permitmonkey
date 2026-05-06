@@ -21,6 +21,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { runMAEligibility, type EligibilityInputs } from './flows/ma-eligibility.ts';
+import { runMaCorrectionsTriage } from './flows/ma-corrections-triage.ts';
+import { isTerminal } from './lib/corrections-types.ts';
 
 interface FixtureFile {
   id: string;
@@ -50,7 +52,7 @@ async function main(): Promise<CliResult> {
     case 'eligibility-check':
       return runEligibility(fixture, args.sessionDir);
     case 'corrections-letter':
-      return notImplemented(fixture.id, 'corrections-letter');
+      return runCorrections(fixture, args.sessionDir);
     case 'plan-review':
       return notImplemented(fixture.id, 'plan-review');
     default:
@@ -91,6 +93,58 @@ async function runEligibility(fixture: FixtureFile, sessionDir: string): Promise
     ok: true,
     fixture_id: fixture.id,
     agent_output_path: result.outputs.summary ?? result.outputs.verdict,
+  };
+}
+
+async function runCorrections(fixture: FixtureFile, sessionDir: string): Promise<CliResult> {
+  // Phase 2 dispatch through the corrections triage flow. The flow is a
+  // skeleton today (returns a structured `failed` state with reason
+  // pending-test-assets) but the dispatch path uses the real
+  // CorrectionsState state machine + isTerminal guard, so once the
+  // skeleton fills in, this branch starts returning real triage output
+  // without a dispatcher rewrite.
+  const planBinderPath = fixture.input.plans_path;
+  const correctionsLetterPath = fixture.input.correction_letter_path;
+
+  if (!planBinderPath || !correctionsLetterPath) {
+    return {
+      ok: false,
+      fixture_id: fixture.id,
+      error:
+        'corrections-letter fixture must include plans_path and correction_letter_path; use --mode=mock for the eval harness until test-assets/ are approved',
+    };
+  }
+
+  const triageResult = await runMaCorrectionsTriage({
+    correctionsLetterPath,
+    planBinderPath,
+    city: 'Boston',
+    sessionDir,
+  });
+
+  if (triageResult.state.phase === 'failed') {
+    return {
+      ok: false,
+      fixture_id: fixture.id,
+      error: `triage failed: ${triageResult.state.reason}`,
+    };
+  }
+
+  if (!isTerminal(triageResult.state)) {
+    return {
+      ok: false,
+      fixture_id: fixture.id,
+      error: `triage left state in non-terminal phase ${triageResult.state.phase} — response generator not yet wired`,
+    };
+  }
+
+  // Triage succeeded all the way to delivered (impossible with skeleton,
+  // but the dispatch logic is correct for when the skeleton fills in).
+  const summaryPath = path.join(sessionDir, 'corrections_summary.md');
+  return {
+    ok: true,
+    fixture_id: fixture.id,
+    agent_output_path: summaryPath,
   };
 }
 

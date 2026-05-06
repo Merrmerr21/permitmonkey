@@ -84,9 +84,28 @@ export async function generateMetadata({
   const { slug } = await params
   const article = await loadArticle(slug)
   if (!article) return { title: 'Article Not Found — PermitMonkey' }
+  const title = `${article.frontmatter.title} — PermitMonkey`
+  const { description, published, last_updated, slug: articleSlug } = article.frontmatter
   return {
-    title: `${article.frontmatter.title} — PermitMonkey`,
-    description: article.frontmatter.description,
+    title,
+    description,
+    openGraph: {
+      type: 'article',
+      title,
+      description,
+      url: `/articles/${articleSlug}`,
+      siteName: 'PermitMonkey',
+      publishedTime: published,
+      modifiedTime: last_updated,
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
+    alternates: {
+      canonical: `/articles/${articleSlug}`,
+    },
   }
 }
 
