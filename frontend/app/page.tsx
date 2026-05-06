@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { AduMiniature } from '@/components/adu-miniature'
 import { LandingProvenanceDemo } from '@/components/landing-provenance-demo'
+import { LandingArticlesPreview } from '@/components/landing-articles-preview'
 import {
   CheckCircle2Icon,
   FileTextIcon,
@@ -10,6 +11,9 @@ import {
   LayersIcon,
   PlayIcon,
   ArrowRightIcon,
+  ScanLineIcon,
+  ShieldCheckIcon,
+  SendIcon,
 } from 'lucide-react'
 
 // MA-pivoted landing page. Replaces the prior CA-era version
@@ -24,9 +28,12 @@ export default function LandingPage() {
       <DemoVideoSection />
       <CityCoverageStrip />
       <StatsStrip />
+      <HowItWorksSection />
       <ThreeFlowsSection />
       <ProvenanceSection />
       <MaDifferentiationSection />
+      <BuiltOnSection />
+      <LandingArticlesPreview />
       <PricingSection />
       <FreeToolCta />
       <SiteFooter />
@@ -52,9 +59,10 @@ function Nav() {
           </Link>
           <div className="hidden lg:flex items-center gap-7 text-sm font-body font-semibold text-foreground/80">
             <a href="#flows" className="hover:text-primary transition-colors">Product</a>
+            <a href="#how-it-works" className="hover:text-primary transition-colors">How it works</a>
             <a href="#provenance" className="hover:text-primary transition-colors">Citations</a>
-            <a href="#cities" className="hover:text-primary transition-colors">Cities</a>
-            <a href="#pricing" className="hover:text-primary transition-colors">Pricing</a>
+            <Link href="/articles" className="hover:text-primary transition-colors">Articles</Link>
+            <Link href="/pricing" className="hover:text-primary transition-colors">Pricing</Link>
             <a href="#free-tools" className="hover:text-primary transition-colors">Free tools</a>
           </div>
         </div>
@@ -254,6 +262,111 @@ function StatsStrip() {
             <p className="mt-3 text-sm font-body text-foreground/85 leading-relaxed">{s.label}</p>
           </div>
         ))}
+      </div>
+    </section>
+  )
+}
+
+function HowItWorksSection() {
+  const steps = [
+    {
+      icon: <ScanLineIcon className="w-5 h-5" />,
+      eyebrow: 'Step 1',
+      title: 'Read the corrections.',
+      body: 'Vision-extraction parses the corrections letter and the plan binder simultaneously. Each item is categorized into one of four buckets: state-preempted, locally-controlled FORM, independent regime, or documentation gap.',
+      accent: 'bg-primary text-primary-foreground',
+    },
+    {
+      icon: <ShieldCheckIcon className="w-5 h-5" />,
+      eyebrow: 'Step 2',
+      title: 'Verify every citation.',
+      body: 'Generator-Verifier pair: Sonnet drafts; Opus audits. Method 1 walks the skill reference files. Method 2 fetches the canonical source URL. Drift fails CI before the contractor ever sees the output.',
+      accent: 'bg-secondary text-secondary-foreground',
+    },
+    {
+      icon: <SendIcon className="w-5 h-5" />,
+      eyebrow: 'Step 3',
+      title: 'Ship the response.',
+      body: 'A watermarked PDF response package with cover memo, per-item responses, citation index. Realtime status via Supabase. Download the package, sign with your RDP, submit to ISD.',
+      accent: 'bg-accent text-accent-foreground',
+    },
+  ]
+
+  return (
+    <section id="how-it-works" className="max-w-7xl mx-auto px-6 lg:px-10 py-20">
+      <div className="max-w-2xl mb-12">
+        <p className="eyebrow">How it works</p>
+        <h2 className="font-display font-bold text-4xl md:text-5xl tracking-tight text-foreground mt-3">
+          From corrections letter <span className="italic gradient-text">to defensible response.</span>
+        </h2>
+        <p className="mt-4 text-lg text-foreground/70 leading-relaxed">
+          Three deterministic steps with audit-grade guards at every hand-off.
+          The same pipeline ships under every output, including the eligibility
+          checker and the articles you&apos;re reading.
+        </p>
+      </div>
+
+      <div className="grid md:grid-cols-3 gap-6">
+        {steps.map((s, i) => (
+          <div
+            key={s.title}
+            className="card-float rounded-2xl p-7 bg-card relative overflow-hidden group"
+          >
+            <div className="absolute top-0 right-0 -mt-8 -mr-8 w-32 h-32 rounded-full bg-primary/5 blur-2xl pointer-events-none" />
+            <div className="relative">
+              <div className="flex items-center gap-3 mb-5">
+                <div className={`w-10 h-10 rounded-xl ${s.accent} flex items-center justify-center`}>
+                  {s.icon}
+                </div>
+                <p className="text-xs font-semibold uppercase tracking-widest text-foreground/55">
+                  {s.eyebrow}
+                </p>
+              </div>
+              <h3 className="font-display font-bold text-xl tracking-tight text-foreground">
+                {s.title}
+              </h3>
+              <p className="mt-3 text-sm text-foreground/70 leading-relaxed">
+                {s.body}
+              </p>
+              <p className="mt-6 text-xs font-mono text-foreground/45">
+                {String(i + 1).padStart(2, '0')} / 03
+              </p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
+function BuiltOnSection() {
+  const stack = [
+    { name: 'Claude Opus 4.7', role: 'Verifier · synthesis' },
+    { name: 'Claude Sonnet 4.6', role: 'Generator · vision' },
+    { name: 'Vercel Sandbox', role: 'Ephemeral agent runtime' },
+    { name: 'Supabase', role: 'Auth · DB · Realtime · Storage' },
+    { name: 'Cloud Run', role: 'Express orchestrator' },
+    { name: 'Next.js 16', role: 'Frontend · server actions' },
+  ]
+
+  return (
+    <section className="border-y border-primary/10 bg-background/55 backdrop-blur-sm">
+      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-12">
+        <p className="text-center eyebrow mb-7">
+          Built on best-in-class infrastructure
+        </p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-y-6 gap-x-4">
+          {stack.map((item) => (
+            <div key={item.name} className="text-center">
+              <p className="font-display font-semibold text-sm md:text-base text-foreground/85 leading-tight">
+                {item.name}
+              </p>
+              <p className="mt-1 text-xs font-body text-foreground/50 leading-snug">
+                {item.role}
+              </p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )
@@ -530,7 +643,7 @@ function FreeToolCta() {
 function SiteFooter() {
   return (
     <footer className="bg-foreground text-background">
-      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-14 grid md:grid-cols-5 gap-8">
+      <div className="max-w-7xl mx-auto px-6 lg:px-10 py-16 grid md:grid-cols-6 gap-10">
         <div className="md:col-span-2 space-y-3">
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center justify-center w-8 h-8 rounded-md bg-primary text-primary-foreground text-sm font-bold">
@@ -547,10 +660,11 @@ function SiteFooter() {
           </p>
         </div>
         <FooterCol title="Product" items={[
-          { label: 'Corrections', href: '#flows' },
-          { label: 'Checklist', href: '#flows' },
-          { label: 'City pre-screen', href: '#flows' },
-          { label: 'Eligibility checker', href: '/eligibility' },
+          { label: 'Corrections Interpreter', href: '#flows' },
+          { label: 'Permit Checklist', href: '#flows' },
+          { label: 'City Pre-Screening', href: '#flows' },
+          { label: 'Eligibility Checker', href: '/eligibility' },
+          { label: 'Pricing', href: '/pricing' },
         ]} />
         <FooterCol title="Cities" items={[
           { label: 'Boston', href: '#cities' },
@@ -559,8 +673,14 @@ function SiteFooter() {
           { label: 'Newton', href: '#cities' },
           { label: 'Brookline', href: '#cities' },
         ]} />
-        <FooterCol title="Trust" items={[
+        <FooterCol title="Resources" items={[
+          { label: 'Articles', href: '/articles' },
+          { label: 'How it works', href: '#how-it-works' },
           { label: 'Provenance UI', href: '#provenance' },
+          { label: 'Sample output', href: '#demo' },
+        ]} />
+        <FooterCol title="Trust" items={[
+          { label: 'Methodology', href: '/articles/state-preemption-mgl-40a-3-explained' },
           { label: 'Eval benchmark', href: '#' },
           { label: 'Privacy', href: '/privacy' },
           { label: 'Terms', href: '/terms' },
