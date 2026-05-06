@@ -50,6 +50,10 @@ For fast answers without loading full references, see `references/thresholds-qui
 - `references/dimensional-summary.md` — State floor vs. local ceiling reasoning
 - `references/thresholds-quick-ref.md` — Numbers-only quick card
 - `references/conflicts-and-preemption.md` — When state overrides local
+- `references/stretch-energy-code-225-cmr-22.md` — Base / Stretch / Specialized Opt-In tiers, envelope targets, three compliance pathways
+- `references/fire-prevention-527-cmr.md` — 527 CMR 1 + 12 (electrical) and MGL Ch 148 §§26F/26F½ smoke / CO alarms
+- `references/accessibility-521-cmr.md` — MAAB scoping for single-family ADUs, 30%-of-FCV work-cost threshold, variance procedure
+- `references/plumbing-248-cmr.md` — 248 CMR 10 plumbing + 248 CMR 4-7 gas fitting, four-permit ADU workflow, HPWH coordination
 
 ## Output Contract
 

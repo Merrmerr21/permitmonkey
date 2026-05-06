@@ -1,0 +1,36 @@
+{
+  "id": "plan-review-boston-site-plan-deficiencies",
+  "kind": "plan-review",
+  "description": "Boston ADU plan submission, city plan-checker perspective: a site plan sheet (C1) is missing setback dimensions, the parking compliance table, and an MBTA proximity demonstration. Tests Flow 3 (City Pre-Screening / Plan Review) — agent must spot all three required-element gaps and emit a draft corrections letter that cites both the checklist requirement and the underlying authority. Mock-mode output quotes verbatim sentences from `adu-plan-review/references/checklist-site-plan.md` and `massachusetts-adu/references/conflicts-and-preemption.md` so all four citations verify via Method 1 without network access.",
+  "input": {
+    "prompt": "Plan-review the attached site plan sheet (C1) for an ADU at 47 Marlborough St, Boston (Back Bay). City: Boston. Apply the adu-plan-review skill checklists. Produce a draft corrections letter for items present in the city's perspective.",
+    "plans_path": "test-assets/ma/boston/47-marlborough-st/site-plan.pdf"
+  },
+  "ground_truth": {
+    "expected_verdict": "corrections",
+    "expected_citations": [
+      {
+        "authority": "MGL Ch 40A § 3 as amended by St. 2024, c. 150, § 8",
+        "source_url": "https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section3",
+        "must_appear": true
+      },
+      {
+        "authority": "780 CMR 107.3.1 — construction documents",
+        "source_url": "https://www.mass.gov/state-building-code",
+        "must_appear": true
+      }
+    ],
+    "expected_response_topics": [
+      "setback dimensions required on site plan",
+      "parking compliance table required",
+      "MBTA proximity demonstration required when zero parking is claimed",
+      "no false positives — every deficiency carries a code citation"
+    ]
+  },
+  "mock_output": "# Draft Corrections Letter — 47 Marlborough St, Boston\n\nThe attached site plan sheet (C1) is incomplete in three respects. The following corrections are required before plan-check can proceed.\n\n## Correction #1 — Setback Dimensions Not Shown\n\nThe site plan does not show dimensional setbacks from the proposed ADU footprint to each property line. Front, side, and rear setback lines must each be dimensioned and labeled.\n\nThe site plan is where dimensional compliance is proven, parking is documented, and the MBTA proximity exemption (if claimed) lives. [source: https://www.mass.gov/state-building-code | retrieved: 2026-04-22 | citation: 780 CMR 107.3.1 — construction documents]\n\nVisual element required for compliance: setback dimension lines with arrows; compliance table near the proposed structure.\n\n## Correction #2 — Parking Compliance Table Missing\n\nThe site plan does not include the required parking compliance table (required vs. provided count, with reference to the bylaw or state floor).\n\nWhen a local provision conflicts with the state statute or regulation, the local provision is unenforceable to the extent of the conflict. [source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section3 | retrieved: 2026-04-22 | citation: MGL Ch 40A § 3 as amended by St. 2024, c. 150, § 8]\n\nThe state floor is 1 additional parking space maximum; zero within 0.5 mi of an MBTA commuter rail / subway / ferry / bus station. The compliance table must show whether the parcel is claiming the transit exemption.\n\n## Correction #3 — MBTA Proximity Demonstration Not Provided\n\nIf the parking exemption is being claimed, the site plan or cover sheet must document the parcel-to-station distance with a routing tool screenshot and a measurement date.\n\nTreat the parking exemption as the default for Boston ADU work, not the exception. [source: https://www.mass.gov/info-details/accessory-dwelling-units | retrieved: 2026-04-22 | citation: 760 CMR 71.00 transit-proximity guidance]\n\n## Summary\n\nThree corrections issued. No items rise to outright denial; all are correctable with revised plan sheets. We will re-review on resubmission.\n",
+  "metadata": {
+    "created": "2026-05-04",
+    "last_verified": "2026-05-04",
+    "domain": "boston-adu-plan-review"
+  }
+}

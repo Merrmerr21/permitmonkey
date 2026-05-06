@@ -1,0 +1,46 @@
+{
+  "id": "eligibility-boston-back-bay",
+  "kind": "eligibility-check",
+  "description": "Boston Back Bay eligibility scenario: 5,000 sqft lot, 1,800 sqft primary dwelling, attached ADU at 800 sqft, within 0.5 mi of MBTA service. Tests whether the agent (a) returns a by-right verdict under MGL Ch 40A §3 + 760 CMR 71.00, (b) captures the parking-exemption transit clause, (c) flags Back Bay's Landmarks Commission overlay (which is NOT preempted by Ch. 150). Mock-mode output quotes verbatim sentences from massachusetts-adu and boston-adu skill references so Method 1 verification succeeds without network access; agent-mode runs will be graded on the same ground truth once the cross-package wiring lands.",
+  "input": {
+    "prompt": "Is a 5,000 sqft Back Bay parcel with an 1,800 sqft primary dwelling eligible for an 800 sqft attached ADU under Massachusetts state law and Boston zoning?",
+    "eligibility": {
+      "address": "123 Beacon St, Boston, MA 02116",
+      "city": "Boston",
+      "lot_size_sqft": 5000,
+      "primary_dwelling_sqft": 1800,
+      "zoning_district": "Back Bay",
+      "proposed_adu_type": "attached",
+      "proposed_adu_sqft": 800,
+      "within_half_mile_transit": true,
+      "in_historic_district": true
+    }
+  },
+  "ground_truth": {
+    "expected_verdict": "approved",
+    "expected_citations": [
+      {
+        "authority": "MGL Ch 40A § 3 as amended by St. 2024, c. 150, § 8",
+        "source_url": "https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section3",
+        "must_appear": true
+      },
+      {
+        "authority": "760 CMR 71.00",
+        "source_url": "https://www.mass.gov/info-details/accessory-dwelling-units",
+        "must_appear": true
+      }
+    ],
+    "expected_response_topics": [
+      "by-right protected use",
+      "parking exemption within 0.5 mi of MBTA",
+      "size cap (lesser of 900 sqft or 50% of primary)",
+      "Boston Landmarks Commission review for Back Bay (not preempted)"
+    ]
+  },
+  "mock_output": "The proposed ADU is by-right under Massachusetts state law and the verdict is approved.\n\nAdds the operative by-right paragraph making ADUs a protected use. [source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section3 | retrieved: 2026-04-22 | citation: MGL Ch 40A § 3 as amended by St. 2024, c. 150, § 8]\n\nTreat the parking exemption as the default for Boston ADU work, not the exception. [source: https://www.mass.gov/info-details/accessory-dwelling-units | retrieved: 2026-04-22 | citation: 760 CMR 71.00]\n\nThis is the legal definition that every municipal bylaw must now work from. [source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section1A | retrieved: 2026-04-22 | citation: MGL Ch 40A § 1A as amended by St. 2024, c. 150, § 7]\n\nBack Bay sits inside the Back Bay Architectural District under MGL Ch 40C, and Landmarks Commission review for exterior alterations is NOT preempted by Ch. 150 of the Acts of 2024.\n",
+  "metadata": {
+    "created": "2026-05-04",
+    "last_verified": "2026-05-04",
+    "domain": "boston-adu-eligibility"
+  }
+}

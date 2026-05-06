@@ -1,15 +1,19 @@
 'use client'
 
-import { useEffect, useState, useMemo } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
-import ReactMarkdown from 'react-markdown'
-import remarkGfm from 'remark-gfm'
 import Link from 'next/link'
 import { Card, CardContent } from '@/components/ui/card'
 import { AduMiniature } from '@/components/adu-miniature'
 import { Loader2Icon, ClockIcon, CpuIcon, DollarSignIcon, ArrowLeftIcon } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { Output, FlowType } from '@/types/database'
+import { extractCitations } from '@/lib/citations/extract'
+import type { VerifiedCitation } from '@/lib/citations/types'
+import { CitationPanelProvider } from '@/components/citation-panel-context'
+import { CitationPanel } from '@/components/citation-panel'
+import { MarkdownWithCitations } from '@/components/markdown-with-citations'
+import { verifyCitationsAction } from '@/app/actions/verify-citations'
 
 interface ResultsViewerProps {
   projectId: string
@@ -23,6 +27,7 @@ export function ResultsViewer({ projectId, flowType, pinnedOutputId }: ResultsVi
   const [output, setOutput] = useState<Output | null>(null)
   const [loading, setLoading] = useState(true)
   const [activeTab, setActiveTab] = useState<TabKey>('')
+  const [verifiedByTab, setVerifiedByTab] = useState<Record<string, VerifiedCitation[]>>({})
   const supabase = useMemo(() => createClient(), [])
 
   useEffect(() => {
@@ -84,7 +89,45 @@ export function ResultsViewer({ projectId, flowType, pinnedOutputId }: ResultsVi
     return `${minutes}m ${seconds}s`
   }
 
+  const activeMarkdown = getContent(activeTab) || 'No content available for this tab.'
+
+  // Phase A starting state: every extracted tag renders as 'pending' until
+  // the server action returns. Phase B replaces this with verified statuses
+  // from verifyCitationsAction() — Method 1 (skill reference) + Method 2
+  // (canonical URL fetch). Falls back to 'pending' if verification is still
+  // in flight, 'unverified' if the action throws.
+  const citations: VerifiedCitation[] =
+    verifiedByTab[activeTab] ??
+    extractCitations(activeMarkdown).map((c) => ({
+      ...c,
+      verification: { status: 'pending' as const },
+    }))
+
+  useEffect(() => {
+    if (!activeTab || verifiedByTab[activeTab]) return
+    if (!activeMarkdown || activeMarkdown === 'No content available for this tab.') return
+    let cancelled = false
+    verifyCitationsAction(activeMarkdown)
+      .then((verified) => {
+        if (cancelled) return
+        setVerifiedByTab((prev) => ({ ...prev, [activeTab]: verified }))
+      })
+      .catch((err) => {
+        if (cancelled) return
+        console.warn('verifyCitationsAction failed:', err)
+        const fallback = extractCitations(activeMarkdown).map((c) => ({
+          ...c,
+          verification: { status: 'unverified' as const, error: 'verification_action_failed' },
+        }))
+        setVerifiedByTab((prev) => ({ ...prev, [activeTab]: fallback }))
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [activeTab, activeMarkdown, verifiedByTab])
+
   return (
+    <CitationPanelProvider>
     <div className="max-w-5xl mx-auto space-y-6">
       {/* Back arrow + Header */}
       <div className="animate-fade-up">
@@ -154,13 +197,16 @@ export function ResultsViewer({ projectId, flowType, pinnedOutputId }: ResultsVi
       {/* Content — full width */}
       <Card className="shadow-[0_8px_32px_rgba(28,25,23,0.08)] border-border/50">
         <CardContent className="p-8">
-          <div className="prose-permitmonkey">
-            <ReactMarkdown remarkPlugins={[remarkGfm]}>
-              {getContent(activeTab) || 'No content available for this tab.'}
-            </ReactMarkdown>
-          </div>
+          <MarkdownWithCitations
+            citations={citations}
+            className="prose-permitmonkey"
+          >
+            {activeMarkdown}
+          </MarkdownWithCitations>
         </CardContent>
       </Card>
     </div>
+    <CitationPanel />
+    </CitationPanelProvider>
   )
 }

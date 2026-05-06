@@ -104,6 +104,26 @@ export interface ContractorAnswer {
   updated_at: string
 }
 
+export type LeadSource =
+  | 'eligibility_checker'
+  | 'pricing_page'
+  | 'newsletter'
+  | 'cold_outreach_response'
+
+export interface Lead {
+  id: string
+  email: string
+  source: LeadSource
+  city: string | null
+  verdict: 'likely_eligible' | 'needs_review' | 'not_eligible' | null
+  utm_source: string | null
+  utm_medium: string | null
+  utm_campaign: string | null
+  ip_hash: string | null
+  unsubscribed_at: string | null
+  created_at: string
+}
+
 // Database type for Supabase client generic
 export interface Database {
   permitmonkey: {
@@ -132,6 +152,11 @@ export interface Database {
         Row: ContractorAnswer
         Insert: Partial<ContractorAnswer> & Pick<ContractorAnswer, 'project_id' | 'question_key' | 'question_text'>
         Update: Partial<ContractorAnswer>
+      }
+      leads: {
+        Row: Lead
+        Insert: Partial<Lead> & Pick<Lead, 'email'>
+        Update: Partial<Lead>
       }
     }
   }

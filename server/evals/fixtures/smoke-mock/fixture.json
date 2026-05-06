@@ -1,0 +1,23 @@
+{
+  "id": "smoke-mock",
+  "kind": "eligibility-check",
+  "description": "Smoke fixture for the eval harness skeleton — no real plans, no real correction letter. The MockRunner returns canned markdown that includes one well-formed inline provenance tag. Verifies that discover → run → extract → score → report works end-to-end without invoking the Agent SDK. Replace with real Boston fixtures once test-asset approval is granted.",
+  "input": {
+    "prompt": "Smoke test for the eval harness — not a real eligibility check."
+  },
+  "ground_truth": {
+    "expected_verdict": "approved",
+    "expected_citations": [
+      {
+        "authority": "St. 2024, c. 150, §8",
+        "source_url": "https://malegislature.gov/Laws/SessionLaws/Acts/2024/Chapter150",
+        "must_appear": true
+      }
+    ]
+  },
+  "metadata": {
+    "created": "2026-05-04",
+    "last_verified": "2026-05-04",
+    "domain": "skeleton-smoke"
+  }
+}

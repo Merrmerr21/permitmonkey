@@ -40,7 +40,7 @@ export interface EligibilityOutput {
     specialized_code: 'yes' | 'no' | 'unknown';
   };
   next_steps: string[];
-  citations: Array<{ authority: string; source_url: string; relevance: string }>;
+  citations: Array<{ authority: string; source_url: string; relevance: string; excerpt: string }>;
   upgrade_cta: string;
   disclaimer: string;
 }
@@ -169,16 +169,22 @@ export function evaluateEligibility(input: EligibilityInput): EligibilityOutput 
       : 'Confirm whether the municipality has adopted the Stretch or Specialized Energy Code.',
   ];
 
+  // Excerpts are verbatim sentences from the massachusetts-adu skill reference
+  // files; the verifier (Method 1) walks those files and confirms the substring
+  // match before the contractor sees a "verified" pill. Same ground-truth
+  // sentences as the eligibility-boston-back-bay eval fixture.
   const citations = [
     {
       authority: 'MGL Ch 40A § 3 as amended by St. 2024, c. 150, § 8',
       source_url: 'https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section3',
       relevance: 'State by-right protection for protected-use accessory dwelling units',
+      excerpt: 'Adds the operative by-right paragraph making ADUs a protected use.',
     },
     {
       authority: '760 CMR 71.00',
-      source_url: 'https://www.mass.gov/regulations/760-CMR-71-protected-use-accessory-dwelling-units',
+      source_url: 'https://www.mass.gov/info-details/accessory-dwelling-units',
       relevance: 'EOHLC implementing regulation — size cap, parking cap, owner-occupancy preemption',
+      excerpt: 'Treat the parking exemption as the default for Boston ADU work, not the exception.',
     },
   ];
 

@@ -1,0 +1,35 @@
+{
+  "id": "corrections-boston-parking-preempted",
+  "kind": "corrections-letter",
+  "description": "Boston correction-response scenario: city plan checker requires 1 off-street parking space for a proposed ADU on a parcel within 0.4 mi of an MBTA Red Line station. The agent must (a) recognize the parking item as state-preempted under MGL Ch 40A § 3 paragraph 2, (b) accept the other corrections without challenging them, (c) draft a professional, citation-anchored response letter — not a confrontation. Mock-mode output quotes verbatim from `massachusetts-adu/references/chapter-150-of-2024.md`, `conflicts-and-preemption.md`, and `boston-adu/references/transit-parking.md` so all three Method 1 verifications succeed without network access. Tests Flow 1 (Corrections Letter Interpreter) — the production primary flow.",
+  "input": {
+    "prompt": "Draft a response to a Boston ISD corrections letter that requires 1 off-street parking space for a proposed ADU. The parcel is at 47 Marlborough St, Boston (Back Bay), within 0.4 mi walking distance of MBTA Hynes Convention Center (Green Line). The other corrections (egress window in basement bedroom, smoke alarm coverage, energy-code envelope R-values) we accept and have addressed in the revised plan set."
+  },
+  "ground_truth": {
+    "expected_verdict": "corrections",
+    "expected_citations": [
+      {
+        "authority": "MGL Ch 40A § 3 as amended by St. 2024, c. 150, § 8",
+        "source_url": "https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section3",
+        "must_appear": true
+      },
+      {
+        "authority": "760 CMR 71.00",
+        "source_url": "https://www.mass.gov/info-details/accessory-dwelling-units",
+        "must_appear": true
+      }
+    ],
+    "expected_response_topics": [
+      "state preemption of parking-within-0.5-mi-of-MBTA",
+      "owner-occupancy preemption (mentioned even though not the live correction)",
+      "acceptance of the unrelated corrections",
+      "professional tone, no confrontation"
+    ]
+  },
+  "mock_output": "Re: Building Permit Application — Response to Corrections Letter\n\nThank you for the corrections letter dated 2026-05-01. We have addressed the egress window, smoke alarm coverage, and energy-code envelope items in the attached revised plan set; please see the marked-up sheets in Appendix A.\n\nOne item — Correction #3, Off-Street Parking — we respectfully cannot add, because we believe state law preempts the requirement on this parcel.\n\nWhen a local provision conflicts with the state statute or regulation, the local provision is unenforceable to the extent of the conflict. [source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section3 | retrieved: 2026-04-22 | citation: MGL Ch 40A § 3 as amended by St. 2024, c. 150, § 8]\n\nNo additional parking space shall be required for an accessory dwelling located not more than 0.5 miles from a commuter rail station, subway station, ferry terminal or bus station. [source: https://www.mass.gov/info-details/accessory-dwelling-units | retrieved: 2026-04-22 | citation: 760 CMR 71.00]\n\nAny city bylaw requiring the owner to live on-site (in either the ADU or the primary) is unenforceable. [source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section3 | retrieved: 2026-04-22 | citation: MGL Ch 40A § 3 owner-occupancy preemption]\n\nTreat the parking exemption as the default for Boston ADU work, not the exception. [source: https://www.mass.gov/info-details/accessory-dwelling-units | retrieved: 2026-04-22 | citation: 760 CMR 71.00 transit-proximity guidance]\n\nThe walking distance from the parcel front door at 47 Marlborough St to the head house of MBTA Hynes Convention Center station was measured at 0.41 mi via Google Maps Walking Directions on 2026-04-30; the screenshot is attached as Exhibit B. We are happy to provide a stamped surveyor's measurement on request.\n\nWe accept all other corrections and the revised plan set is submitted herewith for re-review.\n",
+  "metadata": {
+    "created": "2026-05-04",
+    "last_verified": "2026-05-04",
+    "domain": "boston-adu-corrections-response"
+  }
+}
