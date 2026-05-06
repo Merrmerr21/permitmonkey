@@ -2,8 +2,8 @@ import fs from 'node:fs/promises'
 import path from 'node:path'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { MarkdownWithCitations } from '@/components/markdown-with-citations'
 import { verifyCitationsAction } from '@/app/actions/verify-citations'
+import { ArticleBody } from './article-body'
 
 const ARTICLES_DIR = path.join(process.cwd(), 'content', 'articles')
 
@@ -156,11 +156,7 @@ export default async function ArticlePage({
           </p>
         </div>
 
-        <article className="font-body text-foreground/90 leading-7 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:font-display [&_h2]:mt-12 [&_h2]:mb-4 [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:mt-8 [&_h3]:mb-3 [&_p]:mb-5 [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-5 [&_li]:mb-1.5 [&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-5 [&_strong]:font-semibold [&_a]:text-primary [&_a]:underline [&_a]:underline-offset-2">
-          <MarkdownWithCitations citations={citations}>
-            {article.body}
-          </MarkdownWithCitations>
-        </article>
+        <ArticleBody markdown={article.body} citations={citations} />
 
         <section className="mt-16 p-8 rounded-2xl bg-foreground/5 border border-border/40">
           <h2 className="font-display font-bold text-xl text-foreground">
