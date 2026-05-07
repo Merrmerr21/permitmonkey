@@ -155,3 +155,13 @@ If encountered, invoke preemption per `conflicts-and-preemption.md` in the `mass
 Check zoning code updates quarterly. Boston's implementation of Ch 150 is actively evolving.
 
 **Last verified:** 2026-04-22. Next check: 2026-07-22.
+
+## Source Verification
+
+[source: https://library.municode.com/ma/boston/codes/redevelopment_authority | retrieved: 2026-04-22 | citation: Boston Zoning Code on Municode (special-act zoning framework, JS-rendered)]
+[source: https://www.bostonplans.org/ | retrieved: 2026-04-22 | citation: BPDA Neighborhood Housing Zoning — per-neighborhood ADU amendments]
+[source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section3 | retrieved: 2026-04-22 | citation: MGL Ch 40A § 3 — state floor preempts conflicting Boston zoning]
+[source: https://www.mass.gov/state-building-code | retrieved: 2026-04-22 | citation: 780 CMR 10th Edition — applies to Boston ADU construction]
+[source: https://www.mass.gov/info-details/specialized-stretch-code | retrieved: 2026-04-22 | citation: 225 CMR 22 — Boston has adopted the Specialized Opt-In Energy Code]
+
+**Last verified:** 2026-04-22

@@ -125,6 +125,10 @@ When a Boston ADU correction invokes building code:
 
 ## Source Maintenance
 
+[source: https://www.mass.gov/state-building-code | retrieved: 2026-05-03 | citation: 780 CMR — MA State Building Code, 10th Edition (Oct 2023) — IRC 2021 / IBC 2021 base]
+[source: https://www.mass.gov/info-details/specialized-stretch-code | retrieved: 2026-05-03 | citation: 225 CMR 22 Appendix RC — Specialized Opt-In Energy Code (Boston adopted)]
+[source: https://www.boston.gov/departments/inspectional-services | retrieved: 2026-05-03 | citation: Boston ISD — interprets and applies 780 CMR locally]
+
 - Re-verify 780 CMR edition currency annually (next major edition transition: pending)
 - Re-verify Specialized Opt-In Code 225 CMR 22 Appendix RC currency quarterly
 - Watch for ISD policy memos that amend or interpret 780 CMR for Boston application

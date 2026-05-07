@@ -82,9 +82,10 @@ ADU corrections most commonly arise on prescriptive path. If the contractor want
 
 ## Source Verification
 
-- 780 CMR portal: https://www.mass.gov/state-building-code
-- BBRS: https://www.mass.gov/orgs/board-of-building-regulations-and-standards
-- IRC/IBC base codes: https://codes.iccsafe.org/
+[source: https://www.mass.gov/state-building-code | retrieved: 2026-04-22 | citation: 780 CMR 10th Edition (Oct 2023) — IRC 2021 / IBC 2021 base with MA amendments]
+[source: https://www.mass.gov/orgs/board-of-building-regulations-and-standards | retrieved: 2026-04-22 | citation: BBRS — Board of Building Regulations and Standards]
+[source: https://codes.iccsafe.org/ | retrieved: 2026-04-22 | citation: IRC 2021 R310 (egress), R302 (fire separation), R314/R315 (alarms), M1505 (mechanical ventilation), Ch 11 (energy)]
+[source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleXX/Chapter148/Section26F | retrieved: 2026-04-22 | citation: MGL Ch 148 §26F (smoke detectors) and §26F½ (CO detectors)]
 
 **Last verified:** 2026-04-22
 

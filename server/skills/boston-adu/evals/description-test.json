@@ -1,0 +1,20 @@
+{
+  "skill": "boston-adu",
+  "should_trigger": [
+    "what's the lot coverage rule for an ADU in Roxbury",
+    "explain Boston's Specialized Opt-In Energy Code posture",
+    "is my Beacon Hill ADU subject to BFD plan review",
+    "Boston wants me to file under Article 80 — is that right for an ADU",
+    "BPDA Neighborhood Housing Zoning status for Roslindale",
+    "what's the ISD permit fee for an attached ADU",
+    "is the Mattapan PLAN amendment in effect"
+  ],
+  "should_not_trigger": [
+    "what does Newton zoning say about setbacks",
+    "Cambridge ADU dimensional standards",
+    "what does MGL Ch 40A §3 say generically",
+    "summarize a contractor email",
+    "fix a bug in the verifier"
+  ],
+  "rationale": "Must activate on Boston-specific zoning, BPDA, ISD, BFD, and PLAN-neighborhood queries. Must NOT activate on other-MA-city queries or pure state-law questions (those route to massachusetts-adu)."
+}

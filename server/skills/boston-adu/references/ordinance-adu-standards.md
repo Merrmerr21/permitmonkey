@@ -110,10 +110,10 @@ Is the FAR / lot-coverage compliance table present and correct?
 
 ## Source Verification
 
-- BPDA Neighborhood Housing Zoning landing page: https://www.bostonplans.org/planning-zoning/zoning-initiatives/neighborhood-housing
-- Boston Zoning Code on Municode (browser-only): https://library.municode.com/ma/boston/codes/redevelopment_authority
-- MGL Ch 40A §1A and §3 (state floor — directly verifiable): https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A
-- BPDA Plan: Mattapan resources: https://www.bostonplans.org/planning-zoning/zoning-initiatives/neighborhood-housing/plan-mattapan
+[source: https://www.bostonplans.org/planning-zoning/zoning-initiatives/neighborhood-housing | retrieved: 2026-05-04 | citation: BPDA Neighborhood Housing Zoning — per-neighborhood ADU amendment initiative]
+[source: https://library.municode.com/ma/boston/codes/redevelopment_authority | retrieved: 2026-05-04 | citation: Boston Zoning Code on Municode — JS-rendered, browser-only]
+[source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A | retrieved: 2026-05-04 | citation: MGL Ch 40A §§ 1A and 3 — state floor for Boston ADU]
+[source: https://www.bostonplans.org/planning-zoning/zoning-initiatives/neighborhood-housing/plan-mattapan | retrieved: 2026-05-04 | citation: PLAN: Mattapan resources — Boston's first adopted neighborhood ADU amendment]
 
 **Verification posture:** State-floor items in this file are verified against MGL Ch 40A and the Acts of 2024. Boston-specific dimensional values are explicitly NOT verified at this revision and are marked TBD. Future revisions should fill these in by reading the controlling neighborhood Article on Municode (browser session required); once filled in, replace the TBD markers with the actual values plus an inline provenance tag pointing to the Municode permalink.
 

@@ -1,0 +1,18 @@
+{
+  "skill": "adu-corrections-flow",
+  "should_trigger": [
+    "the contractor uploaded a corrections letter and the plan binder",
+    "analyze this corrections letter for the Roslindale ADU",
+    "begin Phase 1 of the corrections pipeline",
+    "categorize each correction item and generate contractor questions",
+    "we received a city corrections letter — start the analysis"
+  ],
+  "should_not_trigger": [
+    "the contractor has answered the questions, generate the response package",
+    "review this plan binder for compliance (city-side)",
+    "extract specific sheets from this PDF",
+    "what does state law say about parking",
+    "fix a bug"
+  ],
+  "rationale": "Must activate when both a corrections letter AND a plan binder are present (Phase 1 inputs). Must NOT activate on Phase 2 inputs (where adu-corrections-complete takes over), city-side review (adu-plan-review), or pure code lookups."
+}

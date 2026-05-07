@@ -1,0 +1,21 @@
+{
+  "skill": "massachusetts-adu",
+  "should_trigger": [
+    "what does MGL Ch 40A §3 say about ADU parking",
+    "is owner-occupancy preempted under state law",
+    "the city wants to require a special permit — is that legal",
+    "what's the state floor on ADU size",
+    "explain Chapter 150 of the Acts of 2024",
+    "what does 760 CMR 71.00 say about overlay districts",
+    "how does the Stretch Energy Code apply to ADU additions",
+    "what is the state preemption posture on dimensional setbacks"
+  ],
+  "should_not_trigger": [
+    "what's Boston's specific lot coverage for an ADU",
+    "what does Cambridge zoning say about historic districts",
+    "draft a marketing email",
+    "fix this bug in the dashboard",
+    "add a new fixture to the eval harness"
+  ],
+  "rationale": "Must activate on state-level statute / regulation / preemption queries. Must NOT activate on city-specific bylaw questions (those route to ma-city-research or a dedicated city skill) or non-domain queries."
+}

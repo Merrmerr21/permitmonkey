@@ -120,6 +120,11 @@ When a Boston ADU correction touches fire-life-safety:
 
 ## Source Maintenance
 
+[source: https://www.mass.gov/info-details/527-cmr-1-comprehensive-fire-safety-code | retrieved: 2026-05-03 | citation: 527 CMR 1 — MA Comprehensive Fire Safety Code]
+[source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleXX/Chapter148 | retrieved: 2026-05-03 | citation: MGL Ch 148 §§ 26F (smoke) and 26F½ (CO) — alarm requirements at sale/transfer/permit]
+[source: https://www.boston.gov/departments/fire-prevention | retrieved: 2026-05-03 | citation: Boston Fire Department — local plan review authority]
+[source: https://www.mass.gov/state-building-code | retrieved: 2026-05-03 | citation: 780 CMR 10th Edition — IRC 2021 R302 (fire separation), R313 (sprinklers — MA has not adopted)]
+
 - Re-verify quarterly. BFD updates plan-review procedures occasionally.
 - Watch for any state-level reconsideration of IRC R313 (residential sprinklers). MA has historically declined to adopt; periodic legislative pressure exists.
 

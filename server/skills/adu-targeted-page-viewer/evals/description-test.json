@@ -1,0 +1,18 @@
+{
+  "skill": "adu-targeted-page-viewer",
+  "should_trigger": [
+    "the corrections letter references Sheet A3 — locate it in the binder",
+    "build the sheet manifest for this plan PDF",
+    "show me Detail 2/S3.1 from the plan set",
+    "extract the sheet index and map sheet labels to PDF page numbers",
+    "open the M-101 mechanical sheet from this binder"
+  ],
+  "should_not_trigger": [
+    "what does state law say about egress",
+    "city-side review of this plan binder",
+    "Phase 2 — generate the response package",
+    "draft a marketing email",
+    "fix a bug"
+  ],
+  "rationale": "Must activate when a plan PDF needs to be navigated by sheet reference (A3, S3.1, M-101 patterns) or when the sheet manifest is needed. Must NOT activate on full-binder review (adu-plan-review) or pure code lookups."
+}

@@ -181,6 +181,26 @@ Local eval runs proxy through `agents-permitmonkey/dist/cli.js` via the
 subprocess bridge in [`server/evals/runner.ts`](server/evals/runner.ts), so the
 agents package needs to be built before `npm run evals` in `server/` will pass.
 
+### Pre-PR checks
+
+The CI pipeline at [`.github/workflows/evals.yml`](.github/workflows/evals.yml)
+runs four jobs on every push that touches `server/`, `agents-permitmonkey/`,
+or `frontend/`. To match CI locally:
+
+- `cd server && npm run lint:provenance -- --strict` — every skill reference
+  file must declare provenance per master playbook §225. Either tag claims
+  inline or add a `## Source Verification` / `## Source Maintenance` H2 with
+  inline tags. Zero violations is the gate.
+- `cd server && npm run eval:test` — citation extractor, citation verifier,
+  injection pre-scan, cost telemetry, and skill-description trigger tests.
+- `cd agents-permitmonkey && npm test` — Generator-Verifier flow types,
+  corrections state machine, and the cache-prefix discipline invariants
+  (see [`docs/cache-discipline.md`](docs/cache-discipline.md) for the four
+  rules CI enforces against the agent SDK system prompt).
+- `cd frontend && npm test` — eligibility logic, leads validation, and the
+  shareable-verdict-token round-trip used by `/eligibility/v/[token]`
+  ([`frontend/lib/verdict-token.ts`](frontend/lib/verdict-token.ts)).
+
 ## Test Data Attribution
 
 The `test-assets/` directory contains real permit documents used for development and testing:

@@ -309,9 +309,10 @@ Flag for human attention if:
 
 ## Source Verification
 
-- 780 CMR home: https://www.mass.gov/state-building-code
-- MGL Ch 40A §3: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section3
-- Ch 150 of 2024: https://malegislature.gov/Laws/SessionLaws/Acts/2024/Chapter150
-- MA Stretch/Specialized Code: https://www.mass.gov/info-details/specialized-stretch-code
+[source: https://www.mass.gov/state-building-code | retrieved: 2026-04-22 | citation: 780 CMR — MA State Building Code, 10th Edition (Oct 2023) — IRC 2021/IBC 2021]
+[source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section3 | retrieved: 2026-04-22 | citation: MGL Ch 40A § 3 — Zoning Act, by-right ADU paragraph]
+[source: https://malegislature.gov/Laws/SessionLaws/Acts/2024/Chapter150 | retrieved: 2026-04-22 | citation: St. 2024, c. 150 §§ 7-8 — Affordable Homes Act ADU amendments]
+[source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleXVI/Chapter112 | retrieved: 2026-04-22 | citation: MGL Ch 112 §§ 60A (architects) and 81D (engineers) — licensure and seal]
+[source: https://www.mass.gov/info-details/specialized-stretch-code | retrieved: 2026-04-22 | citation: 225 CMR 22 — Stretch and Specialized Opt-In Energy Code]
 
 **Last verified:** 2026-04-22

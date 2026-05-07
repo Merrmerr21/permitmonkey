@@ -126,8 +126,11 @@ A bare assertion of preemption without citations will not hold up. Do it right.
 
 ## Source Verification
 
-- MGL Ch 40A §3: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section3
-- Ch 150 of 2024: https://malegislature.gov/Laws/SessionLaws/Acts/2024/Chapter150
-- 760 CMR 71.00: via mass.gov ADU page
+[source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section3 | retrieved: 2026-04-22 | citation: MGL Ch 40A § 3 — by-right ADU, occupancy, parking ceiling]
+[source: https://malegislature.gov/Laws/SessionLaws/Acts/2024/Chapter150 | retrieved: 2026-04-22 | citation: St. 2024, c. 150, §§ 7-8 — amends Ch 40A §§ 1A and 3]
+[source: https://www.mass.gov/info-details/accessory-dwelling-units | retrieved: 2026-04-22 | citation: 760 CMR 71.00 — EOHLC Protected Use ADU regulation]
+[source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40C | retrieved: 2026-04-22 | citation: MGL Ch 40C — Historic Districts Act]
+[source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleXIX/Chapter131/Section40 | retrieved: 2026-04-22 | citation: MGL Ch 131 § 40 — Wetlands Protection Act]
+[source: https://www.mass.gov/state-building-code | retrieved: 2026-04-22 | citation: 780 CMR — MA State Building Code, 10th Edition]
 
 **Last verified:** 2026-04-22

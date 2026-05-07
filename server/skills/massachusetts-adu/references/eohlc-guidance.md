@@ -76,7 +76,11 @@ EOHLC hasn't issued guidance on every edge case. When the regulation is silent:
 - Note the interpretive gap in the response
 - Recommend the contractor confirm with the local building department before committing to an interpretation
 
-## Source Verification Policy
+## Source Verification
+
+[source: https://www.mass.gov/info-details/accessory-dwelling-units | retrieved: 2026-04-22 | citation: EOHLC ADU portal — 760 CMR 71.00 implementing regulation roster]
+[source: https://www.mass.gov/orgs/executive-office-of-housing-and-livable-communities | retrieved: 2026-04-22 | citation: EOHLC — successor to DHCD, statutory authority for ADU guidance]
+[source: https://malegislature.gov/Laws/SessionLaws/Acts/2024/Chapter150 | retrieved: 2026-04-22 | citation: St. 2024, c. 150 §§ 7-8 — basis for EOHLC ADU rule-making]
 
 Re-verify all URLs quarterly. If EOHLC publishes updated guidance, update this roster within 7 days.
 

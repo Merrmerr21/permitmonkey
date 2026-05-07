@@ -75,6 +75,11 @@ When a Boston ADU correction touches fees:
 
 ## Source Maintenance
 
+[source: https://www.boston.gov/departments/inspectional-services | retrieved: 2026-05-03 | citation: ISD — Boston Inspectional Services Department, building permit fee schedule]
+[source: https://www.bostonplans.org/planning-zoning/zoning-code-and-mapping | retrieved: 2026-05-03 | citation: Boston Zoning Code Article 80 — large-project review thresholds]
+[source: https://www.bostonplans.org/housing/inclusionary-development-policy | retrieved: 2026-05-03 | citation: Inclusionary Development Policy — IDP unit-count thresholds]
+[source: https://www.mass.gov/info-details/accessory-dwelling-units | retrieved: 2026-05-03 | citation: 760 CMR 71.00 — EOHLC implementing regulation, fee preemption analysis]
+
 - Re-verify the ISD building permit fee schedule quarterly. Boston updates fees at the start of each fiscal year (July 1).
 - Watch for changes to Article 80 linkage thresholds and IDP unit-count thresholds.
 - If 760 CMR 71.00 receives an EOHLC TA letter on Boston-specific impact-fee applicability, update the impact-fee section here and in `eohlc-compliance.md`.

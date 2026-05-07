@@ -151,3 +151,12 @@ When running this decision tree, return:
 - Don't forget the "lesser of" rule on size
 - Don't overlook that 2nd ADU is NOT by-right
 - Don't skip the overlay check (historic and wetlands frequently apply in MA)
+
+## Source Verification
+
+[source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section1A | retrieved: 2026-04-22 | citation: MGL Ch 40A § 1A — definitions, 900 sq ft / 50% size cap]
+[source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section3 | retrieved: 2026-04-22 | citation: MGL Ch 40A § 3 — by-right ADU, single-ADU rule, parking ceiling]
+[source: https://malegislature.gov/Laws/SessionLaws/Acts/2024/Chapter150 | retrieved: 2026-04-22 | citation: St. 2024, c. 150 §§ 7-8 — Affordable Homes Act amendments]
+[source: https://www.mass.gov/info-details/accessory-dwelling-units | retrieved: 2026-04-22 | citation: 760 CMR 71.00 — EOHLC Protected Use ADU regulation]
+
+**Last verified:** 2026-04-22

@@ -1,0 +1,20 @@
+{
+  "skill": "ma-city-research",
+  "should_trigger": [
+    "what does Newton's bylaw say about ADU setbacks",
+    "Cambridge dimensional standards for an attached ADU",
+    "Somerville historic district overlay rules",
+    "Brookline short-term rental restrictions",
+    "research the local zoning bylaw for Worcester",
+    "what's the city correction citing — does that bylaw even exist",
+    "find Wellesley's current ADU rules"
+  ],
+  "should_not_trigger": [
+    "what does MGL Ch 40A §3 say generically",
+    "is owner-occupancy preempted",
+    "Boston-specific zoning",
+    "fix a bug",
+    "draft a contractor email"
+  ],
+  "rationale": "Must activate on local bylaw / municipal code / city-specific dimensional queries. Must NOT activate on state-level questions (route to massachusetts-adu) or on Boston-specific questions when boston-adu is also active and authoritative."
+}

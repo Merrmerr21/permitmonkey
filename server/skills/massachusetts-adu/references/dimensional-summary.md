@@ -101,3 +101,12 @@ Only invoke preemption (i.e., "this city requirement is unenforceable") when:
 - The contractor is willing to escalate if challenged
 
 Prefer compliance with local rules when they are within the reserved dimensional/design authority. Save preemption arguments for clear cases. Escalation is costly for everyone.
+
+## Source Verification
+
+[source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section3 | retrieved: 2026-04-22 | citation: MGL Ch 40A § 3 — state floor for use, parking ceiling, occupancy preemption]
+[source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section1A | retrieved: 2026-04-22 | citation: MGL Ch 40A § 1A — definitions including 900 sq ft / 50% size cap]
+[source: https://malegislature.gov/Laws/SessionLaws/Acts/2024/Chapter150 | retrieved: 2026-04-22 | citation: St. 2024, c. 150 §§ 7-8 — Affordable Homes Act amendments]
+[source: https://www.mass.gov/info-details/accessory-dwelling-units | retrieved: 2026-04-22 | citation: 760 CMR 71.00 — EOHLC implementing regulation]
+
+**Last verified:** 2026-04-22

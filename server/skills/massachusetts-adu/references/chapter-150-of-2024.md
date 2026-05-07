@@ -73,9 +73,9 @@ EOHLC issued implementing regulations in 760 CMR 71.00 "Protected Use Accessory 
 
 ## Source Verification
 
-- Acts of 2024, Chapter 150 (canonical): https://malegislature.gov/Laws/SessionLaws/Acts/2024/Chapter150
-- MGL Ch 40A § 3 current text: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section3
-- MGL Ch 40A § 1A current text: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section1A
-- Mass.gov ADU info: https://www.mass.gov/info-details/accessory-dwelling-units
+[source: https://malegislature.gov/Laws/SessionLaws/Acts/2024/Chapter150 | retrieved: 2026-04-22 | citation: St. 2024, c. 150 — Affordable Homes Act, §§ 7-8 govern ADUs]
+[source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section3 | retrieved: 2026-04-22 | citation: MGL Ch 40A § 3 — current text after Ch 150 § 8]
+[source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section1A | retrieved: 2026-04-22 | citation: MGL Ch 40A § 1A — definitions, "accessory dwelling unit"]
+[source: https://www.mass.gov/info-details/accessory-dwelling-units | retrieved: 2026-04-22 | citation: 760 CMR 71.00 — EOHLC implementing regulation]
 
 **Last verified:** 2026-04-22

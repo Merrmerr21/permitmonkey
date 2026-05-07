@@ -55,7 +55,7 @@ Don't propose:
 
 Domain knowledge lives in `.claude/skills/` as markdown reference files. Each skill has a `SKILL.md` with frontmatter (name, description) and optional `references/` and `decision-tree/` subdirectories. The frontmatter loads ~60 tokens; body loads on demand when the agent decides it's relevant.
 
-Active skills (current as of 2026-05-05):
+Active skills (current as of 2026-05-06):
 - `massachusetts-adu` — state law, regulations, EOHLC guidance (12/12 refs)
 - `boston-adu` — Boston-specific zoning, transit-parking, energy posture (12/12 refs)
 - `adu-plan-review` — five sheet-type checklists + cover (6 refs)
@@ -65,10 +65,29 @@ Active skills (current as of 2026-05-05):
 - `permitmonkey-ops` — operator knowledge
 - `pdf-extraction` — plan sheet vision
 - `permit-response-writer` — response letter patterns
+- `debugging` — reproduce-first investigation loop (always-load on bug/regression triggers; enforces master playbook §213)
 
 Retired to `_legacy/`:
 - `california-adu`
 - CA variant of city research
+
+## Cache Discipline (production cost invariant)
+
+Per master playbook §217. The Anthropic API caches the request prefix up to each `cache_control` breakpoint; any byte change in the prefix invalidates everything after.
+
+Four invariants enforced by `agents-permitmonkey/src/utils/config.test.ts`:
+1. Static system prompt is byte-stable across runs (no `Date.now()`, no `process.env` interpolation).
+2. `DEFAULT_TOOLS` order is deterministic (frozen const array).
+3. No mid-session model swap — generator on Sonnet, verifier on Opus, never crossing.
+4. No mid-session tool addition or removal.
+
+Push time-sensitive context via the next user message, not the system prompt. See `docs/cache-discipline.md` for full doctrine.
+
+## Debugging (reproduce-first)
+
+Always load `server/skills/debugging/SKILL.md` when investigating bugs, failures, regressions, or unexpected behavior. The skill enforces master playbook §213's six-step loop: reproduce deterministically → read the failing code path → state the hypothesis → predict the next observation → run the observation → compare prediction to reality. **Do not change any code until the root cause is identified.**
+
+Forbidden moves: speculative fixes, shotgun prints before forming a hypothesis, reverting one change at a time hoping the bug goes away, blaming the environment without proof, wrapping the failing call in error handling as a "fix."
 
 ## Error Handling
 
@@ -97,4 +116,6 @@ Lessons logged from past failures. Lead with date, then a one-line mistake descr
 - **2026-04-22.** Cited "Chapter 358 of the Acts of 2024" for the MA ADU law. Correct citation is **Chapter 150 of the Acts of 2024**, §§ 7-8. Fix: always verify statute citations against `malegislature.gov` or `mass.gov` before committing. Don't trust memory on statute numbers.
 - **2026-04-22.** Reported commit stats as `+1,068 / -70,799 net` in user-facing summary. That number came from `git diff --stat` of the unstaged working tree, where git renders renames as delete+create. Actual committed stats from `git show --shortstat HEAD` were `+8,241 / -1,789`. Fix: always verify commit stats with `git show --shortstat HEAD` AFTER commit. Renames are transparent post-staging; pre-staging they look like massive deletions.
 - **2026-05-03.** Drafted `server/skills/boston-adu/SKILL.md` citing "Article 26A" five times as the Boston ADU governing article, projected from generic ADU naming conventions. Article 26A was never verified to exist. The actual Boston framework is per-neighborhood "PLAN: <neighborhood>" amendments via BPDA's Neighborhood Housing Zoning initiative; Mattapan adopted Feb 2024; Roslindale / West Roxbury / Hyde Park drafts in progress. Boston Zoning Code is hosted on Municode (`library.municode.com/ma/boston/codes/redevelopment_authority`) but the platform is JS-rendered, so static fetch returns empty page bodies. Fix: removed all five "Article 26A" references; future skill scaffolds must verify article numbers against Municode or another authoritative source before committing them, even if it means writing thinner reference files marked TBD. **Don't project article numbers from pattern-matching against other cities' codes — Boston's special-act zoning framework doesn't follow standard Ch 40A naming conventions.**
-- **2026-05-03 (second instance, same root cause).** Cited 780 CMR as "9th edition" in four places in the boston-adu SKILL.md and Quick-Ref table. The current edition is **10th Edition (effective October 2023, IRC 2021 / IBC 2021 base)** per the existing `massachusetts-adu` skill `780-cmr-essentials.md`. The "9th ed." figure was inherited from an older `ma-city-research/references/boston.md` summary file that is now stale on this point. Fix: corrected all four references; `building-codes.md` cites the state skill as the authoritative source. **General rule: when two existing files in this repo disagree on a state-code fact, trust the `massachusetts-adu` state skill over the city-research file.** State-skill content is the audit-grade source; city-research is summary/operational.
+- **2026-05-03 (second instance, same root cause).** Cited 780 CMR as "9th edition" in four places in the boston-adu SKILL.md and Quick-Ref table. The current edition is **10th Edition (effective October 2023, IRC 2021 / IBC 2021 base)** per the existing `massachusetts-adu` skill `780-cmr-essentials.md`. The "9th ed." figure was inherited from an older `ma-city-research/references/boston.md` summary file that is now stale on this point. Fix: corrected all four references; `building-codes.md` cites the state skill as the authoritative source. **General rule: when two existing files in this repo disagree on a state-code fact, trust the `massachusetts-adu` state skill over the city-research file.** State-skill content is the audit-grade source; city-research is summary/operational. **Backlog closed 2026-05-06**: `ma-city-research/references/boston.md` now carries an inline 10th Edition tag in its Source Verification block, added during the Phase 1A provenance-lint-to-zero pass.
+- **2026-05-06.** Provenance lint with a fixed ±250-char distance window flagged 318 violations across 41 reference files, mostly because the inline tag format runs ~150 chars and table rows space citations beyond the window. Distance-based proximity is the wrong unit of trust. Fix: rewrote the lint to use **section-scoped** checks — one tag anywhere inside an H2 section covers every citation under that heading. Added a file-level escape hatch: if a file has a dedicated `## Source Verification` / `## Source Maintenance` / `## Provenance` / `## Sources` H2 with at least one valid tag inside, the entire file is exempt. **General rule: provenance is about chain-of-custody, not proximity. The H2 boundary is the natural unit because that's how reference files are read — section by section.** CI now runs `lint:provenance --strict` as a hard gate.
+- **2026-05-06.** Pre-deploy security audit: `lib/api-auth.ts` is the ONLY file in the frontend that imports `SUPABASE_SERVICE_ROLE_KEY`, and it imports from `next/server` (server-only). Verified by grep across the repo. **General rule before any future commit that touches Supabase wiring: re-run `grep -r SUPABASE_SERVICE_ROLE_KEY frontend/` and confirm exactly one source-file match (lib/api-auth.ts). Any second match in a `'use client'` file is a launch blocker per master playbook §12.**

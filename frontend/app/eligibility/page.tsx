@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { CheckCircle2Icon, AlertTriangleIcon, XCircleIcon, ShieldCheckIcon, GlobeIcon } from 'lucide-react';
 import { EmailCapture } from './email-capture';
+import { ShareVerdict } from './share-verdict';
 
 interface CitationVerification {
   status: 'verified-skill' | 'verified-url' | 'unverified' | 'broken' | 'pending';
@@ -37,6 +38,7 @@ interface Result {
   }>;
   upgrade_cta: string;
   disclaimer: string;
+  verdict_token: string;
 }
 
 const VERDICT_META: Record<Verdict, { icon: typeof CheckCircle2Icon; color: string; label: string }> = {
@@ -282,6 +284,8 @@ export default function EligibilityPage() {
             </Card>
 
             <EmailCapture city={result.city ?? null} verdict={result.verdict} />
+
+            <ShareVerdict token={result.verdict_token} verdict={result.verdict} />
 
             <Card className="border-primary/40 bg-primary/5">
               <CardContent className="p-6">

@@ -142,3 +142,11 @@ Newton's updated bylaw generally aligns with Ch 150. Watch for:
 ## Source Maintenance
 
 **Last verified:** 2026-04-22. Next check: 2026-07-22.
+
+## Source Verification
+
+[source: https://www.newtonma.gov/government/planning | retrieved: 2026-04-22 | citation: City of Newton Planning Department — zoning bylaw and ADU amendments]
+[source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40C | retrieved: 2026-04-22 | citation: MGL Ch 40C — Historic Districts Act; Newton has multiple HDC overlays]
+[source: https://www.mass.gov/info-details/specialized-stretch-code | retrieved: 2026-04-22 | citation: 225 CMR 22 — Newton has adopted the Specialized Opt-In Energy Code]
+
+**Last verified:** 2026-04-22

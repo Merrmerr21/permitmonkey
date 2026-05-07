@@ -101,6 +101,10 @@ When a Boston ADU correction touches historic district review:
 
 ## Source Maintenance
 
+[source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40C | retrieved: 2026-05-03 | citation: MGL Ch 40C — Historic Districts Act, separate authority not preempted by Ch. 150]
+[source: https://www.boston.gov/landmarks-commission | retrieved: 2026-05-03 | citation: Boston Landmarks Commission — historic district administration]
+[source: https://www.bostonplans.org/planning-zoning/zoning-initiatives/neighborhood-housing | retrieved: 2026-05-03 | citation: BPDA Neighborhood Housing Zoning — overlay coordination with ACDs]
+
 - Re-verify the district list quarterly. The Monument Square district status (under study 2022) may shift.
 - Watch for new ACD designations as the Neighborhood Housing Zoning initiative advances — neighborhoods being upzoned for ADUs may simultaneously gain ACD overlays.
 - Re-verify Landmarks Commission published procedural rules quarterly.

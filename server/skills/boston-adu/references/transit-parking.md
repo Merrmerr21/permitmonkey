@@ -121,6 +121,10 @@ Once `agents-permitmonkey/src/lib/mbta-proximity.ts` ships per the roadmap Phase
 
 ## Source Maintenance
 
+[source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section3 | retrieved: 2026-05-03 | citation: MGL Ch 40A § 3 — parking ceiling 1 space, 0 within 0.5 mi of qualifying transit]
+[source: https://www.mbta.com/developers/gtfs | retrieved: 2026-05-03 | citation: MBTA GTFS feed — authoritative stop locations]
+[source: https://www.mass.gov/info-details/accessory-dwelling-units | retrieved: 2026-05-03 | citation: 760 CMR 71.00 — EOHLC implementing regulation]
+
 - Re-pull the GTFS feed quarterly; MBTA stops change with service updates.
 - Re-verify EOHLC guidance on "bus station" definition quarterly; treat any new TA letter as a high-priority skill update.
 - Watch for legislative or regulatory changes to the 0.5-mile threshold or the qualifying-facility list.

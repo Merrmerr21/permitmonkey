@@ -67,6 +67,8 @@ Occupancy preemption per [source: https://malegislature.gov/Laws/SessionLaws/Act
 
 ## Effective Dates
 
+Effective dates per [source: https://www.mass.gov/info-details/accessory-dwelling-units | retrieved: 2026-04-22 | citation: 760 CMR 71.00 published 2025-01-31, ADU provisions effective 2025-02-02]:
+
 | Event | Date |
 |-------|------|
 | Ch 150 signed into law | August 6, 2024 |

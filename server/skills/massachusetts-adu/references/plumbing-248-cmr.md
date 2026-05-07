@@ -87,7 +87,8 @@ All four permits must be in place AND inspections passed before the ADU receives
 
 ## Source Verification
 
-- 248 CMR portal: https://www.mass.gov/regulations/248-CMR
-- Board of State Examiners: https://www.mass.gov/orgs/board-of-state-examiners-of-plumbers-and-gas-fitters
+[source: https://www.mass.gov/regulations/248-CMR | retrieved: 2026-05-04 | citation: 248 CMR — MA Uniform State Plumbing and Gas Code (10 plumbing, 4-7 gas fitting)]
+[source: https://www.mass.gov/orgs/board-of-state-examiners-of-plumbers-and-gas-fitters | retrieved: 2026-05-04 | citation: Board of State Examiners — authority over 248 CMR]
+[source: https://www.mass.gov/state-building-code | retrieved: 2026-05-04 | citation: 780 CMR — MA State Building Code, cross-references 248 CMR for plumbing]
 
 **Last verified:** 2026-05-04.

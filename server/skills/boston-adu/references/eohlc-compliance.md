@@ -94,6 +94,11 @@ When a Boston correction triggers a 760 CMR 71.00 / Ch. 150 question, the verifi
 
 ## Source Maintenance
 
+[source: https://www.mass.gov/info-details/accessory-dwelling-units | retrieved: 2026-05-03 | citation: EOHLC ADU portal — 760 CMR 71.00 implementing regulation]
+[source: https://www.mass.gov/info-details/accessory-dwelling-unit-adu-faqs | retrieved: 2026-05-03 | citation: EOHLC Protected Use ADU FAQs — interpretive guidance]
+[source: https://malegislature.gov/Laws/SessionLaws/Acts/2024/Chapter150 | retrieved: 2026-05-03 | citation: St. 2024, c. 150 §§ 7-8 — basis for preemption analysis against Boston]
+[source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40C | retrieved: 2026-05-03 | citation: MGL Ch 40C — Historic Districts Act, not preempted by Ch. 150]
+
 - Quarterly: re-verify EOHLC ADU FAQs page (anti-bot may resolve; or pull via browser session).
 - Monitor for any Boston-specific EOHLC TA letter — high-priority skill update if published.
 - Monitor for Massachusetts court decisions on Ch. 150 preemption against Boston — would resolve the contested reading definitively.

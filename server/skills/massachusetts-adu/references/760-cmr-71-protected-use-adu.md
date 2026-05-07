@@ -82,8 +82,9 @@ EOHLC has published several guidance documents clarifying 760 CMR 71. See `eohlc
 
 ## Source Verification
 
-- Mass.gov ADU page: https://www.mass.gov/info-details/accessory-dwelling-units
-- ADU FAQs: https://www.mass.gov/info-details/accessory-dwelling-unit-adu-faqs
-- Session law: https://malegislature.gov/Laws/SessionLaws/Acts/2024/Chapter150
+[source: https://www.mass.gov/info-details/accessory-dwelling-units | retrieved: 2026-04-22 | citation: 760 CMR 71.00 — EOHLC Protected Use ADU regulation, eff Feb 2, 2025]
+[source: https://www.mass.gov/info-details/accessory-dwelling-unit-adu-faqs | retrieved: 2026-04-22 | citation: EOHLC Protected Use ADU FAQs — interpretive guidance]
+[source: https://malegislature.gov/Laws/SessionLaws/Acts/2024/Chapter150 | retrieved: 2026-04-22 | citation: St. 2024, c. 150 §§ 7-8 — statutory authority for 760 CMR 71.00]
+[source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section3 | retrieved: 2026-04-22 | citation: MGL Ch 40A § 3 — by-right ADU paragraph implemented by 760 CMR 71.00]
 
 **Last verified:** 2026-04-22

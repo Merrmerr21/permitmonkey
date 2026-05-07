@@ -58,7 +58,8 @@ Before St. 2024, c. 150, ADU regulation was entirely local. ~125 MA municipaliti
 
 ## Source Verification
 
-- Canonical text: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section3
-- Session law: https://malegislature.gov/Laws/SessionLaws/Acts/2024/Chapter150
+[source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section3 | retrieved: 2026-04-22 | citation: MGL Ch 40A § 3 — current text after Ch 150 § 8]
+[source: https://malegislature.gov/Laws/SessionLaws/Acts/2024/Chapter150 | retrieved: 2026-04-22 | citation: St. 2024, c. 150 §§ 7-8 — Affordable Homes Act ADU provisions]
+[source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section1A | retrieved: 2026-04-22 | citation: MGL Ch 40A § 1A — definitions cross-reference]
 
 **Last verified:** 2026-04-22

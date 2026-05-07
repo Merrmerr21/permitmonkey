@@ -124,6 +124,10 @@ When a Boston ADU correction touches energy code:
 
 ## Source Maintenance
 
+[source: https://www.mass.gov/info-details/specialized-stretch-code | retrieved: 2026-05-03 | citation: 225 CMR 22 Appendix RC — Specialized Opt-In Energy Code]
+[source: https://www.mass.gov/orgs/department-of-energy-resources | retrieved: 2026-05-03 | citation: MA DOER — authority over 225 CMR 22 and opt-in municipality list]
+[source: https://www.boston.gov/departments/inspectional-services | retrieved: 2026-05-03 | citation: Boston ISD — implements Specialized Opt-In Code at city level]
+
 - Re-verify 225 CMR 22 Appendix RC current text quarterly. The state DOER has periodically updated the Specialized Opt-In Code; an amendment could change R-values or compliance pathways.
 - Watch for any Boston-specific implementation memo (ISD policy on Specialized application to ADUs) — would be a high-priority skill update.
 - Specialized Opt-In Code adoption status (Boston still on it) should be re-confirmed against the DOER published list of opt-in municipalities.

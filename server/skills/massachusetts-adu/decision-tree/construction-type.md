@@ -130,3 +130,11 @@ Projects permitted before 10th Edition effective date may be grandfathered.
 - Don't assume existing garage can bear residential loads without engineer review
 - Don't skip energy code compliance on conversions — it usually applies to the ADU portion
 - Don't forget fire separation in stacked or attached ADUs
+
+## Source Verification
+
+[source: https://www.mass.gov/state-building-code | retrieved: 2026-04-22 | citation: 780 CMR 10th Edition — IRC 2021 base, MA Existing Building Code provisions]
+[source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section1A | retrieved: 2026-04-22 | citation: MGL Ch 40A § 1A — ADU definition includes detached, attached, conversion]
+[source: https://www.mass.gov/info-details/accessory-dwelling-units | retrieved: 2026-04-22 | citation: 760 CMR 71.00 — EOHLC implementing regulation]
+
+**Last verified:** 2026-04-22

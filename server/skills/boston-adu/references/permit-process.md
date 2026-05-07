@@ -121,6 +121,10 @@ When a Boston ADU correction touches the permit process:
 
 ## Source Maintenance
 
+[source: https://www.boston.gov/departments/inspectional-services | retrieved: 2026-05-03 | citation: ISD — Boston Inspectional Services, building permit submittal portal]
+[source: https://www.bostonplans.org/planning-zoning/zoning-code-and-mapping | retrieved: 2026-05-03 | citation: Boston Zoning Code Article 80 — large-project review thresholds]
+[source: https://www.mass.gov/state-building-code | retrieved: 2026-05-03 | citation: 780 CMR 10th Edition — administrative provisions referenced by ISD]
+
 - Re-verify ISD permit portal URL quarterly (online portals shift)
 - Re-verify Article 80 threshold values quarterly (BPDA may amend)
 - Re-pull ISD building forms list quarterly to populate the TBD plan-sheet checklist

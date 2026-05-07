@@ -170,3 +170,12 @@ When running this decision tree, return:
 - Don't treat HDC review as a zoning denial — it's a separate track
 - Don't forget wetlands on waterfront or lowland lots
 - Don't confuse MBTA Communities Act with ADU law
+
+## Source Verification
+
+[source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40A/Section3 | retrieved: 2026-04-22 | citation: MGL Ch 40A § 3 — parking ceiling 1 space, 0 within 0.5 mi of transit]
+[source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleVII/Chapter40C | retrieved: 2026-04-22 | citation: MGL Ch 40C — Historic Districts Act, HDC review path]
+[source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleXIX/Chapter131/Section40 | retrieved: 2026-04-22 | citation: MGL Ch 131 § 40 — Wetlands Protection Act, 100-ft buffer]
+[source: https://www.mass.gov/info-details/specialized-stretch-code | retrieved: 2026-04-22 | citation: 225 CMR 22 — Specialized Opt-In Energy Code, ~60 MA municipalities]
+
+**Last verified:** 2026-04-22

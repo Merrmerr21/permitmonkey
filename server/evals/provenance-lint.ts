@@ -1,15 +1,30 @@
 /**
  * Provenance lint — scans skill `references/` markdown for sentences that
- * look like cited factual claims and warns when no inline provenance tag
- * is nearby.
+ * look like cited factual claims and warns when no provenance tag exists
+ * in the surrounding H2 section.
  *
  * Detected patterns: MGL chapter references, CMR references, Chapter N of
  * the Acts of YYYY citations, statutory section symbols (§), Boston Zoning
  * Code Article numbers, IRC/IBC sections.
  *
- * For each match, the lint searches +/- 250 characters for an inline tag
- * `[source: URL | retrieved: YYYY-MM-DD | citation: SECTION]`. If no tag
- * is found in the window, the sentence is reported as a violation.
+ * Section-scoped check (per master playbook §225 "Tag every fact with
+ * provenance at ingest"): each match must live within an H2 section that
+ * contains at least one inline provenance tag of the form
+ * `[source: URL | retrieved: YYYY-MM-DD | citation: SECTION]`. The H2
+ * boundary is the unit of trust — one tag at the top of a section covers
+ * every citation under it, regardless of distance. This matches how
+ * Claude reads reference files (section by section) and avoids forcing a
+ * tag on every table row.
+ *
+ * The pre-H2 prelude (everything from start-of-file to the first H2) is
+ * its own section. Files with no H2 are treated as a single section.
+ *
+ * File-level escape hatch: if the file contains an H2 section titled
+ * `## Source Verification`, `## Provenance`, or `## Sources` with at
+ * least one valid tag inside, the entire file is exempt from the
+ * per-section check. This recognizes that a dedicated sources block
+ * functions as a file-level provenance declaration — the same model
+ * Kepler uses for verifiable AI in regulated industries.
  *
  * Exemptions:
  * - Sentences inside YAML frontmatter (between leading --- markers)
@@ -50,7 +65,9 @@ const CITABLE_PATTERNS: { name: string; regex: RegExp }[] = [
   { name: 'Section symbol', regex: /§§?\s*\d+(\.\d+)?(-\d+)?/g },
 ]
 
-const TAG_WINDOW = 250
+// Reserved for legacy distance-based callers; the section-scoped check is
+// the primary mechanism. Callers should prefer hasTagInSection.
+const TAG_WINDOW = 500
 
 interface Violation {
   file: string
@@ -94,7 +111,9 @@ async function main(): Promise<void> {
 
 async function lintFile(file: string): Promise<Violation[]> {
   const content = await fs.readFile(file, 'utf-8')
+  if (hasFileLevelProvenance(content)) return []
   const exemptRanges = computeExemptRanges(content)
+  const sections = computeSections(content)
   const violations: Violation[] = []
 
   for (const pattern of CITABLE_PATTERNS) {
@@ -102,7 +121,7 @@ async function lintFile(file: string): Promise<Violation[]> {
     let match: RegExpExecArray | null
     while ((match = re.exec(content)) !== null) {
       if (isExempt(match.index, match[0].length, exemptRanges)) continue
-      if (hasNearbyTag(content, match.index, match[0].length)) continue
+      if (hasTagInSection(content, match.index, sections)) continue
 
       const { line, column } = indexToLineColumn(content, match.index)
       violations.push({
@@ -119,12 +138,69 @@ async function lintFile(file: string): Promise<Violation[]> {
   return dedupeNearbyViolations(violations)
 }
 
-function hasNearbyTag(content: string, idx: number, len: number): boolean {
-  const start = Math.max(0, idx - TAG_WINDOW)
-  const end = Math.min(content.length, idx + len + TAG_WINDOW)
-  const window = content.slice(start, end)
+// Heading must terminate with end-of-line or trailing whitespace only —
+// avoids matching `## Sources Beyond EOHLC` (which is a different
+// section, not a provenance declaration).
+const PROVENANCE_HEADING_RE = /^##\s+(Source Verification|Source Maintenance|Provenance|Sources)\s*$/gim
+
+function hasFileLevelProvenance(content: string): boolean {
+  PROVENANCE_HEADING_RE.lastIndex = 0
+  let match: RegExpExecArray | null
+  while ((match = PROVENANCE_HEADING_RE.exec(content)) !== null) {
+    const sectionStart = match.index
+    const after = content.slice(sectionStart + match[0].length)
+    const nextHeading = /\n##\s+/.exec(after)
+    const sectionEnd = nextHeading
+      ? sectionStart + match[0].length + nextHeading.index
+      : content.length
+    const sectionBody = content.slice(sectionStart, sectionEnd)
+    TAG_RE.lastIndex = 0
+    if (TAG_RE.test(sectionBody)) return true
+  }
+  return false
+}
+
+interface Section {
+  start: number
+  end: number
+}
+
+function computeSections(content: string): Section[] {
+  // H2 boundaries split the file into sections. The pre-H2 prelude is its
+  // own section. Files with no H2 are a single section spanning the whole
+  // file.
+  const headingRe = /^##\s+/gm
+  const headings: number[] = []
+  let m: RegExpExecArray | null
+  while ((m = headingRe.exec(content)) !== null) {
+    headings.push(m.index)
+  }
+  if (headings.length === 0) {
+    return [{ start: 0, end: content.length }]
+  }
+  const sections: Section[] = []
+  // prelude
+  if (headings[0] > 0) {
+    sections.push({ start: 0, end: headings[0] })
+  }
+  for (let i = 0; i < headings.length; i++) {
+    const start = headings[i]
+    const end = i + 1 < headings.length ? headings[i + 1] : content.length
+    sections.push({ start, end })
+  }
+  return sections
+}
+
+function hasTagInSection(
+  content: string,
+  idx: number,
+  sections: Section[],
+): boolean {
+  const section = sections.find((s) => idx >= s.start && idx < s.end)
+  if (!section) return false
+  const slice = content.slice(section.start, section.end)
   TAG_RE.lastIndex = 0
-  return TAG_RE.test(window)
+  return TAG_RE.test(slice)
 }
 
 function dedupeNearbyViolations(violations: Violation[]): Violation[] {

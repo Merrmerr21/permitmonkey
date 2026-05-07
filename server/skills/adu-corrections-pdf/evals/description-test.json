@@ -1,0 +1,18 @@
+{
+  "skill": "adu-corrections-pdf",
+  "should_trigger": [
+    "format this corrections-letter markdown into a styled PDF",
+    "generate a PDF from the draft response markdown",
+    "render this markdown corrections letter to PDF and screenshot for QA",
+    "convert the response letter markdown to a deliverable PDF",
+    "run the markdown through the PDF formatter"
+  ],
+  "should_not_trigger": [
+    "research state law on parking",
+    "analyze this corrections letter and ask the contractor questions",
+    "review this plan binder for compliance",
+    "extract a sheet from the plan PDF",
+    "fix a bug in the citation verifier"
+  ],
+  "rationale": "Must activate on PDF formatting requests where markdown is the input. Single-purpose formatting sub-agent — must NOT activate on research, analysis, or any work that touches the agent's reasoning over corrections content. The main agent re-invokes this skill with fix instructions if QA flags issues in the screenshot."
+}

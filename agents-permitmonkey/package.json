@@ -4,7 +4,7 @@
   "type": "module",
   "description": "Agent SDK backend for PermitMonkey ADU corrections pipeline",
   "scripts": {
-    "test": "node --experimental-strip-types --test \"src/lib/*.test.ts\" \"src/flows/*.test.ts\""
+    "test": "node --experimental-strip-types --test \"src/lib/*.test.ts\" \"src/flows/*.test.ts\" \"src/utils/*.test.ts\""
   },
   "dependencies": {
     "@anthropic-ai/claude-agent-sdk": "latest"

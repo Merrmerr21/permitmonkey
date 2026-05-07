@@ -1,0 +1,18 @@
+{
+  "skill": "adu-plan-review",
+  "should_trigger": [
+    "city plan checker uploaded a plan binder for review",
+    "review this ADU plan binder against state and city compliance",
+    "generate a draft corrections letter for this submittal",
+    "city-side review — produce findings with confidence flags",
+    "screen this plan submittal for completeness before human review"
+  ],
+  "should_not_trigger": [
+    "the contractor uploaded a corrections letter and the plan binder",
+    "Phase 2 — produce the response package",
+    "what does state law say about parking",
+    "what's the lot coverage rule for an ADU in Roxbury",
+    "fix a bug in the verifier"
+  ],
+  "rationale": "Must activate on city-side review (plan binder + city name input). Must NOT activate on contractor-side flows (adu-corrections-flow / adu-corrections-complete) — same domain knowledge, opposite direction."
+}

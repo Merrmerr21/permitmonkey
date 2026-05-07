@@ -1,0 +1,17 @@
+{
+  "skill": "adu-corrections-complete",
+  "should_trigger": [
+    "the contractor answered the questions, generate the response package now",
+    "Phase 2 — produce the response letter, scope of work, and corrections report",
+    "build the final deliverables from the analysis artifacts and contractor_answers.json",
+    "deliver the corrections package — analysis is done, answers are in"
+  ],
+  "should_not_trigger": [
+    "analyze this corrections letter and ask the contractor questions",
+    "review this plan binder city-side",
+    "what does Boston bylaw say",
+    "draft a marketing email",
+    "fix a bug in the verifier"
+  ],
+  "rationale": "Must activate ONLY when Phase 1 outputs exist on disk AND a contractor_answers.json is present. Must NOT activate before Phase 1 completes — premature invocation produces a hallucinated response package without the analysis substrate."
+}

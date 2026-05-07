@@ -1,0 +1,21 @@
+{
+  "skill": "debugging",
+  "should_trigger": [
+    "the eligibility checker is broken",
+    "this test is failing",
+    "why is the build crashing",
+    "the corrections flow regressed after my last edit",
+    "I'm getting an error from the agent SDK",
+    "this doesn't work, can you fix it",
+    "the citation verifier returns unexpected results",
+    "isn't working — please debug"
+  ],
+  "should_not_trigger": [
+    "let's add a new feature for the dashboard",
+    "summarize this article",
+    "write a new SKILL.md for the somerville-adu skill",
+    "what's the cap rate formula",
+    "draft a marketing email"
+  ],
+  "rationale": "The skill must always activate on bug/regression/failure language. It must NOT activate on greenfield feature work or non-debugging queries — that would suppress productive iteration with unwanted reproduce-first ritual."
+}

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { evaluateEligibility, type EligibilityInput } from '@/lib/eligibility';
 import { verifyCitation } from '@/lib/citations/verify';
 import type { CitationVerification } from '@/lib/citations/types';
+import { encodeVerdictToken } from '@/lib/verdict-token';
 
 const SKILL_REFERENCES_ROOT = path.resolve(process.cwd(), '..', 'server', 'skills');
 
@@ -90,7 +91,16 @@ export async function POST(request: NextRequest) {
       verification: verifications[i],
     }));
 
-    return NextResponse.json({ ...result, citations: citationsWithVerification });
+    // Shareable verdict token — base64url(JSON(input)) with a SHA-256
+    // prefix. Lets the verdict UI render a public read-only share URL
+    // without persisting anything (master playbook §69 viral artifacts).
+    const verdict_token = encodeVerdictToken(body as EligibilityInput);
+
+    return NextResponse.json({
+      ...result,
+      citations: citationsWithVerification,
+      verdict_token,
+    });
   } catch (err) {
     console.error('eligibility route error:', err);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

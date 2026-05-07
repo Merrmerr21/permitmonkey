@@ -84,8 +84,9 @@ The general life-safety code. For most ADUs, the primary intersections are:
 
 ## Source Verification
 
-- 527 CMR 12: https://www.mass.gov/regulations/527-CMR-12-massachusetts-electrical-code
-- 527 CMR 1: https://www.mass.gov/info-details/527-cmr-1-comprehensive-fire-safety-code
-- MGL Ch 148: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleXX/Chapter148
+[source: https://www.mass.gov/regulations/527-CMR-12-massachusetts-electrical-code | retrieved: 2026-05-04 | citation: 527 CMR 12 — MA Electrical Code (NEC 2023 plus MA amendments)]
+[source: https://www.mass.gov/info-details/527-cmr-1-comprehensive-fire-safety-code | retrieved: 2026-05-04 | citation: 527 CMR 1 — Comprehensive Fire Safety Code]
+[source: https://malegislature.gov/Laws/GeneralLaws/PartI/TitleXX/Chapter148 | retrieved: 2026-05-04 | citation: MGL Ch 148 §§ 26F (smoke) and 26F½ (CO) — alarm requirements at sale/transfer/permit]
+[source: https://www.mass.gov/orgs/department-of-fire-services | retrieved: 2026-05-04 | citation: DFS / BFPR — authority over 527 CMR]
 
 **Last verified:** 2026-05-04.

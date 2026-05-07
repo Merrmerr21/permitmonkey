@@ -94,6 +94,10 @@ When a contractor asks the following, the agent draws from this file:
 
 ## Source Maintenance
 
+[source: https://malegislature.gov/Laws/SessionLaws/Acts/2024/Chapter150 | retrieved: 2026-05-03 | citation: St. 2024, c. 150 §§ 7-8 — Affordable Homes Act ADU provisions]
+[source: https://www.bostonplans.org/planning-zoning/zoning-initiatives/neighborhood-housing | retrieved: 2026-05-03 | citation: BPDA Neighborhood Housing Zoning rollout — Mattapan adopted, others pending]
+[source: https://www.mass.gov/info-details/accessory-dwelling-units | retrieved: 2026-05-03 | citation: 760 CMR 71.00 — EOHLC implementing regulation, contested reach in Boston]
+
 - Re-pull the Neighborhood Housing Zoning status quarterly. The list of in-progress neighborhoods will expand.
 - Watch for any Boston-specific EOHLC TA letter on Ch. 150 reach — would be a high-priority skill update.
 - Watch for Massachusetts court decisions on Ch. 150 preemption against Boston — would resolve the contested reading definitively.

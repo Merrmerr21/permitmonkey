@@ -62,7 +62,7 @@ jobs:
           retention-days: 30
 
   provenance-lint:
-    name: provenance lint (warn-only)
+    name: provenance lint (strict gate)
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -75,8 +75,11 @@ jobs:
           cache: 'npm'
           cache-dependency-path: server/package-lock.json
       - run: npm ci
-      - name: run provenance lint
-        # Warn-only for now — runs without --strict so it doesn't fail CI
-        # while existing skill content is being incrementally tagged.
-        # Switch to --strict once the violation count hits zero on main.
-        run: npm run lint:provenance
+      - name: run provenance lint (--strict, fail on any violation)
+        # Skill reference files must declare provenance per master playbook
+        # §225 ("Tag every fact with provenance at ingest"). Section-scoped
+        # check: each H2 section with citable claims must contain at least
+        # one inline tag, OR the file must have a dedicated `## Source
+        # Verification` / `## Source Maintenance` / `## Provenance` /
+        # `## Sources` H2 with valid tags inside.
+        run: npm run lint:provenance -- --strict
