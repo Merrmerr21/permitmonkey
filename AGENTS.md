@@ -66,6 +66,7 @@ Active skills (current as of 2026-05-06):
 - `pdf-extraction` — plan sheet vision
 - `permit-response-writer` — response letter patterns
 - `debugging` — reproduce-first investigation loop (always-load on bug/regression triggers; enforces master playbook §213)
+- `permitmonkey-ma-eligibility` — companion skill for the MCP server at `mcp/`, ships to claude.ai/directory per master playbook §65, §107
 
 Retired to `_legacy/`:
 - `california-adu`

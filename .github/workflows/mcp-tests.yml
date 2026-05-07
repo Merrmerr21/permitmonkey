@@ -1,0 +1,39 @@
+name: mcp-tests
+
+on:
+  push:
+    paths:
+      - 'mcp/**'
+      - 'frontend/lib/eligibility.ts'
+      - '.github/workflows/mcp-tests.yml'
+  pull_request:
+    paths:
+      - 'mcp/**'
+      - 'frontend/lib/eligibility.ts'
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    name: mcp build + parity tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mcp
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+          cache-dependency-path: mcp/package-lock.json
+      - run: npm install
+      - name: tsc build
+        run: npm run build
+      - name: parity test against frontend/lib/eligibility.ts
+        # The MCP server's eligibility logic is a self-contained copy of
+        # the frontend's authoritative version. This test asserts byte-
+        # equivalent output across 6 fixtures spanning all 5 covered MA
+        # cities plus an uncovered one. Drift fails CI — a contractor
+        # running the check via claude.ai/directory must see the same
+        # verdict as one who hits the website.
+        run: npm test

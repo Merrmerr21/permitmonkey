@@ -103,6 +103,7 @@ Active:
 - `pdf-extraction` — plan sheet reading with vision
 - `permit-response-writer` — professional response letter patterns
 - `debugging` — reproduce-first investigation loop (always-load on bug/regression triggers; enforces master playbook §213)
+- `permitmonkey-ma-eligibility` — companion skill for the MCP server at `mcp/`, ships to claude.ai/directory per master playbook §65, §107
 
 Retired (in `_legacy/` for regression reference):
 - `california-adu` — CA HCD Handbook + Gov Code §§66310-66342

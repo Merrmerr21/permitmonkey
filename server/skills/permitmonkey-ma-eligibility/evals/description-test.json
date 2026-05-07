@@ -1,0 +1,21 @@
+{
+  "skill": "permitmonkey-ma-eligibility",
+  "should_trigger": [
+    "is my Boston lot eligible for an ADU",
+    "what's the maximum ADU size on a 2,400 sqft primary in Cambridge",
+    "does the parking exemption apply if I'm near a T stop",
+    "explain the lesser-of-900-or-50% rule",
+    "can the city require owner-occupancy after Ch 150",
+    "what does 760 CMR 71.00 say about parking",
+    "run the PermitMonkey eligibility check on 123 Main St, Somerville, MA"
+  ],
+  "should_not_trigger": [
+    "interpret this corrections letter from Boston ISD",
+    "what's the energy code for an ADU in Newton",
+    "California ADU rules under HCD Handbook",
+    "draft a marketing email",
+    "fix a bug in the verifier",
+    "review this plan binder for compliance"
+  ],
+  "rationale": "Companion skill activates when the user is asking about MA ADU eligibility decisions and the agent has access to the permitmonkey-ma-eligibility MCP tool. Must NOT activate on corrections-letter work (different paid product), construction-code questions (different scope), or non-MA jurisdictions."
+}
