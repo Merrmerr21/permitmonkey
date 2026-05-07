@@ -58,8 +58,8 @@ export default function DashboardPage() {
           <RocketIcon className="w-12 h-12 text-muted-foreground/40" />
           <p className="text-muted-foreground font-body text-center max-w-md">
             Full project creation with file upload is coming soon.
-            Switch to <span className="font-semibold text-foreground">Judge Demo</span> mode
-            to test with pre-loaded test plans (currently California legacy fixtures during MA pivot).
+            Switch to <span className="font-semibold text-foreground">Demo</span> mode
+            to test with pre-loaded sample plans.
           </p>
         </div>
       </div>

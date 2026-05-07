@@ -16,8 +16,7 @@ import {
   SendIcon,
 } from 'lucide-react'
 
-// MA-pivoted landing page. Replaces the prior CA-era version
-// (28 CA refs / 480 cities / Hackathon 2026 badge).
+// Massachusetts ADU permit assistant landing page.
 // See docs/design/landing-stripe-synthesis-rationale.md.
 
 export default function LandingPage() {
@@ -483,15 +482,15 @@ function MaDifferentiationSection() {
         <div className="lg:col-span-7 space-y-6">
           <p className="eyebrow">Built for Massachusetts</p>
           <h2 className="font-display font-bold text-4xl md:text-5xl tracking-tight text-foreground">
-            We didn&apos;t port <span className="italic">a California tool to Boston.</span>
+            Built ground-up <span className="italic">on Massachusetts law.</span>
             <br />
-            We rebuilt the knowledge base.
+            Not a generic ADU tool with a Boston coat of paint.
           </h2>
           <p className="text-lg text-foreground/70 leading-relaxed max-w-2xl">
-            Massachusetts ADU law isn&apos;t a copy-paste of California&apos;s. Boston operates
-            under a special-act zoning framework. PermitMonkey teaches its agent the
-            actual structure: per-neighborhood implementation, the open preemption
-            questions, the MBTA proximity rule, the Specialized Opt-In Energy Code.
+            Boston operates under a special-act zoning framework. PermitMonkey teaches
+            its agent the actual structure: per-neighborhood implementation, the open
+            preemption questions, the MBTA proximity rule, the Specialized Opt-In
+            Energy Code.
           </p>
           <ul className="grid sm:grid-cols-2 gap-x-6 gap-y-3 text-sm font-body text-foreground/80 max-w-2xl">
             {[
@@ -656,7 +655,7 @@ function SiteFooter() {
             citations you can verify yourself.
           </p>
           <p className="text-xs text-background/40 pt-2">
-            Boston, MA · pivoted from a CA hackathon project (cc-crossbeam by @breezwoods)
+            Boston, MA
           </p>
         </div>
         <FooterCol title="Product" items={[

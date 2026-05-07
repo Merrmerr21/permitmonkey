@@ -1,25 +1,10 @@
 # PermitMonkey
 
-### Winner — Anthropic's Global Claude Code Hackathon "Built with Opus 4.6"
-
-[Official announcement](https://x.com/claudeai/status/2024986294820958647?s=20)
-
-AI-powered ADU permit assistant for Massachusetts. Upload your architectural plans and corrections letter — get back a professional response package ready for resubmission.
-
-**Built for the Built with Opus 4.6: Claude Code Hackathon (Feb 10–16, 2026)**
-**Pivoting California → Massachusetts (April 2026)** — see `PLAYBOOK.md` for strategic rationale.
+AI-powered ADU permit assistant for Massachusetts. Upload your architectural plans and corrections letter — get back a professional response package ready for resubmission, with verifiable citations to MGL Ch 40A § 3, 760 CMR 71.00, 780 CMR 10th Edition, and the controlling local zoning bylaw.
 
 ### For Other Builders
 
-If you're curious about the build process, check out `progress.md` — voice logs of the thinking throughout the hackathon while Claude was building. A raw, unfiltered look at the decision-making and problem-solving that went into this project.
-
-The operating manual for how this project is run day-to-day now lives at `PLAYBOOK.md`. Skills live in `.claude/skills/`. Agent job descriptions in `.claude/agents/`.
-
-### Contact
-
-Questions? Reach out:
-- X/Twitter: [@breezwoods](https://x.com/breezwoods)
-- LinkedIn: [Michael Brown](https://www.linkedin.com/in/michael-t-brown-034aaa22/)
+The operating manual for how this project is run day-to-day lives at `PLAYBOOK.md`. Skills live in `.claude/skills/`. Agent job descriptions in `.claude/agents/`.
 
 ## The Problem
 
@@ -88,7 +73,6 @@ The agent's domain knowledge comes from **skills** — structured reference file
 - **ADU Eligibility Checker Skill** (`.claude/skills/adu-eligibility-checker/`) — Backs the free-tool funnel.
 - **PermitMonkey Ops Skill** — Teaches agents how to operate the deployed system via API.
 
-Retired California skills live in `_legacy/` for regression testing and historical reference.
 
 ### Agent Roster (see `.claude/agents/`)
 
@@ -124,16 +108,12 @@ Retired California skills live in `_legacy/` for regression testing and historic
 │   ├── agents/            # Agent job descriptions (7 agents)
 │   ├── agent-performance.md  # Three-strike policy tracker
 │   └── skills/            # Active skills (MA-focused after pivot)
-├── _legacy/               # Retired CA skills (regression reference)
-├── test-assets/           # Real permit data for testing
-│   ├── corrections/       # Placentia corrections letter + plans (CA, legacy)
-│   ├── approved/          # Long Beach approved plans (CA, legacy)
-│   └── correction-01/     # Sample agent output (CA, legacy)
+├── test-assets/           # Permit data for development testing
 ├── design-directions/     # UI design exploration
 ├── docs/                  # Plans, research, learnings, schedule
 ├── AGENTS.md              # Non-Claude agent diversification mirror
 ├── PLAYBOOK.md            # Operating manual (see this first after README)
-└── progress.md            # Voice-log build history from hackathon week
+└── progress.md            # Voice-log build history
 ```
 
 ## Running Locally
@@ -203,16 +183,9 @@ or `frontend/`. To match CI locally:
 
 ## Test Data Attribution
 
-The `test-assets/` directory contains real permit documents used for development and testing:
+The `test-assets/` directory contains permit documents used for development and regression testing. All public documents are credited to their issuing authority (city building departments, EOHLC, BBRS). Any plan binders included with private-party permission are noted in the file's adjacent `LICENSE` or `README` if applicable.
 
-**Legacy California assets (retained for regression testing during the MA pivot):**
-- **California ADU Handbook** (`adu-handbook-update-2026.pdf`) — California HCD. Public government document.
-- **Placentia Submittal Requirements** — City of Placentia Building Division. Public government document.
-- **Corrections Letter** (`corrections/2nd-Review-Corrections-1232-Jefferson-St-Placentia.pdf`) — City of Placentia plan check corrections. Public government correspondence.
-- **Architectural Plans — 1232 N Jefferson, Placentia** (`corrections/Binder-1232-N-Jefferson.pdf`) — Included with permission from the project designer for demonstration purposes.
-- **Architectural Plans — 326 Flint Ave, Long Beach** (`approved/FLINT-AVE-326-BADD326126-APPROVED-PLANS.pdf`) — Included with permission from the project designer for demonstration purposes.
-
-**Massachusetts test assets:** Sourcing in progress. See `PLAYBOOK.md` §22 for sourcing paths. Will live at `test-assets/ma/` when collected.
+**Massachusetts test assets:** sourcing in progress. See `PLAYBOOK.md` for sourcing paths. Will live at `test-assets/ma/` when collected.
 
 ## License
 
